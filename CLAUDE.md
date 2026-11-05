@@ -62,12 +62,12 @@ Done, in order:
 6. Answered whether about ₹12 LPA is reachable, and whether a chat can move to another account (section 5).
 7. Started Stage 1. Read every Stage 1 resource and gave exact chapters and problem lists (notes in section 5). He then asked to be taught directly instead.
 8. **Taught Topic 1 (Basics and setup)**: the theory as one story (what Python is, how it runs, typing, memory, speed, GIL, why AI uses it) plus the basics (REPL, `-m`, indentation, comments, naming, `print`/`input`, keywords, `None`). He wrote his own summary and it was corrected (section 5).
-9. Added a flashcard viewer to the app and 46 cards: 39 for topic 1 and 7 for topic 70 (his zen/Rust interview answers).
+9. Added a flashcard viewer to the app and 39 cards for topic 1. (Seven zen/Rust cards for topic 70 were made, then removed at his request on 6 Nov. He wants the project work done when we reach the projects, topic 70. The notes are kept in section 5.)
 
 Next:
 - **Topic 2: Data types and operators** (MCQ level). Teach it the same way, then add its flashcards.
 - He revises Topic 1 with the flashcards. His real progress is in the app's backup (section 6).
-- Open question: what exactly his ~12 s Python prototype of zen measured, and why it was slower (section 5).
+- Project work (zen, Zen-harness) waits until topic 70. Don't bring it up before then. When we get there, start from the zen notes in section 5.
 
 ## 4. Internshala research (4 Nov 2026)
 
@@ -107,12 +107,12 @@ Next:
   - "You can never mix types" was too strong. `3 + 2.5`, `True + 1` and `"ab" * 3` work; only guessing mixes like `"1" + 1` fail.
   - "Python checks the value each time" should be "checks the type each time".
 - **Is Python compiled or interpreted?** Both: compiled to bytecode, then the PVM interprets it. Officially called interpreted.
-- **Why zen uses Rust (topic 70 flashcards):** he measured a Python prototype at ~12 s per reply and the Rust version at ~3 s, with the same models on the same machine. The reasons found in the zen code:
+- **Why zen uses Rust (for topic 70 later; the cards were removed for now):** he measured a Python prototype at ~12 s per reply and the Rust version at ~3 s, with the same models on the same machine. The reasons found in the zen code:
   - The TTS library calls back into Rust with each audio chunk and polls a Rust cancel flag (`tts.rs`), and Python callbacks would need the GIL.
   - Capture, transcription, LLM and speech run in parallel, and data races are compile errors in Rust.
   - Generation numbers drop stale replies (`session.rs`), and slot IDs are checked by the type system (`engine.rs`).
   - It ships as one exe.
-  - Still open: ask him what the 12 s measured. The gain probably came from orchestration (streaming, overlap, models staying loaded), not raw speed, but don't claim that until it's confirmed.
+  - Still open, for topic 70: ask him what the 12 s measured. The gain probably came from orchestration (streaming, overlap, models staying loaded), not raw speed, but don't claim that until it's confirmed.
 - **PYnative "Top 100 Basic Python Interview Questions"** (pynative.com/beginner-python-interview-questions, updated April 2025): good for revision, not as the only source.
   - Weak points: Q2 skips bytecode and the PVM; Q18 says `PYTHONCASEOK` is Windows-only (docs: Windows and macOS); Q68 skips negative floor division.
   - Question map by topic: 1: Q1–5, 16–18, 24–25 · 2: Q19–23, 68 · 3: Q26–38 · 4: Q6–15 · 5: Q53–67 · 6: Q39–47, 84 · 7: Q85–88 · 8: Q69–73, 93 · 9: Q89–93 · 10: Q74–83.
@@ -169,7 +169,7 @@ Next:
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 46 (topics 1, 70).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 39 (topic 1).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -463,7 +463,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
 - **69. Aptitude and reasoning** [MCQ, every day]
   - Check: Solve aptitude and reasoning questions quickly and accurately.
   - Subtopics: (0) Percentages, ratios, averages; (1) Profit and loss; (2) Time, speed and distance; (3) Time and work; (4) Probability, permutations and combinations; (5) Number series; (6) Logical reasoning: blood relations, seating, syllogisms; (7) Data interpretation
-- **70. Project discussion and HR** [Concept, stage 6, Core lane, 7 flashcards]
+- **70. Project discussion and HR** [Concept, stage 6, Core lane]
   - Check: Explain each project in 2 minutes, then handle deep follow-up questions.
   - Subtopics: (0) Each project end to end in 2 minutes; (1) Architecture and design choices; (2) Hardest bug and how you fixed it; (3) Metrics and results; (4) What you'd improve next; (5) Tell me about yourself; (6) Strengths and weaknesses; (7) Why this company
 - **71. Frontend basics (optional)** [MCQ, optional]

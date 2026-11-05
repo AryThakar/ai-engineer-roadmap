@@ -21,6 +21,7 @@ let CARDS = {};
 try { CARDS = JSON.parse(fs.readFileSync(path.join(root, "flashcards.json"), "utf8")).topics || {}; } catch (e) {}
 const cardCount = id => (CARDS[String(id)] || []).length;
 const totalCards = Object.values(CARDS).reduce((s, c) => s + c.length, 0);
+const cardTopics = Object.keys(CARDS).filter(k => CARDS[k].length);
 
 const topics = T.map(([id, sec, title, level, stage, lane, check, subs]) => ({ id, sec, title, level, stage, lane, check, subs }));
 const byId = new Map(topics.map(t => [t.id, t]));
@@ -32,7 +33,7 @@ out.push(`${MARKER} (generated from the app's data, do not edit by hand)`);
 out.push("");
 out.push(`Totals: ${topics.length} topics in ${SECTIONS.length} sections, ${STAGES.length} stages, ${RES.length} resources. ` +
   `Levels: ${count("code")} Coding, ${count("concept")} Concept, ${count("mcq")} MCQ. ` +
-  `Flashcards: ${totalCards}${totalCards ? " (topics " + Object.keys(CARDS).filter(k => CARDS[k].length).join(", ") + ")" : ""}.`);
+  `Flashcards: ${totalCards}${cardTopics.length ? (cardTopics.length === 1 ? " (topic " : " (topics ") + cardTopics.join(", ") + ")" : ""}.`);
 out.push("");
 out.push("### Levels");
 for (const v of Object.values(LEVELS)) out.push(`- **${v.label}**: ${v.short}`);

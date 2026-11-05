@@ -204,42 +204,9 @@
     "code": "a, b = 1, 2\na, b = b, a\nprint(a, b)",
     "out": "2 1"
    }
-  ],
-  "70": [
-   {
-    "q": "Why Rust for zen but Python for Zen-harness?",
-    "a": "Measured on my machine: the Python prototype took ~12 s per reply, the Rust version ~3 s, with the same models. zen handles audio every 20 ms and must stop instantly when interrupted, so it needs a fast manager with real parallelism and no GIL in callbacks, shipped as one .exe. Zen-harness mostly waits seconds for the model, so Python's ecosystem wins.",
-    "hook": "Pick the language for the bottleneck: milliseconds -> Rust, model time -> Python."
-   },
-   {
-    "q": "Interviewer: \"The models are C++ either way. Why was Python 4x slower?\"",
-    "a": "The gain came from orchestration, not raw speed: in zen the stages stream and overlap (speech starts with the first ~250 ms audio chunk), C callbacks never wait for a GIL, and the models stay loaded. Check which of these was true for your Python prototype before you say it.",
-    "trap": true
-   },
-   {
-    "q": "Rust reason 1: the C libraries call back into your code.",
-    "a": "The TTS DLL calls Rust with every audio chunk (~250 ms) and checks a Rust cancel flag between chunks (`tts.rs`). In Python, every callback from C must grab the GIL first, so it can wait. Callbacks are wrapped in `catch_unwind`, and the native libraries run in separate worker processes."
-   },
-   {
-    "q": "Rust reason 2: many jobs at once, safely.",
-    "a": "Capture every 20 ms, voice detection, transcription on its own thread, LLM streaming, speech streaming, all cancellable at once. Rust runs them truly in parallel (tokio + threads), and data races are compile errors. Python's asyncio is one thread, and Python never checks for races at compile time, even without the GIL."
-   },
-   {
-    "q": "Rust reason 3: wrong states can't be written.",
-    "a": "Every background job carries the generation number of its turn, so a stale reply after an interruption is dropped, never spoken (`session.rs`). An LLM slot ID outside 0-1 can't even be created (`engine.rs`). About 300 Rust tests."
-   },
-   {
-    "q": "What does choosing Rust cost?",
-    "a": "Slower to write, long optimised builds, a smaller ML ecosystem. That's why Zen-harness is Python. Saying the trade-off out loud makes the choice sound deliberate."
-   },
-   {
-    "q": "Define FFI and data race.",
-    "a": "FFI: one language calling functions written in another (Rust calling the C/C++ speech libraries). Data race: two threads use the same data at the same time and at least one of them writes; Rust refuses to compile that."
-   }
   ]
  },
  "notes": {
-  "1": "Taught in chat on 5-6 Nov 2026: Topic 1 theory story and basics.",
-  "70": "From the zen discussion on 6 Nov 2026."
+  "1": "Taught in chat on 5-6 Nov 2026: Topic 1 theory story and basics."
  }
 }
