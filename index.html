@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17171c">
+<meta name="description" content="71 topics for AI/ML engineer fresher interviews, in 6 stages, with checked practice resources.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon-64.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AI Roadmap">
+
+<title>AI Engineer Interview Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: a vertical spine; each section is a yellow node on the spine with its topics branching left and right (one column on phones). Single light theme, like a printed roadmap. */
+:root {
+  --paper: #f9f7f1;
+  --ink: #17171c;
+  --muted: #5f5c55;
+  --node: #fff2a8;
+  --section: #ffd23f;
+  --spine: #2f63c4;
+  --done-bg: #d5efdc;
+  --done: #23794a;
+  --prog-bg: #e9e2ff;
+  --prog: #6a46e0;
+  --code: #b93c0c;
+  --concept: #1f4fc4;
+  --mcq: #5a5650;
+  --font-display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 15px/1.5 var(--font-body); }
+[hidden] { display: none !important; }
+code { font-family: var(--font-mono); font-size: .88em; background: rgba(23,23,28,.07); padding: 0 4px; border-radius: 3px; }
+button, select, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--spine); outline-offset: 2px; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+/* Header */
+header.top { padding: 34px 0 10px; }
+.kicker { font: 500 12.5px/1 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+h1 { font: 800 clamp(30px, 5vw, 46px)/1.05 var(--font-display); margin: 0 0 10px; text-wrap: balance; letter-spacing: -.01em; }
+.lede { max-width: 62ch; margin: 0 0 20px; color: var(--muted); }
+.summary { display: grid; grid-template-columns: minmax(240px, 1.1fr) 2fr; gap: 16px; align-items: stretch; }
+.card { background: #fff; border: 2px solid var(--ink); border-radius: 8px; padding: 14px 16px; }
+.prog-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.prog-head strong { font: 800 26px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.prog-head span { color: var(--muted); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.bar { height: 12px; border: 2px solid var(--ink); border-radius: 999px; background: #fff; overflow: hidden; display: flex; }
+.bar i { display: block; height: 100%; transition: width .3s; }
+.bar .b-done { background: var(--done); }
+.bar .b-prog { background: var(--prog); opacity: .75; }
+.legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.legend div { display: flex; flex-direction: column; gap: 4px; }
+.legend p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.4; }
+.lvl { display: inline-flex; align-items: center; gap: 5px; font: 600 11.5px/1 var(--font-body); padding: 4px 8px; border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap; background: #fff; width: max-content; }
+.lvl::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.lvl.code { color: var(--code); }
+.lvl.concept { color: var(--concept); }
+.lvl.mcq { color: var(--mcq); }
+
+/* Controls */
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: 18px 0 6px; }
+.seg { display: inline-flex; border: 2px solid var(--ink); border-radius: 8px; overflow: hidden; background: #fff; }
+.seg button { border: 0; background: transparent; padding: 7px 12px; font-weight: 500; font-size: 14px; }
+.seg button + button { border-left: 2px solid var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+.ctl { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+.ctl select { border: 2px solid var(--ink); border-radius: 8px; background: #fff; padding: 6px 8px; }
+.ctl input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--ink); }
+.reset { margin-left: auto; border: 2px solid var(--ink); background: #fff; border-radius: 8px; padding: 6px 12px; font-size: 14px; }
+.reset.armed { background: #ffe3dc; border-color: var(--code); color: var(--code); }
+.reset.slim { margin-left: 0; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.install, .backup { margin: 10px 0 0; background: #fff; border: 2px solid var(--ink); border-radius: 8px; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.install p, .backup p { margin: 0; font-size: 14px; flex: 1 1 260px; }
+.backup textarea { width: 100%; font: 500 12px/1.4 var(--font-mono); border: 2px solid var(--ink); border-radius: 6px; padding: 8px; background: var(--paper); resize: vertical; }
+.backup-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+#backup-msg { font-size: 13.5px; color: var(--done); }
+
+/* Day plan */
+.plan { margin: 26px 0 8px; }
+.plan h2 { font: 800 21px/1.2 var(--font-display); margin: 0 0 4px; }
+.plan > p { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+.lanes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 4px 0 12px; }
+.lane { background: #fff; border: 2px solid var(--ink); border-radius: 8px; padding: 9px 12px; border-top-width: 6px; }
+.lane b { display: block; font: 800 15px/1.2 var(--font-display); }
+.lane span { font-size: 13px; color: var(--muted); }
+.lane.core { border-top-color: var(--spine); }
+.lane.coding { border-top-color: var(--code); }
+.lane.light { border-top-color: var(--mcq); }
+.lane.build { border-top-color: var(--done); }
+.rules { margin: 0 0 14px; padding-left: 20px; font-size: 14px; color: var(--muted); max-width: 90ch; display: grid; gap: 4px; }
+.rules b { color: var(--ink); }
+.stages { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 12px; }
+.stage { background: #fff; border: 2px solid var(--ink); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.stage h3 { margin: 0; font: 800 17px/1.2 var(--font-display); display: flex; gap: 8px; align-items: baseline; }
+.stage h3 small { font: 500 12px/1 var(--font-mono); color: var(--muted); white-space: nowrap; }
+.stage .row { display: grid; grid-template-columns: 62px 1fr; gap: 6px; align-items: start; }
+.stage .row b { font: 500 11.5px/1.9 var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.stage .row .note { font-size: 13px; color: var(--muted); }
+.stage .gate { margin: 4px 0 0; padding: 8px 10px; background: var(--node); border: 1.5px solid var(--ink); border-radius: 6px; font-size: 13.5px; }
+.stage .gate b { font-weight: 600; }
+.res { margin: 30px 0 6px; }
+.res h2 { font: 800 21px/1.2 var(--font-display); margin: 0 0 4px; }
+.res > p { margin: 0 0 12px; color: var(--muted); font-size: 14px; max-width: 90ch; }
+.res .seg { flex-wrap: wrap; }
+.res-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; margin-top: 12px; }
+.r-card { background: #fff; border: 2px solid var(--ink); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.r-card a { font-weight: 600; color: var(--ink); text-decoration-color: var(--spine); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.r-card p { margin: 0; font-size: 13.5px; color: var(--muted); }
+.r-card .pills { margin-top: 2px; }
+.kind { font: 500 11px/1 var(--font-mono); text-transform: uppercase; letter-spacing: .04em; padding: 3px 6px; border-radius: 4px; border: 1.5px solid currentColor; width: max-content; }
+.kind.Learn { color: var(--concept); }
+.kind.Practice { color: var(--code); }
+.kind.MCQ { color: var(--mcq); }
+.kind.QA { color: var(--prog); }
+.d-res { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.d-res li { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; align-items: start; }
+.d-res a { font-weight: 600; color: var(--ink); text-decoration-color: var(--spine); text-underline-offset: 3px; font-size: 14.5px; overflow-wrap: anywhere; }
+.d-res p { grid-column: 2; margin: 0; font-size: 13px; color: var(--muted); }
+.pills { display: flex; flex-wrap: wrap; gap: 4px; }
+.pill { min-width: 30px; padding: 2px 6px; border: 1.5px solid var(--ink); border-radius: 5px; background: var(--node); font: 500 12.5px/1.5 var(--font-mono); font-variant-numeric: tabular-nums; }
+.pill.done { background: var(--done-bg); border-color: var(--done); color: var(--done); }
+.pill.progress { background: var(--prog-bg); border-color: var(--prog); color: var(--prog); }
+.day .note { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+/* Roadmap */
+.roadmap { position: relative; padding: 10px 0 60px; }
+.roadmap::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 30px; border-left: 3px solid var(--spine); transform: translateX(-1.5px); }
+.endpoint { position: relative; z-index: 1; margin: 18px auto; width: max-content; max-width: 92%; background: var(--ink); color: #fff; border-radius: 10px; padding: 10px 18px; font: 800 18px/1.2 var(--font-display); text-align: center; }
+.sec { position: relative; }
+.sec-node { position: relative; z-index: 1; margin: 36px auto 16px; width: max-content; max-width: 92%; display: flex; align-items: center; gap: 10px; background: var(--section); border: 2.5px solid var(--ink); border-radius: 9px; padding: 9px 16px; font: 800 20px/1.15 var(--font-display); box-shadow: 4px 4px 0 var(--ink); }
+.sec-node .letter { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--section); font: 800 15px/1 var(--font-display); flex: none; }
+.sec-node .count { font: 500 12.5px/1 var(--font-mono); background: #fff; border: 1.5px solid var(--ink); border-radius: 999px; padding: 4px 8px; font-variant-numeric: tabular-nums; }
+.grid { display: grid; grid-template-columns: 1fr 76px 1fr; row-gap: 10px; }
+.topic { position: relative; display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: var(--node); border: 2px solid var(--ink); border-radius: 7px; padding: 9px 11px; font-weight: 500; font-size: 14.5px; line-height: 1.3; transition: transform .12s, box-shadow .12s, opacity .2s; }
+.topic:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+.topic .num { font: 500 12px/1 var(--font-mono); color: var(--muted); min-width: 20px; font-variant-numeric: tabular-nums; }
+.topic .t { flex: 1; min-width: 0; }
+.topic .mark { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--ink); background: #fff; flex: none; display: grid; place-items: center; font-size: 11px; line-height: 1; }
+.topic.progress { background: var(--prog-bg); }
+.topic.progress .mark { border-color: var(--prog); background: var(--prog); box-shadow: inset 0 0 0 3px #fff; }
+.topic.done { background: var(--done-bg); }
+.topic.done .t { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: rgba(35,121,74,.55); }
+.topic.done .mark { border-color: var(--done); background: var(--done); color: #fff; }
+.topic.done .mark::after { content: "\2713"; font-weight: 700; }
+.topic.dim { opacity: .22; }
+.grid .topic:nth-child(odd) { grid-column: 1; }
+.grid .topic:nth-child(even) { grid-column: 3; }
+.grid .topic:nth-child(odd)::after, .grid .topic:nth-child(even)::before { content: ""; position: absolute; top: 50%; width: 38px; border-top: 2px dashed var(--spine); }
+.grid .topic:nth-child(odd)::after { left: calc(100% + 2px); }
+.grid .topic:nth-child(even)::before { right: calc(100% + 2px); }
+
+/* Drawer */
+.scrim { position: fixed; inset: 0; background: rgba(20,20,26,.38); opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 20; }
+.scrim.open { opacity: 1; pointer-events: auto; }
+.drawer { position: fixed; top: 0; right: 0; height: 100%; width: min(470px, 100%); background: var(--paper); border-left: 2.5px solid var(--ink); z-index: 21; transform: translateX(105%); visibility: hidden; transition: transform .22s ease, visibility 0s linear .22s; overflow-y: auto; padding: 18px 22px 30px; }
+.drawer.open { transform: none; visibility: visible; transition: transform .22s ease, visibility 0s; }
+.d-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.d-sec { font: 500 12.5px/1.3 var(--font-mono); text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.close { border: 2px solid var(--ink); background: #fff; border-radius: 8px; padding: 5px 12px; font-size: 14px; }
+.drawer h2 { font: 800 27px/1.12 var(--font-display); margin: 12px 0 10px; text-wrap: balance; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.tag { font: 500 12px/1 var(--font-mono); border: 1.5px solid var(--ink); border-radius: 999px; padding: 5px 9px; background: #fff; }
+.lvl-desc { margin: 0 0 14px; font-size: 14px; color: var(--muted); }
+.status { display: flex; border: 2px solid var(--ink); border-radius: 8px; overflow: hidden; background: #fff; margin-bottom: 18px; }
+.status button { flex: 1; border: 0; background: transparent; padding: 8px 6px; font-size: 13.5px; font-weight: 500; }
+.status button + button { border-left: 2px solid var(--ink); }
+.status button[aria-pressed="true"][data-s=""] { background: var(--ink); color: #fff; }
+.status button[aria-pressed="true"][data-s="progress"] { background: var(--prog); color: #fff; }
+.status button[aria-pressed="true"][data-s="done"] { background: var(--done); color: #fff; }
+.drawer h3 { font: 800 15.5px/1.2 var(--font-display); margin: 18px 0 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.drawer h3 small { font: 500 12px/1 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.subs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.subs label { display: flex; gap: 10px; align-items: flex-start; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 14.5px; }
+.subs label:hover { background: rgba(23,23,28,.05); }
+.subs input { width: 17px; height: 17px; margin-top: 2px; accent-color: var(--done); flex: none; }
+.subs input:checked + span { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(23,23,28,.35); }
+.check { margin: 0; padding: 10px 12px; background: #fff; border: 2px solid var(--ink); border-left-width: 6px; border-radius: 6px; font-size: 14.5px; }
+.pairs { display: flex; flex-wrap: wrap; gap: 6px; }
+.pairs button { border: 1.5px solid var(--ink); background: var(--node); border-radius: 6px; padding: 5px 9px; font-size: 13.5px; text-align: left; }
+.d-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 24px; }
+.d-nav button { border: 2px solid var(--ink); background: #fff; border-radius: 8px; padding: 7px 12px; font-size: 14px; max-width: 48%; text-align: left; }
+.d-nav button:last-child { text-align: right; }
+.d-nav button:disabled { opacity: .35; cursor: default; }
+footer { color: var(--muted); font-size: 13px; padding: 0 0 calc(40px + env(safe-area-inset-bottom)); }
+body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
+.drawer { padding-top: calc(18px + env(safe-area-inset-top)); padding-bottom: calc(30px + env(safe-area-inset-bottom)); }
+
+@media (max-width: 860px) {
+  .summary { grid-template-columns: 1fr; }
+  .lanes { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 720px) {
+  .legend { grid-template-columns: 1fr; }
+  .stages, .res-list { grid-template-columns: 1fr; }
+  .roadmap::before { left: 15px; }
+  .sec-node, .endpoint { margin-left: 0; }
+  .sec-node { font-size: 18px; }
+  .grid { grid-template-columns: 1fr; padding-left: 38px; }
+  .grid .topic:nth-child(odd), .grid .topic:nth-child(even) { grid-column: 1; }
+  .grid .topic:nth-child(odd)::after { content: none; }
+  .grid .topic:nth-child(odd)::before, .grid .topic:nth-child(even)::before { content: ""; position: absolute; top: 50%; right: calc(100% + 2px); width: 21px; border-top: 2px dashed var(--spine); }
+  .reset { margin-left: 0; }
+  .drawer { padding-top: 18px; top: auto; bottom: 0; height: 88%; width: 100%; border-left: 0; border-top: 2.5px solid var(--ink); border-radius: 14px 14px 0 0; transform: translateY(105%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <p class="kicker">Fresher interview prep &middot; 13 sections &middot; 71 topics &middot; <span id="res-count"></span> free resources</p>
+    <h1>AI Engineer Interview Roadmap</h1>
+    <p class="lede">Every topic an AI/ML engineer fresher interview can test, how deep it gets tested, and where to learn and practise it. Click a topic to see what to cover, its resources, and to mark it done. Progress is saved in this browser.</p>
+    <div class="summary">
+      <div class="card">
+        <div class="prog-head"><strong id="pct">0%</strong><span id="prog-text">0 of 71 done</span></div>
+        <div class="bar" role="progressbar" id="bar" aria-label="Topics done" aria-valuemin="0" aria-valuemax="71" aria-valuenow="0"><i class="b-done" id="bar-done" style="width:0%"></i><i class="b-prog" id="bar-prog" style="width:0%"></i></div>
+      </div>
+      <div class="card legend" id="legend"></div>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Filter by level" id="level-filter">
+        <button type="button" data-level="all" aria-pressed="true">All</button>
+        <button type="button" data-level="code" aria-pressed="false">Coding</button>
+        <button type="button" data-level="concept" aria-pressed="false">Concept</button>
+        <button type="button" data-level="mcq" aria-pressed="false">MCQ</button>
+      </div>
+      <label class="ctl" for="stage-filter">Stage
+        <select id="stage-filter"><option value="all">All stages</option></select>
+      </label>
+      <label class="ctl" for="hide-done"><input type="checkbox" id="hide-done"> Hide done</label>
+      <button type="button" class="reset" id="backup-open">Back up or move progress</button>
+      <button type="button" class="reset slim" id="reset">Reset progress</button>
+    </div>
+    <div class="install" id="install" hidden>
+      <p id="install-text">Add this roadmap to your home screen to open it full screen, even offline.</p>
+      <button type="button" class="reset slim" id="install-btn" hidden>Install app</button>
+    </div>
+    <div class="backup" id="backup" hidden>
+      <p>Your progress is saved only in this browser. To move it to another device or to the installed app, copy this text there and press "Load pasted progress".</p>
+      <label for="backup-text" class="sr">Progress data</label>
+      <textarea id="backup-text" rows="4" spellcheck="false"></textarea>
+      <div class="backup-actions">
+        <button type="button" class="reset slim" id="backup-copy">Copy</button>
+        <button type="button" class="reset slim" id="backup-load">Load pasted progress</button>
+        <button type="button" class="reset slim" id="backup-close">Close</button>
+        <span id="backup-msg" role="status"></span>
+      </div>
+    </div>
+    <section class="plan" aria-labelledby="plan-title">
+      <h2 id="plan-title">How to study: 6 stages, 4 lanes in parallel</h2>
+      <p>There are no fixed days. Each study day you work in all four lanes at once, and you move to the next stage when you pass its "move on when" check. Tap a number to open that topic.</p>
+      <div class="lanes" id="lanes"></div>
+      <ul class="rules">
+        <li>Only the <b>Core</b> lane waits for the check. Coding, Light and Build keep going at their own pace, even across stages.</li>
+        <li>A stage takes as long as you need. Moving on early, before you can pass the check, is what makes interviews go wrong.</li>
+        <li>Every few days, re-take a short quiz on the MCQ topics you already finished, so they stay fresh.</li>
+      </ul>
+      <div class="stages" id="stages"></div>
+    </section>
+    <section class="res" aria-labelledby="res-title">
+      <h2 id="res-title">Practice sites and repos</h2>
+      <p>Checked on 5 Nov 2026: every GitHub repo here exists, is public and was updated recently or holds stable content; the sites were confirmed active in current search results. Repos that hide most answers behind a paywall were left out. Each topic's panel shows the ones that fit it.</p>
+      <div class="seg" role="tablist" aria-label="Resource type" id="res-tabs"></div>
+      <div class="res-list" id="res-list" role="tabpanel"></div>
+    </section>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="roadmap" id="roadmap">
+    <div class="endpoint">Start: AI engineer fresher</div>
+  </div>
+</main>
+<footer class="wrap">Levels: Coding = written live in an editor. Concept = explained and discussed. MCQ = tested with quick questions. Topic numbers match the list from our chat. Resource links checked 5 Nov 2026.</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="d-title">
+  <div class="d-top"><span class="d-sec" id="d-sec"></span><button type="button" class="close" id="d-close">Close</button></div>
+  <h2 id="d-title"></h2>
+  <div class="tags" id="d-tags"></div>
+  <p class="lvl-desc" id="d-lvl"></p>
+  <div class="status" role="group" aria-label="Topic status" id="d-status">
+    <button type="button" data-s="">Not started</button>
+    <button type="button" data-s="progress">In progress</button>
+    <button type="button" data-s="done">Done</button>
+  </div>
+  <h3>What to cover <small id="d-subcount"></small></h3>
+  <ul class="subs" id="d-subs"></ul>
+  <h3>Interview check</h3>
+  <p class="check" id="d-check"></p>
+  <div id="d-res-wrap">
+    <h3>Where to learn and practise <small id="d-rescount"></small></h3>
+    <ul class="d-res" id="d-res"></ul>
+  </div>
+  <div id="d-pairs-wrap">
+    <h3>Learn together with</h3>
+    <div class="pairs" id="d-pairs"></div>
+  </div>
+  <div class="d-nav"><button type="button" id="d-prev"></button><button type="button" id="d-next"></button></div>
+</aside>
+
+<script>window.PWA_BUILD = true;</script>
+<script>
+const SECTIONS = [["A","Python"],["B","DSA"],["C","REST API"],["D","Maths"],["E","Data"],["F","Machine learning"],["G","Deep learning"],["H","GenAI and LLMs"],["I","Databases"],["J","CS fundamentals"],["K","Tools and deployment"],["L","System design"],["M","Others"]];
+const LEVELS = {
+  code: { label: "Coding", desc: "Live coding: you must write this from a blank editor, with no AI help.", short: "You write it live in an editor, with no AI help." },
+  concept: { label: "Concept", desc: "Concept: you explain it clearly and reason about code you are shown.", short: "You explain it clearly and reason about code you are shown." },
+  mcq: { label: "MCQ", desc: "MCQ level: you recognise it and answer quick questions correctly.", short: "You recognise it and answer quick questions correctly." }
+};
+const T = [
+[1,"A","Basics and setup","mcq","1","Core","Explain how Python runs your code and answer basic syntax questions.",["What Python is: interpreted, dynamically typed, high-level","Installing Python; versions 3.14 and 3.15","REPL vs running a `.py` script; `python -m module`","Indentation defines blocks","Comments and docstrings","Variables and naming rules (PEP 8 style)","`print()` and `input()`","Keywords and `None`"]],
+[2,"A","Data types and operators","mcq","1","Core","Predict results like `-7 // 2`, `0.1 + 0.2`, `'a' or 'b'` and `1 < x < 5`.",["`int`, `float`, `complex`, `bool`, `str`, `None`","`type()` vs `isinstance()`","Type conversion: `int()`, `float()`, `str()`, `bool()`","Truthy and falsy values","Arithmetic: `/`, `//`, `%`, `**`; floor division with negatives","Comparison and chained comparison","`and` / `or` / `not`: short-circuiting and returning operands","Bitwise operators: `&`, `|`, `^`, `~`, `<<`, `>>`","Identity (`is`) vs equality (`==`); membership (`in`)","Operator precedence","Float precision: why `0.1 + 0.2 != 0.3`"]],
+[3,"A","Strings","code","1","Core","Reverse words, check a palindrome or anagram, and find the first non-repeating character.",["Indexing and negative indexing","Slicing with a step; `s[::-1]`","Strings are immutable","Methods: `split`, `join`, `strip`, `replace`, `count`","`find` (returns -1) vs `index` (raises an error)","`startswith`, `endswith`, `upper`, `lower`, `isdigit`, `isalpha`","f-strings and format specs: `{x:.2f}`, `{x:>10}`","Escape sequences and raw strings `r'...'`","Multiline strings","Unicode, `encode` / `decode`, `bytes`","Build strings with `''.join(parts)`, not `+=` in a loop"]],
+[4,"A","Control flow and loops","code","1","Core","Write loops with `enumerate` and `zip`, and say when a loop's `else` runs.",["`if` / `elif` / `else`","Conditional expression: `a if cond else b`","`match` / `case` (3.10+)","`for` over any iterable","`while` loops","`range(start, stop, step)`","`break`, `continue`, `pass`","`else` on `for` and `while`","`enumerate` and `zip`","Nested loops and their cost"]],
+[5,"A","Data structures","code","1","Core","Pick the right structure, state its Big-O, and solve counting and grouping tasks live.",["list: `append` vs `extend`, `insert`, `pop`, `remove`","`sort()` vs `sorted()`; sorting with `key=`","tuple: `(1,)`, unpacking, `first, *rest = items`","set: `&`, `|`, `-`, `^`; `add`, `discard` vs `remove`","dict: `get`, `setdefault`, `items`, `update`, merge with `|`","dict keeps insertion order; keys must be hashable","List, dict and set comprehensions","`collections`: `Counter`, `defaultdict`, `deque`, `namedtuple`","`heapq` and `bisect`","Big-O of each operation (`x in list` vs `x in set`)","Trap: `[[0]*3]*3` shares one inner list"]],
+[6,"A","Functions","code","1","Core","Write a retry decorator, and explain closures and the mutable default trap.",["`def`, `return`, returning several values","Positional, keyword and default arguments","Mutable default argument trap","`*args` and `**kwargs`; unpacking at the call site","Keyword-only (`*`) and positional-only (`/`) parameters","Scope rules (LEGB), `global`, `nonlocal`","`lambda`","Functions as objects; higher-order functions","`map`, `filter`, `functools.reduce`","Recursion and the recursion limit","Closures","Decorators, `functools.wraps`, decorators with arguments","`functools.partial` and `lru_cache`"]],
+[7,"A","Iterators and generators","code","1","Core","Write a batching generator and explain why generators save memory.",["Iterable vs iterator","`iter()`, `next()`, `StopIteration`","`__iter__` and `__next__`","How a `for` loop works underneath","Generators with `yield`","Generator expressions vs list comprehensions","A used-up generator returns nothing","`yield from`","`itertools`: `chain`, `islice`, `groupby`, `product`, `permutations`, `combinations`"]],
+[8,"A","Error handling","code","1","Core","Handle errors cleanly and write a custom exception.",["`try` / `except` / `else` / `finally`","Catch specific exceptions; several `except` blocks","`raise` and re-raise","Chaining: `raise ... from err`","Custom exception classes","Hierarchy: `BaseException` vs `Exception`","`assert`","Common errors: `KeyError`, `IndexError`, `TypeError`, `ValueError`, `AttributeError`","EAFP vs LBYL style","`ExceptionGroup` and `except*` (3.11+)"]],
+[9,"A","Files and data formats","code","1","Core","Read a JSON or CSV file, transform it, and write the result safely with `with`.",["`open()` modes: `r`, `w`, `a`, `rb`, `wb`","The `with` statement","`read`, `readline`, looping over lines","Text vs binary; encodings","`pathlib.Path` and `os.path`","`json`: `load`, `loads`, `dump`, `dumps`","`csv`: `reader`, `writer`, `DictReader`","`pickle`, and why you never unpickle untrusted data","Context managers: `__enter__` / `__exit__`, `contextlib.contextmanager`"]],
+[10,"A","Classes and objects","code","2","Core","Design a small class (stack, LRU cache, bank account) and explain classmethod vs staticmethod.",["`class`, objects, `__init__`, `self`","Instance vs class attributes","Instance methods, `@classmethod`, `@staticmethod`","`@property` getters and setters","Inheritance, `super()`, overriding","Multiple inheritance and MRO","Polymorphism and duck typing","`_protected` and `__name` mangling","Dunder methods: `__str__`, `__repr__`, `__eq__`, `__hash__`, `__len__`, `__getitem__`, `__iter__`, `__call__`","Operator overloading","Abstract classes with `abc`","`@dataclass` and `Enum`","Composition vs inheritance"]],
+[11,"A","Modules, packages and environment","concept","2","Core","Explain how imports work, what `__main__` does, and how you manage dependencies.",["`import`, `from ... import`, aliases","Modules vs packages; `__init__.py`","`if __name__ == '__main__':`","How Python finds imports (`sys.path`)","Standard library: `os`, `sys`, `math`, `random`, `datetime`, `time`, `re`, `logging`, `argparse`, `subprocess`","`pip` and `requirements.txt`","Virtual environments with `venv`","`uv` and `conda`","`pyproject.toml`"]],
+[12,"A","Memory and internals","concept","2","Core","Explain shallow vs deep copy, `is` vs `==`, and what the GIL means.",["Everything is an object; names are references","Mutable vs immutable","`is` vs `==`; `id()`","Shallow vs deep copy (`copy` module)","Reference counting","Garbage collector and reference cycles","Small int and string interning","CPython, bytecode, the `dis` module","The GIL","Free-threaded (no-GIL) build and the experimental JIT"]],
+[13,"A","Concurrency and async","concept","2","Core","Say when to use threads, processes or asyncio, and write `asyncio.gather` with a Semaphore.",["Concurrency vs parallelism","I/O-bound vs CPU-bound work","`threading`: `Thread`, `Lock`","`multiprocessing`: `Process`, `Pool`","`concurrent.futures`: thread and process pools","How the GIL affects each","The asyncio event loop","`async def` and `await`","`asyncio.gather` and `create_task`","`asyncio.Semaphore` to cap concurrent calls","`time.sleep` blocks the loop; use `asyncio.sleep`","Race conditions and deadlocks"]],
+[14,"A","Type hints","mcq","2","Core","Read type hints fluently and write a pydantic model (you use it again in topic 29).",["Annotating variables, parameters and returns","`list[int]`, `dict[str, int]`","`Optional` and `X | None`; `Union`; `Any`","`Callable` and `TypedDict`","`Protocol`, `TypeVar` and generics","Checking with `mypy`","pydantic models and validation"]],
+[15,"A","Testing and code quality","concept","2","Core","Write a few pytest tests and use logging instead of print.",["`unittest` basics","pytest: test functions, `assert`, fixtures, `parametrize`","Mocking with `unittest.mock`","Debugging with `pdb` / `breakpoint()`","`logging` vs `print`","PEP 8 style","`ruff` for linting and formatting","`timeit` and `cProfile`"]],
+[16,"B","Big-O complexity","concept","1","Coding","State the time and space complexity of any solution you write.",["Time vs space complexity","O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ)","Best, average and worst case","Counting loops and nested loops","Complexity of recursion","Amortised O(1): `list.append`","Big-O of Python built-ins"]],
+[17,"B","Arrays and hashing","code","1","Coding","Solve two-sum, group anagrams and top-k frequent in one pass with a hash map.",["Frequency counting with a dict or `Counter`","Two-sum with a hash map","Contains duplicate","Group anagrams","Top-k frequent elements","Prefix sums","Product of array except self","Longest consecutive sequence"]],
+[18,"B","Two pointers and sliding window","code","1","Coding","Spot when a sorted-array or substring problem needs two pointers or a window.",["Two pointers on a sorted array","Valid palindrome","3-sum","Container with most water","Fixed-size sliding window","Variable-size sliding window","Longest substring without repeating characters","Best time to buy and sell stock"]],
+[19,"B","Stack and queue","code","2","Coding","Solve valid parentheses and next-greater-element with a stack.",["Stack with a list","Queue with `collections.deque`","Valid parentheses","Min stack","Monotonic stack: next greater element, daily temperatures","Evaluate reverse Polish notation","Queue using two stacks"]],
+[20,"B","Binary search","code","2","Coding","Write bug-free binary search, including the boundary cases.",["Classic binary search","Lower and upper bound","The `bisect` module","Search in a rotated sorted array","Minimum of a rotated array","Binary search on the answer (e.g. Koko eating bananas)"]],
+[21,"B","Linked list","code","2","Coding","Reverse a linked list and detect a cycle.",["Node class; traversal, insert, delete","Reverse a linked list","Merge two sorted lists","Detect a cycle (fast and slow pointers)","Middle of the list","Remove the nth node from the end"]],
+[22,"B","Trees","code","3","Coding","Write DFS and BFS traversals and validate a BST.",["Binary tree node","DFS: preorder, inorder, postorder","BFS level-order traversal","Maximum depth","Invert a tree","Same tree and subtree","BST: search, insert, validate","Lowest common ancestor"]],
+[23,"B","Heap","code","3","Coding","Find the kth largest element and the top-k items with `heapq`.",["`heapq`: `heappush`, `heappop`, `heapify`","Min-heap vs max-heap (negate values)","Kth largest element","Top-k frequent","Merge k sorted lists","Median of a data stream (two heaps)"]],
+[24,"B","Graphs (BFS, DFS)","code","4","Coding","Count islands with BFS or DFS and explain topological sort.",["Adjacency list vs matrix","BFS with `deque`","DFS, recursive and iterative","Visited sets","Number of islands","Shortest path in an unweighted graph","Topological sort","Cycle detection","Dijkstra (the idea)"]],
+[25,"B","Recursion and backtracking","code","4","Coding","Generate subsets and permutations with backtracking.",["Base case and recursive case","Drawing the recursion tree","Subsets","Permutations","Combination sum","Word search","N-Queens (the idea)"]],
+[26,"B","Dynamic programming basics","code","5","Coding","Solve climbing stairs, house robber and coin change, top-down and bottom-up.",["Overlapping subproblems and optimal substructure","Memoisation (`lru_cache`) vs tabulation","Climbing stairs","House robber","Coin change","Longest common subsequence","0/1 knapsack (the idea)"]],
+[27,"B","Sorting algorithms","concept","5","Coding","Explain merge sort and quick sort, their complexities, and stability.",["Bubble, selection and insertion sort","Merge sort","Quick sort","Time and space complexity of each","Stable vs unstable sorts","Python's `sorted`: Timsort (merge policy updated to Powersort in 3.11), and `key=`","Counting sort (the idea)"]],
+[28,"C","HTTP and REST concepts","concept","3","Core","Explain HTTP methods, status codes, idempotency and API authentication.",["Client and server; request and response","Methods: GET, POST, PUT, PATCH, DELETE","Status codes: 200, 201, 204, 400, 401, 403, 404, 422, 429, 500","Headers, path params, query params, body","JSON payloads","REST principles: resources, statelessness","Idempotency","Auth: API keys, Bearer tokens, JWT, OAuth (the idea)","CORS","Rate limiting","Streaming: Server-Sent Events vs WebSockets"]],
+[29,"C","FastAPI and pydantic","code","3","Core","Build a POST endpoint with a pydantic body, validation and a response model.",["Create an app; path operations","Path and query parameters","Request bodies with pydantic models","`response_model`","Validation errors (422)","Dependencies with `Depends`","`async` endpoints","Streaming responses","`HTTPException` and error handling","Background tasks","Automatic docs at `/docs`","Running with `uvicorn`"]],
+[30,"C","Calling APIs (requests, httpx)","code","3","Core","Call an API with a timeout, retries with backoff, and JSON parsing.",["`requests.get` / `requests.post`","`httpx` sync and async clients","Headers and auth","Timeouts","`raise_for_status()`","Retries with exponential backoff","Parsing JSON responses","Handling 429 rate limits","Many calls at once: `asyncio.gather` + Semaphore"]],
+[31,"D","Linear algebra basics","concept","3","Core","Explain dot product, cosine similarity and matrix shapes.",["Scalars, vectors, matrices, tensors","Vector operations","Dot product and cosine similarity","Matrix multiplication and shape rules","Transpose","Norms: L1 and L2","Identity and inverse (the idea)","Eigenvalues and eigenvectors (the idea, for PCA)"]],
+[32,"D","Probability and statistics","concept","3","Core","Explain mean vs median, a p-value, Bayes' theorem and an A/B test.",["Mean, median, mode","Variance and standard deviation","Probability and conditional probability","Bayes' theorem","Distributions: normal, binomial, uniform","Central limit theorem","Correlation vs causation","Hypothesis testing and p-values","A/B testing","Confidence intervals (the idea)"]],
+[33,"E","NumPy","code","3","Core","Vectorise a loop and predict the shape of a broadcast result.",["`ndarray`, `dtype`, `shape`","Creating arrays: `array`, `zeros`, `ones`, `arange`, `linspace`","Indexing, slicing, boolean masks","`reshape`, `flatten`, transpose","Broadcasting rules","Vectorised operations vs loops","Aggregations with `axis`","Matrix multiply with `@`","`np.random`"]],
+[34,"E","pandas","code","3","Core","Clean a dataset: fix types, fill nulls, filter, group and merge.",["Series and DataFrame","`read_csv` and `to_csv`","`head`, `info`, `describe`","Selecting with `loc` and `iloc`","Boolean filtering","Missing values: `isna`, `fillna`, `dropna`","`groupby` and `agg`","`merge`, `join`, `concat`","`apply` vs vectorised operations","Sorting and `value_counts`","Dates and times"]],
+[35,"E","Data visualisation","mcq","3","Core","Pick the right chart for a comparison, a trend or a distribution.",["matplotlib: line, bar, scatter, histogram","Subplots","seaborn (the idea)","Choosing the right chart"]],
+[36,"F","ML fundamentals","concept","4","Core","Explain overfitting, bias vs variance, cross-validation and data leakage.",["Supervised, unsupervised, reinforcement learning","Features and labels","Train, validation and test splits","Overfitting and underfitting","Bias–variance trade-off","Cross-validation","Data leakage","Regularisation: L1 and L2","Gradient descent: batch, SGD, mini-batch","Feature scaling","Class imbalance"]],
+[37,"F","ML algorithms","concept","4","Core","Explain how each algorithm works and when to use it; code one from scratch.",["Linear regression","Logistic regression","K-nearest neighbours","Decision trees","Random forest (bagging)","Gradient boosting, XGBoost (boosting)","SVM (the idea)","Naive Bayes","K-means clustering","PCA","From scratch in NumPy: logistic regression or k-means"]],
+[38,"F","Evaluation metrics","concept","4","Core","Choose a metric for an imbalanced problem and read a confusion matrix.",["Confusion matrix","Accuracy, precision, recall, F1","ROC curve and AUC","PR-AUC for imbalanced data","MAE, MSE, RMSE, R²","Threshold tuning","Choosing the metric for the problem"]],
+[39,"F","scikit-learn workflow","code","4","Core","Build a Pipeline with preprocessing, train it, and report F1 on a test set.",["`train_test_split`","`fit`, `predict`, `predict_proba`","`StandardScaler`, `OneHotEncoder`","`Pipeline` and `ColumnTransformer`","`cross_val_score`","`GridSearchCV`","Feature importance","Saving models with `joblib`"]],
+[40,"G","Neural network basics","concept","4","Core","Explain backpropagation, activations, loss functions and optimisers.",["Neuron: weights and bias","Activations: ReLU, sigmoid, tanh, softmax","Forward pass","Loss: MSE, cross-entropy","Backpropagation and the chain rule","Optimisers: SGD, Adam","Learning rate, epochs, batch size","Vanishing and exploding gradients","Dropout and batch normalisation","Early stopping"]],
+[41,"G","CNN, RNN and LSTM","concept","4","Core","Explain what CNNs and RNNs are good at, and why transformers replaced RNNs.",["Convolution, filters, pooling","CNN use cases: images","RNNs and sequence data","LSTM and GRU gates (the idea)","Why transformers replaced RNNs","Transfer learning"]],
+[42,"G","PyTorch basics","code","4","Core","Write a minimal PyTorch training loop.",["Tensors and devices (CPU / GPU)","Autograd","`nn.Module`","`Dataset` and `DataLoader`","Training loop: `zero_grad`, forward, loss, `backward`, `step`","`model.train()` vs `model.eval()`; `torch.no_grad()`","Saving and loading a `state_dict`"]],
+[43,"H","NLP basics (tokens, embeddings)","concept","5","Core","Explain tokens, embeddings, and how cosine similarity finds similar text.",["Text preprocessing","Tokenisation: word vs subword (BPE)","Bag of words and TF-IDF","Word embeddings (word2vec, the idea)","Sentence embeddings","Cosine similarity","Tasks: classification, NER, summarisation"]],
+[44,"H","Transformers and attention","concept","5","Core","Explain self-attention with query, key and value, and encoder vs decoder.",["Self-attention: query, key, value","Multi-head attention","Positional encoding","Encoder vs decoder","BERT vs GPT vs T5","Why attention cost grows with length squared","Pretraining vs fine-tuning"]],
+[45,"H","How LLMs generate","concept","5","Core","Explain temperature, top-p, context windows, and why LLMs hallucinate.",["Next-token prediction","Context window and its limits","Tokens, cost and latency","Temperature, top-p, top-k","Greedy decoding vs sampling","KV cache (the idea)","Hallucination: causes and fixes","Mixture of experts (the idea)","Reasoning models (the idea)"]],
+[46,"H","Prompt engineering and structured output","concept","5","Core","Write a prompt that returns valid JSON, and recover when it doesn't.",["System vs user prompts","Zero-shot and few-shot","Chain-of-thought","Roles and constraints","Structured output: JSON with a schema","Validating output and retrying","Prompt templates and versioning"]],
+[47,"H","LLM APIs","code","5","Core","Call an LLM API with streaming, retries and token counting.",["OpenAI, Anthropic and Gemini Python SDKs","The messages format","Streaming responses","Token usage and cost tracking","Errors, retries, rate limits","OpenAI-compatible endpoints; local models (Ollama, llama.cpp)","API keys in environment variables"]],
+[48,"H","RAG","code","5","Core","Build a RAG pipeline end to end and explain your chunking and retrieval choices.",["Why RAG","Load → chunk → embed → index → retrieve → generate","Chunk size and overlap","Choosing an embedding model","Top-k similarity search","Hybrid search: BM25 + vectors","Reranking","Citations and grounding","PDFs and tables","Failure modes: bad retrieval, lost in the middle"]],
+[49,"H","Vector databases","concept","5","Core","Explain approximate nearest-neighbour search and compare vector databases.",["What a vector database stores","Exact vs approximate nearest neighbour","HNSW and IVF (the idea)","FAISS, Chroma, Qdrant, Pinecone, pgvector","Metadata filtering","Vector DB vs SQL database"]],
+[50,"H","LangChain, LangGraph, LlamaIndex","concept","5","Core","Explain what each framework adds and when plain Python is better.",["What each framework is for","LangChain: models, prompts, chains, retrievers","LangGraph: state, nodes and edges for agents","LlamaIndex: indexes and query engines","Framework vs plain code"]],
+[51,"H","Agents and tool calling","code","5","Core","Write a tool-calling agent loop with a step limit and error handling.",["Agent = LLM + tools + loop","Function / tool calling with JSON schemas","ReAct pattern","Step limits and stopping","Short-term and long-term memory","Multi-agent setups","MCP (Model Context Protocol), the idea","Handling bad tool calls"]],
+[52,"H","Evaluating LLM apps","code","5","Core","Build a small eval set and measure retrieval recall and answer faithfulness.",["Golden test sets","Retrieval metrics: recall@k, MRR","Answer quality: faithfulness, relevance, correctness","LLM-as-judge and its pitfalls","Latency and cost per query","Regression tests for prompt changes","Tools: RAGAS, DeepEval (the idea)"]],
+[53,"H","Fine-tuning and quantisation","concept","5","Core","Explain LoRA and quantisation, and when fine-tuning beats RAG.",["Fine-tuning vs RAG vs prompting","Full fine-tuning vs LoRA / QLoRA","Instruction tuning; RLHF and DPO (the idea)","Quantisation: 8-bit, 4-bit, GGUF","Trade-offs: memory, speed, quality"]],
+[54,"H","Guardrails and prompt injection","concept","5","Core","Explain prompt injection and how you'd defend an agent that reads web pages.",["Direct and indirect prompt injection","Jailbreaks","Input and output filtering","Tool permissions and human approval","PII handling","AI ethics: bias and fairness"]],
+[55,"H","LLMOps","concept","5","Core","Explain how you'd monitor the quality, latency and cost of an LLM app.",["Logging prompts and responses","Monitoring quality, latency and cost","Caching","Fallbacks and model routing","Versioning prompts and models","Deploying LLM apps"]],
+[56,"I","SQL queries","code","1","Light","Write joins, GROUP BY with HAVING, and top-N per group with window functions.",["`SELECT`, `WHERE`, `ORDER BY`, `LIMIT`","`COUNT`, `SUM`, `AVG`, `MIN`, `MAX`","`GROUP BY` and `HAVING`","Joins: inner, left, right, full, self","Subqueries and CTEs (`WITH`)","Window functions: `ROW_NUMBER`, `RANK`, `DENSE_RANK`, `LAG`, `LEAD`","`CASE WHEN`","`NULL` handling","`INSERT`, `UPDATE`, `DELETE`","Classics: second-highest salary, duplicates, top-N per group"]],
+[57,"I","DBMS concepts","concept","3","Light","Explain ACID, normalisation up to 3NF, and how an index speeds up queries.",["Keys: primary, foreign, candidate, composite","Normalisation: 1NF, 2NF, 3NF, BCNF","ACID properties","Transactions: commit and rollback","Isolation levels (the idea)","Indexes and B-trees","SQL vs NoSQL","ER diagrams (the idea)"]],
+[58,"J","OOP principles","concept","2","Core","Explain the four OOP pillars with examples from your own code.",["Encapsulation, abstraction, inheritance, polymorphism","Class vs object","Overloading vs overriding","Composition vs inheritance","SOLID principles (basic)","Design patterns: singleton, factory (the idea)"]],
+[59,"J","Operating systems","mcq","2","Light","Answer MCQs on processes, threads, scheduling, deadlock and paging.",["Process vs thread","Process states","CPU scheduling: FCFS, SJF, round robin, priority","Context switching","Deadlock: four conditions, prevention","Mutex and semaphore","Paging, segmentation, virtual memory","Thrashing"]],
+[60,"J","Computer networks","mcq","3","Light","Answer MCQs on OSI and TCP/IP layers, TCP vs UDP, DNS and HTTPS.",["OSI model (7 layers) vs TCP/IP model","TCP vs UDP","Three-way handshake","IP addresses; subnetting (the idea)","How a DNS lookup works","HTTP vs HTTPS; TLS","Common ports: 22, 80, 443","What happens when you type a URL"]],
+[61,"K","Git and GitHub","mcq","4","Light","Know merge vs rebase, reset vs revert, stash, and how to resolve conflicts.",["`init`, `clone`, `add`, `commit`, `push`, `pull`","Branches; merge vs rebase","Merge conflicts","`stash`","`reset` vs `revert`","`.gitignore`","Pull requests and code review","A clean README and repo"]],
+[62,"K","Linux and the shell","mcq","4","Light","Use common shell commands for files, search, permissions and processes.",["Navigation: `ls`, `cd`, `pwd`","Files: `cp`, `mv`, `rm`, `mkdir`, `cat`, `less`","Search: `grep`, `find`","Permissions: `chmod`, `chown`","Processes: `ps`, `top`, `kill`","Pipes and redirection","Environment variables","`ssh` and `scp`"]],
+[63,"K","Docker","code","5","Build","Write a Dockerfile for a FastAPI app and run it on the right port.",["Image vs container","Dockerfile: `FROM`, `WORKDIR`, `COPY`, `RUN`, `CMD`, `EXPOSE`","`docker build` and `docker run`","Ports and volumes","Environment variables","Docker Compose","Small images; `.dockerignore`","Containerising a FastAPI app"]],
+[64,"K","Kubernetes basics","mcq","6","Light","Explain pod, deployment and service, and why orchestration exists.",["Why orchestration","Pod, Deployment, Service","ReplicaSets and scaling","ConfigMap and Secret","Ingress (the idea)","`kubectl` basics"]],
+[65,"K","Cloud basics (AWS)","concept","6","Build","Explain EC2, S3, Lambda and IAM, and how you'd deploy a container.",["IaaS, PaaS, SaaS","Regions and availability zones","EC2, S3, Lambda, RDS","IAM roles and permissions","Deploying a container (ECS, App Runner, Cloud Run), the idea","GPU instances for AI","Managed AI: Bedrock, SageMaker (the idea)"]],
+[66,"K","CI/CD basics","mcq","6","Build","Read a GitHub Actions workflow that runs tests on every push.",["Continuous integration vs delivery vs deployment","GitHub Actions workflow files","Running tests and lint on push","Building and pushing Docker images","Secrets in CI"]],
+[67,"L","System design basics","concept","6","Core","Explain load balancing, caching, scaling, and SQL vs NoSQL choices.",["Client–server architecture","Vertical vs horizontal scaling","Load balancers","Caching (Redis)","Replication and sharding (the idea)","Message queues (the idea)","CAP theorem (the idea)","Rate limiting","API design"]],
+[68,"L","Designing an LLM app","concept","6","Core","Design a chatbot over company documents: ingestion, retrieval, cost, latency and evaluation.",["Chatbot over company documents, end to end","Ingestion pipeline","Retrieval and generation","Streaming responses","Caching and cost control","Latency budget","Evaluation and monitoring","Guardrails","Scaling to many users"]],
+[69,"M","Aptitude and reasoning","mcq","Daily","Daily","Solve aptitude and reasoning questions quickly and accurately.",["Percentages, ratios, averages","Profit and loss","Time, speed and distance","Time and work","Probability, permutations and combinations","Number series","Logical reasoning: blood relations, seating, syllogisms","Data interpretation"]],
+[70,"M","Project discussion and HR","concept","6","Core","Explain each project in 2 minutes, then handle deep follow-up questions.",["Each project end to end in 2 minutes","Architecture and design choices","Hardest bug and how you fixed it","Metrics and results","What you'd improve next","Tell me about yourself","Strengths and weaknesses","Why this company"]],
+[71,"M","Frontend basics (optional)","mcq","Optional","Optional","Answer basics on JavaScript and React, and read simple component code.",["HTML and CSS basics","JavaScript: `let` / `const`, functions, `async` / `await`, `fetch`","DOM basics","React: components, props, state","Hooks: `useState`, `useEffect`","Calling your own API from React"]]
+];
+const PAIRS = {10:[58],58:[10],12:[59,13],13:[59,30],59:[12,13],28:[60,30],60:[28],29:[28,30],30:[28,13,47],31:[33,43],33:[31,43],43:[31,33],32:[34,38],34:[32],38:[32],40:[42],42:[40],44:[45],45:[44],47:[30,51],48:[49,52],49:[56,48],50:[51],51:[50,47],52:[48],56:[57,49],57:[56],61:[62],62:[61,63],63:[62,65],65:[63,66],66:[65,64],64:[66],67:[68],68:[67,48]};
+const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+const LANES = [
+  ["core", "Core", "About half of each study day. The main subject; moves only after the stage check."],
+  ["coding", "Coding", "About a quarter. DSA problems every day, in pattern order."],
+  ["light", "Light", "A small daily dose of one CS or tools subject."],
+  ["build", "Build", "One project that grows as the Core lane reaches each part."]
+];
+const STAGES = [
+  { n: "1", name: "Python core", core: range(1, 9), coding: [16, 17, 18], light: [56], build: [], buildNote: "Set up Git, a virtual environment and one repo for all your practice code.",
+    gate: "you can write the string, list and dict tasks, a decorator and a generator from a blank file; solve easy hashing and two-pointer problems alone; and write a JOIN with GROUP BY." },
+  { n: "2", name: "Python depth", core: range(10, 15).concat([58]), coding: [19, 20, 21], light: [59], build: [], buildNote: "Add pytest tests to your practice code.",
+    gate: "you can design a small class and explain copying, scope, the GIL and async; solve easy and medium stack, binary search and linked-list problems; and do well on an OS quiz." },
+  { n: "3", name: "Web, maths and data", core: range(28, 35), coding: [22, 23], light: [57, 60], build: [29, 30, 47], buildNote: "Start the project: a FastAPI app that calls an LLM API.",
+    gate: "you can build a validated FastAPI endpoint, clean a dataset in pandas, and explain dot product and p-values; and solve tree and heap problems." },
+  { n: "4", name: "ML and deep learning", core: range(36, 42), coding: [24, 25], light: [61, 62], build: [43, 49], buildNote: "Add embeddings and similarity search to the project.",
+    gate: "you can train and evaluate an sklearn pipeline without leakage, explain the metrics and bias vs variance, and write a PyTorch training loop; and solve BFS/DFS and backtracking basics." },
+  { n: "5", name: "GenAI", core: range(43, 55), coding: [26, 27], light: [63], build: [48, 51, 52, 63], buildNote: "Turn the project into RAG plus an agent, with an eval set and a Dockerfile.",
+    gate: "your project runs in Docker with eval numbers you can explain, and you answer LLM, RAG and agent questions without notes." },
+  { n: "6", name: "Ship and design", core: [67, 68, 70], coding: [], codingNote: "Timed, mixed problems from every pattern, as in a real round.", light: [64], build: [65, 66], buildNote: "Deploy the project and add CI.",
+    gate: "your project is deployed with CI, you can design an LLM app in 30 minutes, and you can tell each project's story in 2 minutes." }
+];
+const KINDS = { Learn: "Learn", Practice: "Coding practice", MCQ: "MCQ practice", QA: "Interview Q&A" };
+/* Resources: [name, url, kind, note, topic ids]. Repos and sites checked 5 Nov 2026. */
+const RES = [
+["Python official tutorial","https://docs.python.org/3/tutorial/","Learn","The official tutorial, free.",[1,2,3,4,5,6,7,8,9,10,11]],
+["Real Python","https://realpython.com/","Learn","In-depth articles on decorators, generators, asyncio and more.",[6,7,10,12,13,15,30]],
+["CS50P (Harvard)","https://cs50.harvard.edu/python/","Learn","Free Python course with problem sets.",[1,2,3,4,5,6,8,9,10,15]],
+["trekhleb/learn-python","https://github.com/trekhleb/learn-python","Learn","Runnable example scripts for each topic.",[1,2,3,4,5,6,7,8,9,10,11]],
+["learning-zone/python-basics","https://github.com/learning-zone/python-basics","QA","About 340 Python interview questions with answers, by topic.",[2,5,6,7,8,9,10,11,12,13,14,15,58]],
+["satwikkansal/wtfpython","https://github.com/satwikkansal/wtfpython","MCQ","Surprising snippets with explanations: predict-the-output practice.",[2,3,5,6,12]],
+["PYnative Python exercises","https://pynative.com/python-exercises-with-solutions/","Practice","570+ topic-wise coding questions with solutions.",[1,2,3,4,5,6,7,8,9,10,34]],
+["PYnative Python quizzes","https://pynative.com/python/quizzes/","MCQ","Topic quizzes with 25 MCQs each.",[1,2,3,4,5,6,8,9]],
+["Exercism Python track","https://exercism.org/tracks/python","Practice","146 exercises with free mentor feedback.",[3,4,5,6,7,8,10]],
+["HackerRank Python","https://www.hackerrank.com/domains/python","Practice","Practice track, plus a free Python (Basic) skill certificate test.",[1,2,3,4,5,6,7,8]],
+["NeetCode roadmap","https://neetcode.io/roadmap","Practice","The free NeetCode 150 list, ordered by pattern, with video solutions.",[16,17,18,19,20,21,22,23,24,25,26]],
+["Striver's A2Z DSA sheet","https://takeuforward.org/dsa/strivers-a2z-sheet-learn-dsa-a-to-z","Practice","474 problems from basics to advanced, free, with progress tracking.",[16,17,18,19,20,21,22,23,24,25,26,27]],
+["seanprashad/leetcode-patterns","https://github.com/seanprashad/leetcode-patterns","Practice","LeetCode problems grouped by pattern.",[17,18,19,20,22,23,24,25,26]],
+["LeetCode problem set","https://leetcode.com/problemset/","Practice","Where you solve the problems from the lists above.",[17,18,19,20,21,22,23,24,25,26]],
+["yangshun/tech-interview-handbook","https://github.com/yangshun/tech-interview-handbook","Learn","Coding-interview cheatsheets, study plans and behavioural prep.",[16,17,18,19,20,21,22,23,24,25,26,70]],
+["Coding patterns (Chanda-Abdul)","https://github.com/Chanda-Abdul/Several-Coding-Patterns-for-Solving-Data-Structures-and-Algorithms-Problems-during-Interviews","Learn","Each DSA pattern explained with worked problems.",[17,18,19,20,23,24,25,26]],
+["TheAlgorithms/Python","https://github.com/TheAlgorithms/Python","Learn","Reference implementations: sorting, graphs, DP, ML basics.",[21,22,24,26,27,37]],
+["GeeksforGeeks Quiz Corner","https://www.geeksforgeeks.org/quiz-corner-gq/","MCQ","Topic MCQs on DSA, OS, DBMS, networks, Python and aptitude.",[16,27,57,59,60,69]],
+["MDN: HTTP","https://developer.mozilla.org/en-US/docs/Web/HTTP","Learn","HTTP methods, status codes, headers and CORS.",[28,60]],
+["FastAPI tutorial","https://fastapi.tiangolo.com/tutorial/","Learn","The official step-by-step tutorial.",[29,14]],
+["HTTPX docs","https://www.python-httpx.org/","Learn","Sync and async HTTP client for Python.",[30,13]],
+["3Blue1Brown","https://www.3blue1brown.com/","Learn","Visual series on linear algebra and neural networks.",[31,40]],
+["StatQuest: machine learning playlist","https://www.youtube.com/playlist?list=PLblh5JKOoLUICTaGLRoHQDuF_7q2GfuJF","Learn","Statistics and ML algorithms explained step by step.",[32,36,37,38,40]],
+["Khan Academy: statistics and probability","https://www.khanacademy.org/math/statistics-probability","Learn","Free lessons with practice questions.",[32]],
+["Probability interview questions","https://github.com/alexeygrigorev/data-science-interviews/blob/master/contrib/probability.md","QA","Community-answered probability questions.",[32]],
+["rougier/numpy-100","https://github.com/rougier/numpy-100","Practice","100 NumPy exercises with solutions.",[33,31]],
+["Kaggle Learn: Pandas","https://www.kaggle.com/learn/pandas","Learn","Six short lessons with exercises, free.",[34]],
+["guipsamora/pandas_exercises","https://github.com/guipsamora/pandas_exercises","Practice","Pandas exercises on real datasets, including plotting.",[34,35]],
+["ajcr/100-pandas-puzzles","https://github.com/ajcr/100-pandas-puzzles","Practice","100 short pandas puzzles.",[34]],
+["Google Machine Learning Crash Course","https://developers.google.com/machine-learning/crash-course","Learn","Free, about 15 hours, with interactive exercises.",[36,37,38]],
+["Kaggle Learn: Intro to Machine Learning","https://www.kaggle.com/learn/intro-to-machine-learning","Learn","Short hands-on course, free.",[36,39]],
+["scikit-learn user guide","https://scikit-learn.org/stable/user_guide.html","Learn","Official docs for every model, metric and pipeline tool.",[37,38,39]],
+["alexeygrigorev/data-science-interviews","https://github.com/alexeygrigorev/data-science-interviews","QA","Theory and technical (SQL, Python) questions with answers.",[36,37,38,32,56]],
+["andrewekhalel/MLQuestions","https://github.com/andrewekhalel/MLQuestions","QA","ML and computer-vision interview questions.",[36,37,38,40,41]],
+["ageron/handson-ml3","https://github.com/ageron/handson-ml3","Learn","Notebooks for the book Hands-On Machine Learning, 3rd edition.",[36,37,39,40,42]],
+["microsoft/ML-For-Beginners","https://github.com/microsoft/ML-For-Beginners","Learn","Free classic-ML curriculum with lessons and quizzes.",[36,37,39]],
+["karpathy/nn-zero-to-hero","https://github.com/karpathy/nn-zero-to-hero","Learn","Build backprop and a small GPT from scratch, with videos.",[40,42,44,45]],
+["PyTorch tutorials","https://pytorch.org/tutorials/","Learn","Official tutorials; start with Learn the Basics.",[42]],
+["mrdbourke/pytorch-deep-learning","https://github.com/mrdbourke/pytorch-deep-learning","Learn","Beginner-friendly PyTorch course materials.",[40,41,42]],
+["Dive into Deep Learning (d2l-ai/d2l-en)","https://github.com/d2l-ai/d2l-en","Learn","Free interactive deep learning textbook.",[40,41,44]],
+["The Illustrated Transformer","https://jalammar.github.io/illustrated-transformer/","Learn","Attention and transformers explained visually.",[43,44]],
+["Hugging Face LLM Course","https://huggingface.co/learn/llm-course","Learn","Free: transformers, tokenizers, fine-tuning.",[43,44,45,53]],
+["Hugging Face Agents Course","https://huggingface.co/learn/agents-course","Learn","Free course on building AI agents.",[50,51]],
+["DeepLearning.AI short courses","https://www.deeplearning.ai/short-courses/","Learn","1–2 hour courses on prompting, RAG, agents; videos are free.",[46,47,48,50,51,52]],
+["LangChain Academy","https://academy.langchain.com/","Learn","Free official LangChain and LangGraph courses.",[50,51]],
+["Prompt Engineering Guide","https://www.promptingguide.ai/","Learn","Prompting techniques with examples, plus prompt-injection basics.",[46,54]],
+["NirDiamant/RAG_Techniques","https://github.com/NirDiamant/RAG_Techniques","Learn","RAG techniques as runnable notebooks.",[48,49]],
+["langchain-ai/rag-from-scratch","https://github.com/langchain-ai/rag-from-scratch","Learn","RAG built step by step, with a video series.",[48,49]],
+["NirDiamant/GenAI_Agents","https://github.com/NirDiamant/GenAI_Agents","Learn","Agent patterns as runnable notebooks.",[51]],
+["rasbt/LLMs-from-scratch","https://github.com/rasbt/LLMs-from-scratch","Learn","Build a GPT-style model in PyTorch, step by step.",[44,45,53]],
+["microsoft/generative-ai-for-beginners","https://github.com/microsoft/generative-ai-for-beginners","Learn","Free generative-AI lessons with code.",[45,46,47,48]],
+["microsoft/ai-agents-for-beginners","https://github.com/microsoft/ai-agents-for-beginners","Learn","Free lessons on building agents, including safety.",[51,54]],
+["openai/openai-cookbook","https://github.com/openai/openai-cookbook","Learn","Working examples for the OpenAI API, including evals.",[46,47,48,52]],
+["anthropics/claude-cookbooks","https://github.com/anthropics/claude-cookbooks","Learn","Working examples for the Claude API: tools, RAG, agents.",[46,47,51]],
+["Hamel Husain: Your AI product needs evals","https://hamel.dev/blog/posts/evals/","Learn","A practical guide to evaluating LLM apps.",[52,55]],
+["mlabonne/llm-course","https://github.com/mlabonne/llm-course","Learn","LLM roadmaps and notebooks: fine-tuning, quantisation, deployment.",[45,53,55]],
+["chiphuyen/aie-book","https://github.com/chiphuyen/aie-book","Learn","Resources from the book AI Engineering.",[52,55,68]],
+["AI engineering interview Q&A (amitshekhariitbhu)","https://github.com/amitshekhariitbhu/ai-engineering-interview-questions","QA","LLMs, RAG, agents, fine-tuning, evals and AI system design.",[45,46,48,49,51,52,53,55,68]],
+["LLM Interview Q&A Hub (KalyanKS-NLP)","https://github.com/KalyanKS-NLP/LLM-Interview-Questions-and-Answers-Hub","QA","100+ LLM questions with answers.",[43,44,45,53]],
+["RAG Interview Q&A Hub (KalyanKS-NLP)","https://github.com/KalyanKS-NLP/RAG-Interview-Questions-and-Answers-Hub","QA","100+ RAG questions with answers.",[48,49,52]],
+["LeetCode SQL 50","https://leetcode.com/studyplan/top-sql-50/","Practice","Free 50-question SQL study plan.",[56]],
+["DataLemur SQL questions","https://datalemur.com/sql-interview-questions","Practice","Free tier of real SQL interview questions, plus a free SQL tutorial.",[56]],
+["HackerRank SQL","https://www.hackerrank.com/domains/sql","Practice","Free SQL track and SQL skill certificate tests.",[56]],
+["Gate Smashers: DBMS playlist","https://www.youtube.com/playlist?list=PLxCzCOWd7aiFAN6I8CuViBuCdJgiOkT2Y","Learn","Hindi lectures widely used for placement prep.",[57,56]],
+["Gate Smashers: Operating System playlist","https://www.youtube.com/playlist?list=PLxCzCOWd7aiGz9donHRrE9I3Mwn6XdP8p","Learn","Hindi lectures on scheduling, deadlock and paging.",[59]],
+["IndiaBIX","https://www.indiabix.com/","MCQ","Aptitude, reasoning and technical MCQs (networking, databases).",[69,57,60]],
+["PrepInsta","https://prepinsta.com/","MCQ","Company-wise placement papers: TCS, Infosys, Accenture and more.",[69]],
+["IndiaBIX: HR interview","https://www.indiabix.com/hr-interview/questions-and-answers/","QA","Common HR questions with sample answers.",[70]],
+["Learn Git Branching","https://learngitbranching.js.org/","Practice","Interactive Git puzzles in the browser.",[61]],
+["Pro Git book","https://git-scm.com/book/en/v2","Learn","The free official Git book.",[61]],
+["OverTheWire: Bandit","https://overthewire.org/wargames/bandit/","Practice","Learn the Linux shell by solving levels.",[62]],
+["jlevy/the-art-of-command-line","https://github.com/jlevy/the-art-of-command-line","Learn","Command-line essentials on one page.",[62]],
+["Docker docs: Get started","https://docs.docker.com/get-started/","Learn","The official beginner guide.",[63]],
+["Play with Docker","https://labs.play-with-docker.com/","Practice","Free Docker playground in the browser.",[63]],
+["Killercoda","https://killercoda.com/","Practice","Free browser labs for Linux, Docker and Kubernetes.",[62,63,64]],
+["Kubernetes tutorials","https://kubernetes.io/docs/tutorials/","Learn","Official basics tutorial.",[64]],
+["AWS Skill Builder: Cloud Practitioner Essentials","https://skillbuilder.aws/","Learn","Free AWS fundamentals course; search for its name after signing in.",[65]],
+["GitHub Actions docs","https://docs.github.com/en/actions","Learn","Official quickstart and workflow syntax.",[66]],
+["donnemartin/system-design-primer","https://github.com/donnemartin/system-design-primer","Learn","The classic system design guide.",[67]],
+["ByteByteGoHq/system-design-101","https://github.com/ByteByteGoHq/system-design-101","Learn","Visual explanations of system design and networking topics.",[67,28,60]],
+["karanpratapsingh/system-design","https://github.com/karanpratapsingh/system-design","Learn","A free system design course.",[67]],
+["ashishps1/awesome-system-design-resources","https://github.com/ashishps1/awesome-system-design-resources","Learn","Curated system design resources.",[67]],
+["sudheerj/javascript-interview-questions","https://github.com/sudheerj/javascript-interview-questions","QA","JavaScript interview questions with answers.",[71]],
+["sudheerj/reactjs-interview-questions","https://github.com/sudheerj/reactjs-interview-questions","QA","React interview questions with answers.",[71]]
+];
+const resources = RES.map(([name, url, kind, note, ids]) => ({ name, url, kind, note, ids }));
+
+const topics = T.map(([id, sec, title, level, stage, lane, check, subs]) => ({ id, sec, title, level, stage, lane, check, subs }));
+const stageLabel = s => s === "Daily" ? "Every day" : s === "Optional" ? "Optional" : "Stage " + s + " · " + STAGES.find(x => x.n === s).name;
+const byId = new Map(topics.map(t => [t.id, t]));
+const KEY = "aiEngineerRoadmap.v1";
+let state = { status: {}, subs: {} };
+try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); state.status = s.status || {}; state.subs = s.subs || {}; } } catch (e) {}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+function fmt(el, text) {
+  text.split(/`([^`]+)`/).forEach((part, i) => {
+    if (!part) return;
+    if (i % 2) { const c = document.createElement("code"); c.textContent = part; el.appendChild(c); }
+    else el.appendChild(document.createTextNode(part));
+  });
+  return el;
+}
+function h(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+/* Legend */
+const legend = document.getElementById("legend");
+for (const [k, v] of Object.entries(LEVELS)) {
+  const d = h("div");
+  const n = topics.filter(t => t.level === k).length;
+  d.appendChild(h("span", "lvl " + k, v.label + " · " + n));
+  d.appendChild(h("p", null, v.short));
+  legend.appendChild(d);
+}
+document.getElementById("res-count").textContent = resources.length;
+
+/* Stage filter options */
+const stageSel = document.getElementById("stage-filter");
+["1", "2", "3", "4", "5", "6", "Daily", "Optional"].forEach(s => { const o = h("option", null, stageLabel(s)); o.value = s; stageSel.appendChild(o); });
+
+/* Roadmap */
+const rm = document.getElementById("roadmap");
+const btns = new Map();
+for (const [letter, name] of SECTIONS) {
+  const sec = h("section", "sec");
+  sec.setAttribute("aria-labelledby", "sec-" + letter);
+  const node = h("h2", "sec-node");
+  node.id = "sec-" + letter;
+  node.appendChild(h("span", "letter", letter));
+  node.appendChild(h("span", null, name));
+  const cnt = h("span", "count"); cnt.dataset.sec = letter; node.appendChild(cnt);
+  sec.appendChild(node);
+  const grid = h("div", "grid");
+  topics.filter(t => t.sec === letter).forEach(t => {
+    const b = h("button", "topic"); b.type = "button"; b.dataset.id = t.id;
+    b.appendChild(h("span", "num", String(t.id)));
+    b.appendChild(h("span", "t", t.title));
+    b.appendChild(h("span", "lvl " + t.level, LEVELS[t.level].label));
+    const m = h("span", "mark"); m.setAttribute("aria-hidden", "true"); b.appendChild(m);
+    b.addEventListener("click", () => openTopic(t.id));
+    grid.appendChild(b); btns.set(t.id, b);
+  });
+  sec.appendChild(grid);
+  rm.appendChild(sec);
+}
+rm.appendChild(Object.assign(h("div", "endpoint", "Interview ready")));
+
+/* Plan: lanes, stages */
+const pills = [];
+function pillsFor(ids) {
+  const ps = h("div", "pills");
+  ids.forEach(id => {
+    const pb = h("button", "pill", String(id)); pb.type = "button"; pb.dataset.id = id;
+    pb.title = byId.get(id).title;
+    pb.setAttribute("aria-label", "Topic " + id + ": " + byId.get(id).title);
+    pb.addEventListener("click", () => openTopic(id));
+    ps.appendChild(pb); pills.push(pb);
+  });
+  return ps;
+}
+const lanesEl = document.getElementById("lanes");
+LANES.forEach(([k, name, desc]) => { const d = h("div", "lane " + k); d.appendChild(h("b", null, name)); d.appendChild(h("span", null, desc)); lanesEl.appendChild(d); });
+const stagesEl = document.getElementById("stages");
+STAGES.forEach(s => {
+  const card = h("div", "stage");
+  const hd = h("h3", null, "Stage " + s.n + ": " + s.name);
+  hd.appendChild(h("small", null, topics.filter(t => t.stage === s.n).length + " topics"));
+  card.appendChild(hd);
+  [["Core", s.core, null], ["Coding", s.coding, s.codingNote], ["Light", s.light, null], ["Build", s.build, s.buildNote]].forEach(([label, ids, note]) => {
+    if (!ids.length && !note) return;
+    const row = h("div", "row");
+    row.appendChild(h("b", null, label));
+    const cell = h("div");
+    if (ids.length) cell.appendChild(pillsFor(ids));
+    if (note) cell.appendChild(h("div", "note", note));
+    row.appendChild(cell); card.appendChild(row);
+  });
+  const gate = h("p", "gate"); gate.appendChild(h("b", null, "Move on when ")); gate.appendChild(document.createTextNode(s.gate));
+  card.appendChild(gate);
+  stagesEl.appendChild(card);
+});
+const every = h("div", "stage");
+every.appendChild(h("h3", null, "Every stage"));
+[["Daily", [69], "20–30 minutes of aptitude, plus a quick quiz on finished MCQ topics."], ["Optional", [71], "Only if you target full-stack or forward-deployed roles."]].forEach(([label, ids, note]) => {
+  const row = h("div", "row"); row.appendChild(h("b", null, label));
+  const cell = h("div"); cell.appendChild(pillsFor(ids)); cell.appendChild(h("div", "note", note));
+  row.appendChild(cell); every.appendChild(row);
+});
+stagesEl.appendChild(every);
+
+/* Resources section */
+function resLink(r) { const a = h("a", null, r.name); a.href = r.url; a.target = "_blank"; a.rel = "noopener noreferrer"; return a; }
+const resTabs = document.getElementById("res-tabs"), resList = document.getElementById("res-list");
+let resKind = "Practice";
+function renderRes() {
+  resList.textContent = "";
+  resources.filter(r => r.kind === resKind).forEach(r => {
+    const c = h("div", "r-card");
+    c.appendChild(h("span", "kind " + r.kind, KINDS[r.kind]));
+    c.appendChild(resLink(r));
+    c.appendChild(h("p", null, r.note));
+    c.appendChild(pillsFor(r.ids));
+    resList.appendChild(c);
+  });
+  resTabs.querySelectorAll("button").forEach(b => { const on = b.dataset.kind === resKind; b.setAttribute("aria-selected", String(on)); b.setAttribute("aria-pressed", String(on)); });
+  applyState();
+}
+["Practice", "MCQ", "QA", "Learn"].forEach(k => {
+  const b = h("button", null, KINDS[k] + " · " + resources.filter(r => r.kind === k).length);
+  b.type = "button"; b.dataset.kind = k; b.setAttribute("role", "tab");
+  b.addEventListener("click", () => { resKind = k; renderRes(); });
+  resTabs.appendChild(b);
+});
+
+/* State rendering */
+const statusLabel = { "": "not started", progress: "in progress", done: "done" };
+function applyState() {
+  let done = 0, prog = 0;
+  for (const t of topics) {
+    const s = state.status[t.id] || "";
+    if (s === "done") done++; else if (s === "progress") prog++;
+    const b = btns.get(t.id);
+    b.classList.toggle("done", s === "done");
+    b.classList.toggle("progress", s === "progress");
+    b.setAttribute("aria-label", t.id + ". " + t.title + ", " + LEVELS[t.level].label + ", " + statusLabel[s]);
+  }
+  for (const [letter] of SECTIONS) {
+    const list = topics.filter(t => t.sec === letter);
+    const d = list.filter(t => state.status[t.id] === "done").length;
+    document.querySelector('.count[data-sec="' + letter + '"]').textContent = d + "/" + list.length;
+  }
+  pills.forEach(p => { if (!p.isConnected) return; const s = state.status[p.dataset.id] || ""; p.classList.toggle("done", s === "done"); p.classList.toggle("progress", s === "progress"); });
+  const n = topics.length;
+  document.getElementById("pct").textContent = Math.round(done / n * 100) + "%";
+  document.getElementById("prog-text").textContent = done + " of " + n + " done · " + prog + " in progress";
+  document.getElementById("bar-done").style.width = (done / n * 100) + "%";
+  document.getElementById("bar-prog").style.width = (prog / n * 100) + "%";
+  document.getElementById("bar").setAttribute("aria-valuenow", done);
+  applyFilters();
+}
+let levelFilter = "all";
+function applyFilters() {
+  const stage = stageSel.value, hideDone = document.getElementById("hide-done").checked;
+  for (const t of topics) {
+    const b = btns.get(t.id);
+    const match = (levelFilter === "all" || t.level === levelFilter) && (stage === "all" || t.stage === stage);
+    b.classList.toggle("dim", !match);
+    b.hidden = hideDone && state.status[t.id] === "done";
+  }
+}
+document.querySelectorAll("#level-filter button").forEach(b => b.addEventListener("click", () => {
+  levelFilter = b.dataset.level;
+  document.querySelectorAll("#level-filter button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  applyFilters();
+}));
+stageSel.addEventListener("change", applyFilters);
+document.getElementById("hide-done").addEventListener("change", applyFilters);
+const resetBtn = document.getElementById("reset");
+let armTimer = null;
+resetBtn.addEventListener("click", () => {
+  if (!resetBtn.classList.contains("armed")) {
+    resetBtn.classList.add("armed"); resetBtn.textContent = "Click again to reset";
+    armTimer = setTimeout(() => { resetBtn.classList.remove("armed"); resetBtn.textContent = "Reset progress"; }, 4000);
+    return;
+  }
+  clearTimeout(armTimer); state = { status: {}, subs: {} }; save(); applyState();
+  resetBtn.classList.remove("armed"); resetBtn.textContent = "Reset progress";
+});
+
+/* Drawer */
+const drawer = document.getElementById("drawer"), scrim = document.getElementById("scrim");
+let current = null, lastFocus = null;
+function setStatus(id, s) { if (s) state.status[id] = s; else delete state.status[id]; save(); applyState(); renderStatus(); }
+function renderStatus() {
+  const s = state.status[current] || "";
+  document.querySelectorAll("#d-status button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === s)));
+  const t = byId.get(current);
+  const c = t.subs.filter((_, i) => state.subs[current + ":" + i]).length;
+  document.getElementById("d-subcount").textContent = c + " of " + t.subs.length + " covered";
+}
+function openTopic(id) {
+  const t = byId.get(id); if (!t) return;
+  if (!drawer.classList.contains("open")) lastFocus = document.activeElement;
+  current = id;
+  const secName = SECTIONS.find(s => s[0] === t.sec)[1];
+  document.getElementById("d-sec").textContent = t.sec + " · " + secName + " · Topic " + t.id;
+  document.getElementById("d-title").textContent = t.title;
+  const tags = document.getElementById("d-tags"); tags.textContent = "";
+  tags.appendChild(h("span", "lvl " + t.level, LEVELS[t.level].label));
+  tags.appendChild(h("span", "tag", stageLabel(t.stage)));
+  tags.appendChild(h("span", "tag", "Lane: " + t.lane));
+  document.getElementById("d-lvl").textContent = LEVELS[t.level].desc;
+  const ul = document.getElementById("d-subs"); ul.textContent = "";
+  t.subs.forEach((s, i) => {
+    const li = h("li"), lab = h("label"), cb = h("input"), sp = h("span");
+    cb.type = "checkbox"; cb.id = "sub-" + id + "-" + i; lab.htmlFor = cb.id;
+    cb.checked = !!state.subs[id + ":" + i];
+    cb.addEventListener("change", () => {
+      if (cb.checked) state.subs[id + ":" + i] = true; else delete state.subs[id + ":" + i];
+      const all = t.subs.every((_, j) => state.subs[id + ":" + j]);
+      const cur = state.status[id] || "";
+      if (all && cur !== "done") state.status[id] = "done";
+      else if (!all && cb.checked && cur === "") state.status[id] = "progress";
+      else if (!all && cur === "done") state.status[id] = "progress";
+      save(); applyState(); renderStatus();
+    });
+    lab.appendChild(cb); lab.appendChild(fmt(sp, s)); li.appendChild(lab); ul.appendChild(li);
+  });
+  const chk = document.getElementById("d-check"); chk.textContent = ""; fmt(chk, t.check);
+  const order = { Practice: 0, MCQ: 1, QA: 2, Learn: 3 };
+  const mine = resources.filter(r => r.ids.includes(id)).sort((a, b) => order[a.kind] - order[b.kind]);
+  const dres = document.getElementById("d-res"); dres.textContent = "";
+  document.getElementById("d-res-wrap").hidden = !mine.length;
+  document.getElementById("d-rescount").textContent = mine.length + (mine.length === 1 ? " link" : " links");
+  mine.forEach(r => { const li = h("li"); li.appendChild(h("span", "kind " + r.kind, KINDS[r.kind])); li.appendChild(resLink(r)); li.appendChild(h("p", null, r.note)); dres.appendChild(li); });
+  chk.style.borderLeftColor = "var(--" + t.level + ")";
+  const pw = document.getElementById("d-pairs"), pairs = PAIRS[id] || [];
+  pw.textContent = ""; document.getElementById("d-pairs-wrap").hidden = !pairs.length;
+  pairs.forEach(pid => { const pb = h("button", null, pid + ". " + byId.get(pid).title); pb.type = "button"; pb.addEventListener("click", () => openTopic(pid)); pw.appendChild(pb); });
+  const prev = document.getElementById("d-prev"), next = document.getElementById("d-next");
+  prev.disabled = id <= 1; next.disabled = id >= topics.length;
+  prev.textContent = id > 1 ? "← " + (id - 1) + ". " + byId.get(id - 1).title : "←";
+  next.textContent = id < topics.length ? (id + 1) + ". " + byId.get(id + 1).title + " →" : "→";
+  renderStatus();
+  drawer.scrollTop = 0;
+  drawer.classList.add("open"); scrim.classList.add("open");
+  document.getElementById("d-close").focus({ preventScroll: true });
+}
+function closeDrawer() {
+  drawer.classList.remove("open"); scrim.classList.remove("open"); current = null;
+  if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+}
+document.querySelectorAll("#d-status button").forEach(b => b.addEventListener("click", () => setStatus(current, b.dataset.s)));
+document.getElementById("d-close").addEventListener("click", closeDrawer);
+scrim.addEventListener("click", closeDrawer);
+document.getElementById("d-prev").addEventListener("click", () => openTopic(current - 1));
+document.getElementById("d-next").addEventListener("click", () => openTopic(current + 1));
+document.addEventListener("keydown", e => {
+  if (!drawer.classList.contains("open")) return;
+  if (e.key === "Escape") closeDrawer();
+  if (e.key === "Tab") {
+    const f = [...drawer.querySelectorAll("button:not(:disabled), input")].filter(x => x.offsetParent !== null);
+    if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+  }
+});
+renderRes();
+
+/* Backup and move progress */
+const backup = document.getElementById("backup"), backupText = document.getElementById("backup-text"), backupMsg = document.getElementById("backup-msg");
+document.getElementById("backup-open").addEventListener("click", () => {
+  backupText.value = JSON.stringify({ app: "ai-engineer-roadmap", status: state.status, subs: state.subs });
+  backupMsg.textContent = ""; backup.hidden = false; backupText.focus(); backupText.select();
+});
+document.getElementById("backup-close").addEventListener("click", () => { backup.hidden = true; });
+document.getElementById("backup-copy").addEventListener("click", () => {
+  backupText.select();
+  try { navigator.clipboard.writeText(backupText.value).then(() => { backupMsg.textContent = "Copied."; }, () => { backupMsg.textContent = "Select the text and copy it yourself."; }); }
+  catch (e) { backupMsg.textContent = "Select the text and copy it yourself."; }
+});
+document.getElementById("backup-load").addEventListener("click", () => {
+  try {
+    const d = JSON.parse(backupText.value);
+    if (!d || typeof d.status !== "object" || typeof d.subs !== "object") throw new Error("shape");
+    const ok = v => v === "done" || v === "progress";
+    state.status = Object.fromEntries(Object.entries(d.status).filter(([k, v]) => byId.has(Number(k)) && ok(v)));
+    state.subs = Object.fromEntries(Object.entries(d.subs).filter(([k, v]) => /^\d+:\d+$/.test(k) && v === true));
+    save(); applyState();
+    backupMsg.style.color = "var(--done)"; backupMsg.textContent = "Loaded: " + Object.values(state.status).filter(v => v === "done").length + " topics done.";
+  } catch (e) { backupMsg.style.color = "var(--code)"; backupMsg.textContent = "That text is not a progress backup from this roadmap."; }
+});
+
+/* Install prompt (only in the installable build) */
+if (window.PWA_BUILD) {
+  const standalone = window.matchMedia("(display-mode: standalone)").matches || window.matchMedia("(display-mode: fullscreen)").matches || navigator.standalone === true;
+  const inst = document.getElementById("install"), instBtn = document.getElementById("install-btn"), instText = document.getElementById("install-text");
+  let deferred = null;
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; if (!standalone) { inst.hidden = false; instBtn.hidden = false; } });
+  instBtn.addEventListener("click", async () => { if (!deferred) return; deferred.prompt(); try { await deferred.userChoice; } catch (e) {} deferred = null; inst.hidden = true; });
+  window.addEventListener("appinstalled", () => { inst.hidden = true; });
+  if (!standalone && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+    instText.textContent = "To install: tap the Share button in Safari, then “Add to Home Screen”. It will open full screen and work offline.";
+    inst.hidden = false;
+  }
+}
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+}
+</script>
+</body>
+</html>
