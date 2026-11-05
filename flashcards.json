@@ -55,6 +55,55 @@
     "q": "Why is indentation required in Python?",
     "a": "Python uses indentation instead of `{ }` to mark blocks: everything indented under a line ending in `:` belongs to it. Wrong indentation is an error, not a style problem: IndentationError, or TabError if tabs and spaces are mixed. Use 4 spaces."
    }
+  ],
+  "2": [
+   {
+    "q": "What are Python's built-in data types?",
+    "a": "Numbers (`int`, `float`, `complex`), `bool`, `str`, the sequences `list`, `tuple` and `range`, `dict`, `set` and `frozenset`, `bytes`, and `NoneType`. `type(x)` tells you which one a value is. `int` has no size limit, and `bool` is a kind of `int`.",
+    "hook": "Know the list, then say which ones are sealed (immutable) and which are open (mutable)."
+   },
+   {
+    "q": "What's the difference between mutable and immutable types? Give examples.",
+    "a": "Immutable (sealed) objects can't change after they're made: `int`, `float`, `bool`, `str`, `tuple`, `frozenset`, `None`. \"Changing\" one creates a new object. Mutable (open) objects are changed in place: `list`, `dict`, `set`.",
+    "code": "s = \"hi\"\ns[0] = \"H\"",
+    "out": "TypeError: 'str' object does not support item assignment",
+    "hook": "Sealed boxes get replaced; open boxes get edited."
+   },
+   {
+    "q": "What's the difference between `/` and `//`?",
+    "a": "`/` is true division and always returns a float, even `6 / 3` gives 2.0. `//` is floor division: it rounds down toward minus infinity, so `-7 // 2` is -4, not -3. With negatives, `%` takes the sign of the divisor, so `-7 % 2` is 1.",
+    "code": "print(7 / 2, 7 // 2, -7 // 2, -7 % 2)",
+    "out": "3.5 3 -4 1",
+    "hook": "// always steps left on the number line."
+   },
+   {
+    "q": "What's the difference between `==` and `is`?",
+    "a": "`==` compares values; `is` checks if two names point to the very same object. Two separate lists with equal contents are `==` but not `is`. Use `is` only for None: CPython reuses small integers and some strings, so `is` on values can give misleading answers that change between versions.",
+    "code": "a = [1, 2]\nb = [1, 2]\nprint(a == b, a is b)",
+    "out": "True False",
+    "hook": "== same value; is same box."
+   },
+   {
+    "q": "What's the difference between `type()` and `isinstance()`?",
+    "a": "`type(x) == int` checks for an exact type. `isinstance(x, int)` also accepts subtypes, and can take a tuple of types. `bool` is a subtype of `int`, so they disagree on True. Prefer `isinstance` in real code.",
+    "code": "print(type(True) == int, isinstance(True, int))",
+    "out": "False True",
+    "hook": "type() wants the exact car; isinstance() accepts the taxi too."
+   },
+   {
+    "q": "What is type conversion? Implicit vs explicit?",
+    "a": "Explicit (type casting): you convert yourself with `int()`, `float()`, `str()`, `bool()`. Implicit (coercion): Python converts automatically when it's safe, like int + float giving a float. `int()` chops decimals toward zero, and `round()` sends .5 to the even neighbour.",
+    "code": "print(3 + 2.5, int(3.99), int(-3.99), round(2.5))",
+    "out": "5.5 3 -3 2",
+    "hook": "int() chops; round() picks the even neighbour."
+   },
+   {
+    "q": "Why is `0.1 + 0.2` not equal to `0.3`? How do you compare floats?",
+    "a": "Floats are stored in binary, and 0.1 can't be written exactly in binary, just as 1/3 can't be written exactly in decimal. Python stores the nearest value and the tiny errors add up. Compare with `math.isclose(a, b)`; for money use `Decimal(\"0.1\")` or whole paise.",
+    "code": "import math\nprint(0.1 + 0.2, math.isclose(0.1 + 0.2, 0.3))",
+    "out": "0.30000000000000004 True",
+    "hook": "1/3 can't be exact in decimal; 0.1 can't be exact in binary."
+   }
   ]
  },
  "mcq": {
@@ -407,9 +456,567 @@
     "answer": 1,
     "why": "There is only one None object, so check identity with `is`. A class can change what `==` means and give a wrong answer."
    }
+  ],
+  "2": [
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(-7 // 2)",
+    "out": "-4",
+    "options": [
+     "`-3`",
+     "`-4`",
+     "`-3.5`",
+     "`3`"
+    ],
+    "answer": 1,
+    "why": "Floor division steps left on the number line: -3.5 floors to -4, not -3.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(-7 % 2)",
+    "out": "1",
+    "options": [
+     "`-1`",
+     "`1`",
+     "`0`",
+     "`-3`"
+    ],
+    "answer": 1,
+    "why": "`%` takes the sign of the divisor (2), and (-4) × 2 + 1 = -7.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(7 % -2)",
+    "out": "-1",
+    "options": [
+     "`1`",
+     "`-1`",
+     "`3`",
+     "`-3`"
+    ],
+    "answer": 1,
+    "why": "The divisor is -2, so the remainder is negative: 7 // -2 is -4, and (-4) × (-2) + (-1) = 7."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(6 / 3)",
+    "out": "2.0",
+    "options": [
+     "`2`",
+     "`2.0`",
+     "`3`",
+     "`TypeError`"
+    ],
+    "answer": 1,
+    "why": "`/` always returns a float, even when the division is exact. Use `//` for a whole number.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(2 ** 3 ** 2)",
+    "out": "512",
+    "options": [
+     "`64`",
+     "`512`",
+     "`36`",
+     "`4096`"
+    ],
+    "answer": 1,
+    "why": "`**` works right to left: 2 ** (3 ** 2) = 2 ** 9 = 512.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(-2 ** 2)",
+    "out": "-4",
+    "options": [
+     "`4`",
+     "`-4`",
+     "`0.25`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "The power happens before the minus sign: -(2 ** 2). Write `(-2) ** 2` to get 4.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print(5.0 / 0)",
+    "out": "ZeroDivisionError: division by zero",
+    "options": [
+     "`inf`",
+     "`ZeroDivisionError`",
+     "`nan`",
+     "`0.0`"
+    ],
+    "answer": 1,
+    "why": "Python never returns infinity for division by zero, even with floats."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(divmod(-7, 2))",
+    "out": "(-4, 1)",
+    "options": [
+     "`(-3, -1)`",
+     "`(-4, 1)`",
+     "`(-3, 1)`",
+     "`(-4, -1)`"
+    ],
+    "answer": 1,
+    "why": "`divmod(a, b)` gives `(a // b, a % b)`: -7 // 2 is -4 and -7 % 2 is 1."
+   },
+   {
+    "kind": "concept",
+    "q": "What is the largest `int` in Python?",
+    "options": [
+     "2³¹ − 1",
+     "2⁶³ − 1",
+     "There is no fixed limit; it grows with memory",
+     "10¹⁸"
+    ],
+    "answer": 2,
+    "why": "Python ints grow as big as memory allows: `2 ** 100` prints all 31 digits exactly. Only floats have a limit."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(int(-3.99))",
+    "out": "-3",
+    "options": [
+     "`-4`",
+     "`-3`",
+     "`-3.99`",
+     "`ValueError`"
+    ],
+    "answer": 1,
+    "why": "`int()` chops off the decimals toward zero; it doesn't round down. Use `math.floor()` to get -4.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(round(2.5), round(3.5))",
+    "out": "2 4",
+    "options": [
+     "`3 4`",
+     "`2 4`",
+     "`2 3`",
+     "`3 3`"
+    ],
+    "answer": 1,
+    "why": "On an exact .5, `round()` goes to the even neighbour (banker's rounding): 2.5 → 2, 3.5 → 4.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(int(\" 42 \") + 1)",
+    "out": "43",
+    "options": [
+     "`43`",
+     "`ValueError`",
+     "` 42 1`",
+     "`421`"
+    ],
+    "answer": 0,
+    "why": "`int()` ignores spaces at the start and end, so `int(\" 42 \")` is 42. Spaces in the middle, like \"4 2\", raise ValueError."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(round(2.675, 2))",
+    "out": "2.67",
+    "options": [
+     "`2.68`",
+     "`2.67`",
+     "`2.7`",
+     "`3`"
+    ],
+    "answer": 1,
+    "why": "2.675 can't be stored exactly; it's really 2.67499…, so it rounds down. A float precision trap.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(bool(\"False\"))",
+    "out": "True",
+    "options": [
+     "`False`",
+     "`True`",
+     "`None`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "Any non-empty string is truthy, even the text \"False\".",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(bool([0]))",
+    "out": "True",
+    "options": [
+     "`False`",
+     "`True`",
+     "`0`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "A list with something inside is truthy, even if that something is 0.",
+    "trap": true
+   },
+   {
+    "kind": "concept",
+    "q": "Which of these is falsy?",
+    "options": [
+     "`\" \"` (a space)",
+     "`[0]`",
+     "`0.0`",
+     "`\"0\"`"
+    ],
+    "answer": 2,
+    "why": "Falsy means empty or zero: False, None, 0, 0.0, \"\", [], {}, (), set(). A space, [0] and \"0\" all have something inside."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print('' or 'b')",
+    "out": "b",
+    "options": [
+     "`True`",
+     "`''`",
+     "`b`",
+     "`False`"
+    ],
+    "answer": 2,
+    "why": "`or` returns the first truthy value; '' is falsy, so it moves on and returns 'b'.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(0 and 5)",
+    "out": "0",
+    "options": [
+     "`5`",
+     "`0`",
+     "`False`",
+     "`True`"
+    ],
+    "answer": 1,
+    "why": "`and` stops at the first falsy value and returns it: 0."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(3 and 5)",
+    "out": "5",
+    "options": [
+     "`3`",
+     "`5`",
+     "`True`",
+     "`8`"
+    ],
+    "answer": 1,
+    "why": "No falsy value was found, so `and` returns the last value.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(None or 0)",
+    "out": "0",
+    "options": [
+     "`None`",
+     "`0`",
+     "`False`",
+     "`True`"
+    ],
+    "answer": 1,
+    "why": "No truthy value was found, so `or` returns the last value, 0."
+   },
+   {
+    "kind": "output",
+    "q": "x is 0. What is printed?",
+    "code": "x = 0\nprint(x != 0 and 10 / x > 1)",
+    "out": "False",
+    "options": [
+     "`ZeroDivisionError`",
+     "`False`",
+     "`True`",
+     "`0`"
+    ],
+    "answer": 1,
+    "why": "Short-circuit: `x != 0` is False, so `and` stops there and the division never runs.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(1 < 3 > 2)",
+    "out": "True",
+    "options": [
+     "`True`",
+     "`False`",
+     "`TypeError`",
+     "`1`"
+    ],
+    "answer": 0,
+    "why": "Chained comparison: 1 < 3 and 3 > 2, both True."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print((3 > 2) > 1)",
+    "out": "False",
+    "options": [
+     "`True`",
+     "`False`",
+     "`TypeError`",
+     "`2`"
+    ],
+    "answer": 1,
+    "why": "The bracket runs first and gives True; then True > 1 means 1 > 1, which is False. Compare with `3 > 2 > 1`, which is True.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"10\" < \"9\")",
+    "out": "True",
+    "options": [
+     "`True`",
+     "`False`",
+     "`TypeError`",
+     "Depends on the system"
+    ],
+    "answer": 0,
+    "why": "Strings compare character by character: '1' comes before '9', so \"10\" < \"9\".",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print(\"a\" < 1)",
+    "out": "TypeError: '<' not supported between instances of 'str' and 'int'",
+    "options": [
+     "`False`",
+     "`True`",
+     "`TypeError`",
+     "`ValueError`"
+    ],
+    "answer": 2,
+    "why": "Text and numbers can't be ordered with < in Python 3. (`==` between them is allowed and is just False.)"
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = [1, 2]\nb = [1, 2]\nprint(a == b, a is b)",
+    "out": "True False",
+    "options": [
+     "`True True`",
+     "`True False`",
+     "`False False`",
+     "`False True`"
+    ],
+    "answer": 1,
+    "why": "Same value (==) but two different list objects (is).",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(1 in {\"x\": 1})",
+    "out": "False",
+    "options": [
+     "`True`",
+     "`False`",
+     "`KeyError`",
+     "`1`"
+    ],
+    "answer": 1,
+    "why": "`in` on a dict checks the keys, not the values. Use `1 in d.values()` for values.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(type(True) == int, isinstance(True, int))",
+    "out": "False True",
+    "options": [
+     "`True True`",
+     "`False True`",
+     "`True False`",
+     "`False False`"
+    ],
+    "answer": 1,
+    "why": "bool is a subtype of int: `type()` wants an exact match, `isinstance()` accepts subtypes."
+   },
+   {
+    "kind": "concept",
+    "q": "When should you use `is` instead of `==`?",
+    "options": [
+     "To compare numbers",
+     "To compare strings",
+     "To check for `None`",
+     "To compare lists"
+    ],
+    "answer": 2,
+    "why": "`is` checks identity. Use it for None (one single object). For values, always use `==`: small-number reuse makes `is` unreliable."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "s = \"hi\"\ns[0] = \"H\"",
+    "out": "TypeError: 'str' object does not support item assignment",
+    "options": [
+     "`Hi`",
+     "`TypeError`",
+     "`IndexError`",
+     "`hH`"
+    ],
+    "answer": 1,
+    "why": "Strings are immutable: you can't change one character. Build a new string instead: `\"H\" + s[1:]`."
+   },
+   {
+    "kind": "concept",
+    "q": "Which of these is mutable?",
+    "options": [
+     "`tuple`",
+     "`str`",
+     "`list`",
+     "`frozenset`"
+    ],
+    "answer": 2,
+    "why": "list, dict and set can change in place. tuple, str and frozenset can't."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(5 & 3, 5 | 3)",
+    "out": "1 7",
+    "options": [
+     "`1 7`",
+     "`7 1`",
+     "`8 15`",
+     "`0 7`"
+    ],
+    "answer": 0,
+    "why": "5 is 101 and 3 is 011. `&` keeps bits on in both (001 = 1); `|` keeps bits on in either (111 = 7)."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(~5)",
+    "out": "-6",
+    "options": [
+     "`-5`",
+     "`-6`",
+     "`6`",
+     "`4`"
+    ],
+    "answer": 1,
+    "why": "For integers, `~x` is always `-x - 1`.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(1 << 3)",
+    "out": "8",
+    "options": [
+     "`3`",
+     "`8`",
+     "`6`",
+     "`4`"
+    ],
+    "answer": 1,
+    "why": "`<<` shifts the bits left, which multiplies by 2 each step: 1 × 2 × 2 × 2 = 8."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(2 * 3 ** 2)",
+    "out": "18",
+    "options": [
+     "`36`",
+     "`18`",
+     "`12`",
+     "`64`"
+    ],
+    "answer": 1,
+    "why": "`**` runs before `*`: 2 × 9 = 18."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(not 1 == 2)",
+    "out": "True",
+    "options": [
+     "`False`",
+     "`True`",
+     "`TypeError`",
+     "`1`"
+    ],
+    "answer": 1,
+    "why": "The comparison runs before `not`: not (1 == 2) is not False, which is True."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(True or False and False)",
+    "out": "True",
+    "options": [
+     "`True`",
+     "`False`",
+     "`None`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "`and` runs before `or`: True or (False and False) is True or False, which is True."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(0.1 + 0.2 == 0.3)",
+    "out": "False",
+    "options": [
+     "`True`",
+     "`False`",
+     "`0.3`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "0.1 + 0.2 is really 0.30000000000000004. Compare floats with `math.isclose()`.",
+    "trap": true
+   },
+   {
+    "kind": "concept",
+    "q": "What is the safest way to check if two floats are equal?",
+    "options": [
+     "`a == b`",
+     "`a is b`",
+     "`math.isclose(a, b)`",
+     "`int(a) == int(b)`"
+    ],
+    "answer": 2,
+    "why": "Floats carry tiny storage errors, so check that they're close enough instead of exactly equal."
+   }
   ]
  },
  "notes": {
-  "1": "Topic 1, rebuilt 6 Nov 2026: flashcards = questions interviewers ask out loud (checked against InterviewBit, GeeksforGeeks and PYnative lists); MCQs = predict the output, find the error, concept checks."
+  "1": "Topic 1, rebuilt 6 Nov 2026: flashcards = questions interviewers ask out loud (checked against InterviewBit, GeeksforGeeks and PYnative lists); MCQs = predict the output, find the error, concept checks.",
+  "2": "Topic 2, 6 Nov 2026: flashcards = built-in types, mutable vs immutable, / vs //, == vs is, type vs isinstance, conversion, float precision (asked in InterviewBit, GeeksforGeeks and PYnative lists); MCQs = traps on operators, truthiness, comparison, precedence and floats."
  }
 }

@@ -70,9 +70,12 @@ Done, in order:
     - The 10 flashcards cover: what Python is and why it's popular, compiled vs interpreted, what happens when you run a file, dynamic and strong typing, how variables work, memory management, the GIL, why Python is slow but used for AI, docstrings, and indentation.
     - These are the questions that appear across InterviewBit, GeeksforGeeks and PYnative. PEP 8 appeared in only 1 of the 3 lists.
 
+11. **Taught Topic 2 (Data types and operators)** on 6 Nov, as one story: "the kinds of boxes" (types, sealed vs open, `type` vs `isinstance`, conversion, truthy/falsy), then "the machines" (arithmetic, comparison, `and`/`or`, bits, `is` vs `==`, `in`, precedence), then "the float surprise". He then got 7 flashcards and 39 MCQs for it.
+
 Next:
-- **Topic 2: Data types and operators** (MCQ level). Teach it the same way, then add its flashcards and MCQs. Topic 2 is mostly MCQ material: `-7 // 2`, `0.1 + 0.2`, `'a' or 'b'`, chained comparisons, `is` vs `==`.
-- He revises Topic 1 with the flashcards and MCQs. His real progress is in the app's backup (section 6).
+- **Check his Topic 2 summary** when he sends it (point by point, then a fixed version), the same way as Topic 1.
+- Then **Topic 3: Strings** (Coding level). That's the first Coding topic, so include small tasks he types himself with no AI help, then add its flashcards and MCQs.
+- He revises Topics 1–2 with the flashcards and MCQs. His real progress is in the app's backup (section 6).
 - Project work (zen, Zen-harness) waits until topic 70. Don't bring it up before then. When we get there, start from the zen notes in section 5.
 
 ## 4. Internshala research (4 Nov 2026)
@@ -113,6 +116,7 @@ Next:
   - "You can never mix types" was too strong. `3 + 2.5`, `True + 1` and `"ab" * 3` work; only guessing mixes like `"1" + 1` fail.
   - "Python checks the value each time" should be "checks the type each time".
 - **Is Python compiled or interpreted?** Both: compiled to bytecode, then the PVM interprets it. Officially called interpreted.
+- **Small-int caching (checked 6 Nov):** the textbook range is -5 to 256, which is true on 3.11–3.13. On the 3.15 build tested here (3.15.0b4), CPython reuses ints from -5 to 1024. Teach it in a version-proof way: "CPython reuses small ints, classically -5 to 256; it's an implementation detail, so never use `is` for values." Also, `5.0 / 0` says "division by zero" on 3.15 but "float division by zero" on 3.13; it's the same error.
 - **Why zen uses Rust (for topic 70 later; the cards were removed for now):** he measured a Python prototype at ~12 s per reply and the Rust version at ~3 s, with the same models on the same machine. The reasons found in the zen code:
   - The TTS library calls back into Rust with each audio chunk and polls a Rust cancel flag (`tts.rs`), and Python callbacks would need the GIL.
   - Capture, transcription, LLM and speech run in parallel, and data races are compile errors in Rust.
@@ -192,7 +196,7 @@ Next:
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 10, MCQs: 25 (topic 1).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 17, MCQs: 64 (topics 1, 2).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -258,7 +262,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
 - **1. Basics and setup** [MCQ, stage 1, Core lane, 10 flashcards, 25 MCQs]
   - Check: Explain how Python runs your code and answer basic syntax questions.
   - Subtopics: (0) What Python is: interpreted, dynamically typed, high-level; (1) Installing Python; versions 3.14 and 3.15; (2) REPL vs running a `.py` script; `python -m module`; (3) Indentation defines blocks; (4) Comments and docstrings; (5) Variables and naming rules (PEP 8 style); (6) `print()` and `input()`; (7) Keywords and `None`
-- **2. Data types and operators** [MCQ, stage 1, Core lane]
+- **2. Data types and operators** [MCQ, stage 1, Core lane, 7 flashcards, 39 MCQs]
   - Check: Predict results like `-7 // 2`, `0.1 + 0.2`, `'a' or 'b'` and `1 < x < 5`.
   - Subtopics: (0) `int`, `float`, `complex`, `bool`, `str`, `None`; (1) `type()` vs `isinstance()`; (2) Type conversion: `int()`, `float()`, `str()`, `bool()`; (3) Truthy and falsy values; (4) Arithmetic: `/`, `//`, `%`, `**`; floor division with negatives; (5) Comparison and chained comparison; (6) `and` / `or` / `not`: short-circuiting and returning operands; (7) Bitwise operators: `&`, `|`, `^`, `~`, `<<`, `>>`; (8) Identity (`is`) vs equality (`==`); membership (`in`); (9) Operator precedence; (10) Float precision: why `0.1 + 0.2 != 0.3`
 - **3. Strings** [Coding, stage 1, Core lane]
