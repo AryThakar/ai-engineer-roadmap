@@ -41,7 +41,10 @@ These come from his direct feedback during the chat. Follow them.
 - **He checks himself by writing his own summary.** Mark it point by point (correct, wrong, small fix), then give a fixed version for him to memorise.
 - Don't quiz him until he asks ("quiz 1"). Don't test him on something before he has revised it.
 - Run every code example (Python 3.15) before you show its output.
-- After each topic, add its flashcards to `flashcards.json` and run the checker (section 6).
+- After each topic, add its flashcards and MCQs to `flashcards.json` and run the checker (section 6).
+  - **Flashcards are only for questions an interviewer asks you to explain out loud.** Keep one only if it appears in real question lists (InterviewBit, GeeksforGeeks, PYnative), or if it's a common question for AI roles.
+  - **No trivia flashcards** (he rejected these on 6 Nov): PEP numbers, version history, Python 2 vs 3, lists of other implementations.
+  - **MCQs** are for what online tests ask: predict the output, find the error, pick the valid option. Syntax rules and trap questions go here.
 - Use the same three levels everywhere:
   - **Coding**: he writes it live in an editor, with no AI help.
   - **Concept**: he explains it clearly and reasons about code he is shown.
@@ -62,11 +65,14 @@ Done, in order:
 6. Answered whether about ₹12 LPA is reachable, and whether a chat can move to another account (section 5).
 7. Started Stage 1. Read every Stage 1 resource and gave exact chapters and problem lists (notes in section 5). He then asked to be taught directly instead.
 8. **Taught Topic 1 (Basics and setup)**: the theory as one story (what Python is, how it runs, typing, memory, speed, GIL, why AI uses it) plus the basics (REPL, `-m`, indentation, comments, naming, `print`/`input`, keywords, `None`). He wrote his own summary and it was corrected (section 5).
-9. Added a flashcard viewer to the app and 39 cards for topic 1. (Seven zen/Rust cards for topic 70 were made, then removed at his request on 6 Nov. He wants the project work done when we reach the projects, topic 70. The notes are kept in section 5.)
+9. Added a flashcard viewer to the app. Seven zen/Rust cards for topic 70 were made, then removed at his request on 6 Nov; he wants the project work done when we reach the projects (topic 70), and the notes are kept in section 5.
+10. **Rebuilt the Topic 1 revision set** (6 Nov). He said the first 39 cards were mostly not useful (PEP and similar trivia). The set is now 10 flashcards for real interview questions, plus 25 MCQs (predict the output, find the error, concept checks), in a new MCQ mode in the app.
+    - The 10 flashcards cover: what Python is and why it's popular, compiled vs interpreted, what happens when you run a file, dynamic and strong typing, how variables work, memory management, the GIL, why Python is slow but used for AI, docstrings, and indentation.
+    - These are the questions that appear across InterviewBit, GeeksforGeeks and PYnative. PEP 8 appeared in only 1 of the 3 lists.
 
 Next:
-- **Topic 2: Data types and operators** (MCQ level). Teach it the same way, then add its flashcards.
-- He revises Topic 1 with the flashcards. His real progress is in the app's backup (section 6).
+- **Topic 2: Data types and operators** (MCQ level). Teach it the same way, then add its flashcards and MCQs. Topic 2 is mostly MCQ material: `-7 // 2`, `0.1 + 0.2`, `'a' or 'b'`, chained comparisons, `is` vs `==`.
+- He revises Topic 1 with the flashcards and MCQs. His real progress is in the app's backup (section 6).
 - Project work (zen, Zen-harness) waits until topic 70. Don't bring it up before then. When we get there, start from the zen notes in section 5.
 
 ## 4. Internshala research (4 Nov 2026)
@@ -154,22 +160,39 @@ Next:
 - Deploying: GitHub Pages serves the `gh-pages` branch. Keep `main` and `gh-pages` the same: commit on `main`, then run `git push origin main main:gh-pages`.
 - Section 7 below is generated from `index.html` and `flashcards.json`. After changing either, run `node tools/update-claude-md.js` from the repo root to bring it up to date.
 
-### Flashcards
+### Flashcards and MCQs
 
-- In the app, the yellow "Flashcards" button opens all cards, and each topic's panel has a "Revise" button when that topic has cards.
-- A session works as a queue: "Got it" removes the card, and "Again" sends it to the back. On a laptop, Space flips, ← means again and → means got it. Nothing about cards is saved in the progress backup.
-- The cards live in `flashcards.json`: `{"version": 1, "updated": "YYYY-MM-DD", "topics": {"<topic id>": [card, ...]}, "notes": {...}}`.
+- In the app, the yellow "Flashcards & MCQs" button opens the deck, and a switch at the top changes between Flashcards and MCQ. Each topic's panel shows "Cards" and "MCQ" buttons when that topic has them.
+- **Flashcards** work as a queue: "Got it" removes the card, and "Again" sends it to the back. On a laptop, Space flips, ← means again and → means got it.
+- **MCQs** are one pass with a score:
+  - The order of the options is shuffled every time.
+  - After you answer, the right option turns green, a wrong pick turns red, and the real output and the explanation appear.
+  - At the end you can retry the ones you got wrong.
+  - On a laptop, keys 1–4 answer and Enter moves to the next question.
+- Nothing about cards or scores is saved in the progress backup.
+- Both live in `flashcards.json`: `{"version": 2, "updated": "YYYY-MM-DD", "topics": {"<topic id>": [card, ...]}, "mcq": {"<topic id>": [question, ...]}, "notes": {...}}`.
+- An MCQ has these fields:
+  - `kind`: `output` (predict the output), `error` (find the error) or `concept`.
+  - `q`.
+  - `options`: 3–4 different strings; backticks become code.
+  - `answer`: the index of the right option in `options`.
+  - `why`: the explanation.
+  - `trap` (optional).
+  - `code` and `out` (optional, always together).
+- For `error` questions the right option must be the error's name, like `` `TypeError` ``. The checker verifies this.
 - A card has these fields:
   - `q` and `a` (both required). Backticks become inline code.
   - `hook` (optional): a memory line.
   - `code` and `out` (optional, always together): the front shows the code, and the back shows its exact output. If the code ends in an error, the last line of `out` is `ErrorName: message`.
   - `trap: true` (optional): shows a red "Trap" badge.
 - Write cards like the lessons: simple words, one idea per card, short answers.
-- Add new cards to the end of a topic's list, then run `python tools/check-flashcards.py` with Python 3.15. It checks every card's shape and runs every `code` to confirm `out` matches exactly.
+- Add new items to the end of a topic's list, then run `python tools/check-flashcards.py` with Python 3.15.
+  - It checks every item's shape and runs every `code` to confirm `out` matches exactly. Syntax errors are shown the way a terminal shows them.
+  - It also confirms each MCQ's marked answer matches what the code really does.
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 39 (topic 1).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 10, MCQs: 25 (topic 1).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -232,7 +255,7 @@ Move to the next stage only when its "Move on when" check is true. There is no f
 Format: **id. title** [level, where]. Check = what he must be able to do. Subtopic numbers start at 0 and match the progress backup keys.
 
 #### A. Python
-- **1. Basics and setup** [MCQ, stage 1, Core lane, 39 flashcards]
+- **1. Basics and setup** [MCQ, stage 1, Core lane, 10 flashcards, 25 MCQs]
   - Check: Explain how Python runs your code and answer basic syntax questions.
   - Subtopics: (0) What Python is: interpreted, dynamically typed, high-level; (1) Installing Python; versions 3.14 and 3.15; (2) REPL vs running a `.py` script; `python -m module`; (3) Indentation defines blocks; (4) Comments and docstrings; (5) Variables and naming rules (PEP 8 style); (6) `print()` and `input()`; (7) Keywords and `None`
 - **2. Data types and operators** [MCQ, stage 1, Core lane]

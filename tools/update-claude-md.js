@@ -17,11 +17,13 @@ if (start < 0 || end < 0) throw new Error("Could not find the data block in inde
 const { SECTIONS, LEVELS, T, LANES, STAGES, KINDS, RES } =
   new Function(html.slice(start, end) + "\nreturn { SECTIONS, LEVELS, T, LANES, STAGES, KINDS, RES };")();
 
-let CARDS = {};
-try { CARDS = JSON.parse(fs.readFileSync(path.join(root, "flashcards.json"), "utf8")).topics || {}; } catch (e) {}
+let CARDS = {}, MCQS = {};
+try { const d = JSON.parse(fs.readFileSync(path.join(root, "flashcards.json"), "utf8")); CARDS = d.topics || {}; MCQS = d.mcq || {}; } catch (e) {}
 const cardCount = id => (CARDS[String(id)] || []).length;
+const mcqCount = id => (MCQS[String(id)] || []).length;
 const totalCards = Object.values(CARDS).reduce((s, c) => s + c.length, 0);
-const cardTopics = Object.keys(CARDS).filter(k => CARDS[k].length);
+const totalMcqs = Object.values(MCQS).reduce((s, c) => s + c.length, 0);
+const cardTopics = [...new Set([...Object.keys(CARDS).filter(k => CARDS[k].length), ...Object.keys(MCQS).filter(k => MCQS[k].length)])].sort((a, b) => a - b);
 
 const topics = T.map(([id, sec, title, level, stage, lane, check, subs]) => ({ id, sec, title, level, stage, lane, check, subs }));
 const byId = new Map(topics.map(t => [t.id, t]));
@@ -33,7 +35,7 @@ out.push(`${MARKER} (generated from the app's data, do not edit by hand)`);
 out.push("");
 out.push(`Totals: ${topics.length} topics in ${SECTIONS.length} sections, ${STAGES.length} stages, ${RES.length} resources. ` +
   `Levels: ${count("code")} Coding, ${count("concept")} Concept, ${count("mcq")} MCQ. ` +
-  `Flashcards: ${totalCards}${cardTopics.length ? (cardTopics.length === 1 ? " (topic " : " (topics ") + cardTopics.join(", ") + ")" : ""}.`);
+  `Flashcards: ${totalCards}, MCQs: ${totalMcqs}${cardTopics.length ? (cardTopics.length === 1 ? " (topic " : " (topics ") + cardTopics.join(", ") + ")" : ""}.`);
 out.push("");
 out.push("### Levels");
 for (const v of Object.values(LEVELS)) out.push(`- **${v.label}**: ${v.short}`);
@@ -61,7 +63,7 @@ for (const [sec, sname] of SECTIONS) {
   out.push(`#### ${sec}. ${sname}`);
   for (const t of topics.filter(x => x.sec === sec)) {
     const where = t.stage === "Daily" ? "every day" : t.stage === "Optional" ? "optional" : `stage ${t.stage}, ${t.lane} lane`;
-    const cards = cardCount(t.id) ? `, ${cardCount(t.id)} flashcards` : "";
+    const cards = (cardCount(t.id) ? `, ${cardCount(t.id)} flashcards` : "") + (mcqCount(t.id) ? `, ${mcqCount(t.id)} MCQs` : "");
     out.push(`- **${t.id}. ${t.title}** [${LEVELS[t.level].label}, ${where}${cards}]`);
     out.push(`  - Check: ${t.check}`);
     out.push(`  - Subtopics: ${t.subs.map((s, i) => `(${i}) ${s}`).join("; ")}`);

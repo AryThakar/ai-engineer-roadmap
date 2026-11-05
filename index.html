@@ -208,10 +208,11 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
 .fc { position: fixed; inset: 0; z-index: 30; background: var(--paper); display: flex; flex-direction: column; gap: 12px; padding: calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left)); }
 .fc-bar, .fc-card, .fc-actions { width: 100%; max-width: 760px; margin: 0 auto; }
 .fc-bar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; }
-.fc-bar select { flex: 1 1 220px; min-width: 0; border: 2px solid var(--ink); border-radius: 8px; background: #fff; padding: 6px 8px; font-size: 14px; }
+.fc-bar select { flex: 1 1 140px; min-width: 0; border: 2px solid var(--ink); border-radius: 8px; background: #fff; padding: 6px 8px; font-size: 14px; }
 .fc-count { font: 500 13px/1 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
 .fc-card { flex: 1; min-height: 0; overflow-y: auto; background: #fff; border: 2.5px solid var(--ink); border-radius: 12px; box-shadow: 5px 5px 0 var(--ink); padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; }
 .fc-card.back { background: #fffdf3; }
+.fc-card > * { flex-shrink: 0; }
 .fc-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .fc-q { margin: 0; font: 800 clamp(20px, 3.6vw, 28px)/1.2 var(--font-display); text-wrap: balance; }
 .fc-a { margin: 0; font-size: 16px; line-height: 1.55; }
@@ -228,6 +229,26 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
 .fc-actions button { border: 2px solid var(--ink); border-radius: 8px; padding: 11px 8px; font-weight: 600; font-size: 15px; background: #fff; }
 .fc-actions .again { color: var(--code); border-color: var(--code); }
 .fc-actions .got { background: var(--done); border-color: var(--done); color: #fff; }
+.fc-actions button:disabled { opacity: .4; cursor: default; }
+.mcq-actions { grid-template-columns: 1fr; }
+.fc-mode { flex: none; }
+.fc-mode button { padding: 6px 11px; font-size: 13.5px; }
+.fc-mode button:disabled { opacity: .4; cursor: default; }
+.d-fc-btns { display: flex; gap: 6px; flex: none; }
+.fc-kind { font: 600 11.5px/1 var(--font-body); border: 1.5px solid currentColor; border-radius: 999px; padding: 4px 8px; background: #fff; }
+.fc-kind.output { color: var(--concept); }
+.fc-kind.error { color: var(--code); }
+.fc-kind.concept { color: var(--prog); }
+.mcq-opts { display: grid; gap: 8px; }
+.mcq-opt { display: flex; gap: 10px; align-items: flex-start; width: 100%; text-align: left; border: 2px solid var(--ink); border-radius: 8px; background: #fff; padding: 10px 12px; font-size: 15.5px; line-height: 1.4; }
+.mcq-opt:hover:not(:disabled) { background: var(--node); }
+.mcq-opt:disabled { cursor: default; color: var(--ink); }
+.mcq-opt.ok { background: var(--done-bg); border-color: var(--done); }
+.mcq-opt.bad { background: #ffe3dc; border-color: var(--code); }
+.mcq-key { font: 500 12px/1.7 var(--font-mono); color: var(--muted); flex: none; }
+.mcq-result { margin: 0; font: 800 19px/1.2 var(--font-display); }
+.mcq-result.ok { color: var(--done); }
+.mcq-result.bad { color: var(--code); }
 
 @media (max-width: 860px) {
   .summary { grid-template-columns: 1fr; }
@@ -244,6 +265,11 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
   .grid .topic:nth-child(odd)::after { content: none; }
   .grid .topic:nth-child(odd)::before, .grid .topic:nth-child(even)::before { content: ""; position: absolute; top: 50%; right: calc(100% + 2px); width: 21px; border-top: 2px dashed var(--spine); }
   .reset { margin-left: 0; }
+  .fc-mode { order: 1; }
+  #fc-shuffle { order: 2; margin-left: auto; }
+  #fc-close { order: 3; }
+  .fc-bar select { order: 4; flex-basis: 100%; }
+  .fc-count { order: 5; flex-basis: 100%; }
   .drawer { padding-top: 18px; top: auto; bottom: 0; height: 88%; width: 100%; border-left: 0; border-top: 2.5px solid var(--ink); border-radius: 14px 14px 0 0; transform: translateY(105%); }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -275,7 +301,7 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
         <select id="stage-filter"><option value="all">All stages</option></select>
       </label>
       <label class="ctl" for="hide-done"><input type="checkbox" id="hide-done"> Hide done</label>
-      <button type="button" class="reset slim fc-open" id="fc-open" hidden>Flashcards</button>
+      <button type="button" class="reset slim fc-open" id="fc-open" hidden>Flashcards &amp; MCQs</button>
       <button type="button" class="reset" id="backup-open">Back up or move progress</button>
       <button type="button" class="reset slim" id="reset">Reset progress</button>
     </div>
@@ -336,7 +362,7 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
   <ul class="subs" id="d-subs"></ul>
   <h3>Interview check</h3>
   <p class="check" id="d-check"></p>
-  <div class="d-fc" id="d-fc" hidden><p id="d-fc-text"></p><button type="button" class="close" id="d-fc-btn">Revise</button></div>
+  <div class="d-fc" id="d-fc" hidden><p id="d-fc-text"></p><span class="d-fc-btns"><button type="button" class="close" id="d-fc-btn">Cards</button><button type="button" class="close" id="d-mcq-btn">MCQ</button></span></div>
   <div id="d-res-wrap">
     <h3>Where to learn and practise <small id="d-rescount"></small></h3>
     <ul class="d-res" id="d-res"></ul>
@@ -350,7 +376,8 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
 
 <div class="fc" id="fc" role="dialog" aria-modal="true" aria-labelledby="fc-title" hidden>
   <div class="fc-bar">
-    <h2 class="sr" id="fc-title">Flashcards</h2>
+    <h2 class="sr" id="fc-title">Flashcards and MCQs</h2>
+    <div class="seg fc-mode" role="group" aria-label="Mode" id="fc-mode"><button type="button" data-mode="cards" aria-pressed="true">Flashcards</button><button type="button" data-mode="mcq" aria-pressed="false">MCQ</button></div>
     <label class="sr" for="fc-deck">Deck</label>
     <select id="fc-deck"></select>
     <span class="fc-count" id="fc-count" role="status"></span>
@@ -362,6 +389,9 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
     <button type="button" class="again" id="fc-again">Again</button>
     <button type="button" id="fc-flip">Show answer</button>
     <button type="button" class="got" id="fc-got">Got it</button>
+  </div>
+  <div class="fc-actions mcq-actions" id="mcq-actions" hidden>
+    <button type="button" class="got" id="mcq-next" disabled>Next question</button>
   </div>
 </div>
 
@@ -845,58 +875,84 @@ document.getElementById("backup-load").addEventListener("click", () => {
   } catch (e) { backupMsg.style.color = "var(--code)"; backupMsg.textContent = "That text is not a progress backup from this roadmap."; }
 });
 
-/* Flashcards: cards live in flashcards.json, keyed by topic id (format in CLAUDE.md).
-   A session is a queue: "Got it" removes the card, "Again" sends it to the back. */
+/* Flashcards and MCQs: both live in flashcards.json, keyed by topic id (format in CLAUDE.md).
+   Cards: a queue; "Got it" removes the card, "Again" sends it to the back.
+   MCQ: one pass with a score; options are shuffled each time; wrong ones can be retried. */
 const fc = document.getElementById("fc"), fcCard = document.getElementById("fc-card"), fcDeck = document.getElementById("fc-deck");
-const fcCount = document.getElementById("fc-count"), fcFlip = document.getElementById("fc-flip"), fcActions = document.getElementById("fc-actions");
-let CARDS = null, fcQueue = [], fcKnown = 0, fcFlipped = false, fcLastFocus = null;
-function cardsFor(id) { return (CARDS && CARDS[String(id)]) || []; }
-function deckTopics() { return CARDS ? Object.keys(CARDS).map(Number).filter(id => byId.has(id) && cardsFor(id).length).sort((a, b) => a - b) : []; }
+const fcCount = document.getElementById("fc-count"), fcFlip = document.getElementById("fc-flip");
+const fcActions = document.getElementById("fc-actions"), mcqActions = document.getElementById("mcq-actions"), mcqNext = document.getElementById("mcq-next");
+const KIND = { output: "Predict the output", error: "Find the error", concept: "Concept check" };
+const DECK = { cards: null, mcq: null };
+let fcMode = "cards", fcQueue = [], fcKnown = 0, fcFlipped = false, fcLastFocus = null;
+let mq = { list: [], i: 0, right: 0, wrong: [], picked: null, order: [] };
+const itemsFor = (mode, id) => (DECK[mode] && DECK[mode][String(id)]) || [];
+const deckTopics = mode => DECK[mode] ? Object.keys(DECK[mode]).map(Number).filter(id => byId.has(id) && itemsFor(mode, id).length).sort((a, b) => a - b) : [];
+const totalOf = mode => deckTopics(mode).reduce((n, id) => n + itemsFor(mode, id).length, 0);
+const plural = (n, one, many) => n + " " + (n === 1 ? one : many);
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function renderDrawerCards(id) {
-  const n = cardsFor(id).length;
-  document.getElementById("d-fc").hidden = !n;
-  if (n) document.getElementById("d-fc-text").textContent = n + (n === 1 ? " flashcard" : " flashcards") + " for this topic";
+  const nc = itemsFor("cards", id).length, nm = itemsFor("mcq", id).length;
+  document.getElementById("d-fc").hidden = !(nc || nm);
+  const parts = [];
+  if (nc) parts.push(plural(nc, "flashcard", "flashcards"));
+  if (nm) parts.push(plural(nm, "MCQ", "MCQs"));
+  document.getElementById("d-fc-text").textContent = parts.join(" · ") + " for this topic";
+  document.getElementById("d-fc-btn").hidden = !nc;
+  document.getElementById("d-mcq-btn").hidden = !nm;
 }
 fetch("flashcards.json", { cache: "no-cache" })
   .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
   .then(d => {
-    CARDS = d && d.topics ? d.topics : {};
-    const ids = deckTopics(); if (!ids.length) return;
-    const total = ids.reduce((s, id) => s + cardsFor(id).length, 0);
-    fcDeck.textContent = "";
-    const all = h("option", null, "All topics · " + total + " cards"); all.value = "all"; fcDeck.appendChild(all);
-    ids.forEach(id => { const o = h("option", null, id + ". " + byId.get(id).title + " · " + cardsFor(id).length); o.value = String(id); fcDeck.appendChild(o); });
-    const open = document.getElementById("fc-open"); open.textContent = "Flashcards · " + total; open.hidden = false;
+    DECK.cards = (d && d.topics) || {}; DECK.mcq = (d && d.mcq) || {};
+    const nc = totalOf("cards"), nm = totalOf("mcq");
+    if (!nc && !nm) return;
+    const open = document.getElementById("fc-open");
+    open.textContent = nm ? "Flashcards & MCQs" : "Flashcards · " + nc; open.hidden = false;
     if (current) renderDrawerCards(current);
   })
   .catch(() => {});
-function fcStart(deck) {
-  fcDeck.value = deck;
-  const ids = deck === "all" ? deckTopics() : [Number(deck)];
-  fcQueue = []; ids.forEach(id => cardsFor(id).forEach(c => fcQueue.push({ id, c })));
-  fcKnown = 0; fcFlipped = false; fcRender();
+function fillDeckSelect() {
+  fcDeck.textContent = "";
+  const all = h("option", null, "All topics · " + totalOf(fcMode) + (fcMode === "mcq" ? " MCQs" : " cards")); all.value = "all"; fcDeck.appendChild(all);
+  deckTopics(fcMode).forEach(id => { const o = h("option", null, id + ". " + byId.get(id).title + " · " + itemsFor(fcMode, id).length); o.value = String(id); fcDeck.appendChild(o); });
+  document.querySelectorAll("#fc-mode button").forEach(b => { b.setAttribute("aria-pressed", String(b.dataset.mode === fcMode)); b.disabled = !totalOf(b.dataset.mode); });
 }
-function fcRender() {
-  fcCard.textContent = ""; fcCard.classList.toggle("back", fcFlipped);
-  fcCount.textContent = fcQueue.length + " left · " + fcKnown + " known";
-  fcActions.hidden = !fcQueue.length;
-  if (!fcQueue.length) {
-    const d = h("div", "fc-done");
-    d.appendChild(h("b", null, fcKnown ? "Deck done: " + fcKnown + " known" : "No cards here yet"));
-    const again = h("button", "close", "Start again"); again.type = "button";
-    again.addEventListener("click", () => { fcStart(fcDeck.value); fcCard.focus({ preventScroll: true }); });
-    d.appendChild(again); fcCard.appendChild(d);
-    return;
-  }
-  const { id, c } = fcQueue[0];
+function fcStart(deck) {
+  if (![...fcDeck.options].some(o => o.value === deck)) deck = "all";
+  fcDeck.value = deck;
+  const ids = deck === "all" ? deckTopics(fcMode) : [Number(deck)];
+  const items = []; ids.forEach(id => itemsFor(fcMode, id).forEach(c => items.push({ id, c })));
+  if (fcMode === "mcq") mqStart(items);
+  else { fcQueue = items; fcKnown = 0; fcFlipped = false; }
+  fcRender();
+}
+function mqStart(items) { mq = { list: items, i: 0, right: 0, wrong: [], picked: null, order: [] }; mqPrepare(); }
+function mqPrepare() { const cur = mq.list[mq.i]; mq.order = cur ? shuffle(cur.c.options.map((_, k) => k)) : []; mq.picked = null; }
+function cardHead(id, c) {
   const meta = h("div", "fc-meta");
   meta.appendChild(h("span", "tag", "Topic " + id + " · " + byId.get(id).title));
+  if (c.kind) meta.appendChild(h("span", "fc-kind " + c.kind, KIND[c.kind]));
   if (c.trap) meta.appendChild(h("span", "fc-trap", "Trap"));
   fcCard.appendChild(meta);
   fcCard.appendChild(fmt(h("p", "fc-q"), c.q));
   if (c.code) { fcCard.appendChild(h("p", "fc-label", "Code")); fcCard.appendChild(h("pre", null, c.code)); }
+}
+function doneScreen(title, buttons) {
+  const d = h("div", "fc-done"); d.appendChild(h("b", null, title));
+  buttons.forEach(([label, fn]) => { const b = h("button", "close", label); b.type = "button"; b.addEventListener("click", () => { fn(); fcCard.focus({ preventScroll: true }); }); d.appendChild(b); });
+  fcCard.appendChild(d);
+}
+function fcRender() {
+  fcCard.textContent = ""; fcCard.classList.remove("back");
+  fcActions.hidden = true; mcqActions.hidden = true;
+  if (fcMode === "mcq") return mqRender();
+  fcCount.textContent = fcQueue.length + " left · " + fcKnown + " known";
+  if (!fcQueue.length) return doneScreen(fcKnown ? "Deck done: " + fcKnown + " known" : "No cards here yet", [["Start again", () => fcStart(fcDeck.value)]]);
+  fcActions.hidden = false; fcCard.classList.toggle("back", fcFlipped);
+  const { id, c } = fcQueue[0];
+  cardHead(id, c);
   if (fcFlipped) {
-    if (c.out) { fcCard.appendChild(h("p", "fc-label", "Output")); fcCard.appendChild(h("pre", "out", c.out)); }
+    if (c.out != null) { fcCard.appendChild(h("p", "fc-label", "Output")); fcCard.appendChild(h("pre", "out", c.out || "(nothing is printed)")); }
     fcCard.appendChild(fmt(h("p", "fc-a"), c.a));
     if (c.hook) { const hk = h("p", "fc-hook"); hk.appendChild(h("b", null, "Remember: ")); fmt(hk, c.hook); fcCard.appendChild(hk); }
   } else {
@@ -907,16 +963,68 @@ function fcRender() {
   fcFlip.textContent = fcFlipped ? "Show question" : "Show answer";
   fcCard.scrollTop = 0;
 }
-function fcFlipCard() { if (!fcQueue.length) return; fcFlipped = !fcFlipped; fcRender(); }
+function mqRender() {
+  const n = mq.list.length;
+  if (mq.i >= n) {
+    fcCount.textContent = n ? mq.right + " / " + n + " correct" : "";
+    const btns = [];
+    if (mq.wrong.length) btns.push(["Retry the " + plural(mq.wrong.length, "wrong one", "wrong ones"), () => { mqStart(mq.wrong.slice()); fcRender(); }]);
+    btns.push(["Start again", () => fcStart(fcDeck.value)]);
+    return doneScreen(n ? "Score: " + mq.right + " / " + n : "No MCQs here yet", btns);
+  }
+  mcqActions.hidden = false;
+  const { id, c } = mq.list[mq.i];
+  fcCount.textContent = "Question " + (mq.i + 1) + " of " + n + " · " + mq.right + " correct";
+  cardHead(id, c);
+  const opts = h("div", "mcq-opts"); opts.setAttribute("role", "group"); opts.setAttribute("aria-label", "Answers");
+  mq.order.forEach((k, pos) => {
+    const b = h("button", "mcq-opt"); b.type = "button"; b.dataset.k = k;
+    b.appendChild(h("span", "mcq-key", String(pos + 1)));
+    b.appendChild(fmt(h("span"), c.options[k]));
+    if (mq.picked !== null) { b.disabled = true; if (k === c.answer) b.classList.add("ok"); else if (k === mq.picked) b.classList.add("bad"); }
+    b.addEventListener("click", () => mqPick(k));
+    opts.appendChild(b);
+  });
+  fcCard.appendChild(opts);
+  if (mq.picked !== null) {
+    const ok = mq.picked === c.answer;
+    const res = h("p", "mcq-result " + (ok ? "ok" : "bad"), ok ? "Correct" : "Not quite. The right answer is in green.");
+    fcCard.appendChild(res);
+    if (c.out != null) { fcCard.appendChild(h("p", "fc-label", "Real output")); fcCard.appendChild(h("pre", "out", c.out || "(nothing is printed)")); }
+    fcCard.appendChild(fmt(h("p", "fc-a"), c.why));
+    res.scrollIntoView({ block: "nearest" });
+  } else {
+    const hint = h("p", "fc-hint", "Pick an answer. ");
+    hint.appendChild(h("span", "fc-keys", "Keys: 1–" + mq.order.length + " to answer, Enter for next."));
+    fcCard.appendChild(hint);
+    fcCard.scrollTop = 0;
+  }
+  mcqNext.disabled = mq.picked === null;
+  mcqNext.textContent = mq.i + 1 < n ? "Next question" : "See my score";
+}
+function mqPick(k) {
+  if (mq.picked !== null || mq.i >= mq.list.length) return;
+  mq.picked = k;
+  const cur = mq.list[mq.i];
+  if (k === cur.c.answer) mq.right++; else mq.wrong.push(cur);
+  fcRender(); mcqNext.focus({ preventScroll: true });
+}
+function mqAdvance() {
+  if (mq.picked === null) return;
+  mq.i++; mqPrepare(); fcRender(); fcCard.focus({ preventScroll: true });
+}
+function fcFlipCard() { if (fcMode !== "cards" || !fcQueue.length) return; fcFlipped = !fcFlipped; fcRender(); }
 function fcNext(known) {
-  if (!fcQueue.length) return;
+  if (fcMode !== "cards" || !fcQueue.length) return;
   const cur = fcQueue.shift();
   if (known) fcKnown++; else fcQueue.push(cur);
   fcFlipped = false; fcRender(); fcCard.focus({ preventScroll: true });
 }
-function fcOpen(deck) {
-  if (!CARDS) return;
+function fcOpen(deck, mode) {
+  if (!DECK.cards) return;
+  fcMode = mode || (totalOf("cards") ? "cards" : "mcq");
   fcLastFocus = document.activeElement;
+  fillDeckSelect();
   fc.hidden = false; document.body.style.overflow = "hidden";
   fcStart(deck); fcCard.focus({ preventScroll: true });
 }
@@ -924,18 +1032,24 @@ function fcClose() {
   fc.hidden = true; document.body.style.overflow = "";
   if (fcLastFocus && fcLastFocus.focus) fcLastFocus.focus({ preventScroll: true });
 }
-fcCard.addEventListener("click", e => { if (e.target.closest("button") || String(window.getSelection())) return; fcFlipCard(); });
+fcCard.addEventListener("click", e => { if (fcMode !== "cards" || e.target.closest("button") || String(window.getSelection())) return; fcFlipCard(); });
 fcFlip.addEventListener("click", fcFlipCard);
 document.getElementById("fc-again").addEventListener("click", () => fcNext(false));
 document.getElementById("fc-got").addEventListener("click", () => fcNext(true));
+mcqNext.addEventListener("click", mqAdvance);
 document.getElementById("fc-shuffle").addEventListener("click", () => {
-  for (let i = fcQueue.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [fcQueue[i], fcQueue[j]] = [fcQueue[j], fcQueue[i]]; }
-  fcFlipped = false; fcRender();
+  if (fcMode === "mcq") { mqStart(shuffle(mq.list.slice())); fcRender(); return; }
+  shuffle(fcQueue); fcFlipped = false; fcRender();
 });
+document.querySelectorAll("#fc-mode button").forEach(b => b.addEventListener("click", () => {
+  if (b.dataset.mode === fcMode) return;
+  const deck = fcDeck.value; fcMode = b.dataset.mode; fillDeckSelect(); fcStart(deck);
+}));
 document.getElementById("fc-close").addEventListener("click", fcClose);
 fcDeck.addEventListener("change", () => fcStart(fcDeck.value));
 document.getElementById("fc-open").addEventListener("click", () => fcOpen("all"));
-document.getElementById("d-fc-btn").addEventListener("click", () => fcOpen(String(current)));
+document.getElementById("d-fc-btn").addEventListener("click", () => fcOpen(String(current), "cards"));
+document.getElementById("d-mcq-btn").addEventListener("click", () => fcOpen(String(current), "mcq"));
 document.addEventListener("keydown", e => {
   if (fc.hidden) return;
   const tag = e.target.tagName;
@@ -948,6 +1062,12 @@ document.addEventListener("keydown", e => {
     return;
   }
   if (tag === "SELECT" || (tag === "BUTTON" && (e.key === " " || e.key === "Enter"))) return;
+  if (fcMode === "mcq") {
+    const pos = Number(e.key) - 1;
+    if (Number.isInteger(pos) && pos >= 0 && pos < mq.order.length) { e.preventDefault(); mqPick(mq.order[pos]); }
+    else if (e.key === "Enter" || e.key === "ArrowRight") { e.preventDefault(); mqAdvance(); }
+    return;
+  }
   if (e.key === " " || e.key === "Enter") { e.preventDefault(); fcFlipCard(); }
   else if (e.key === "ArrowLeft") { e.preventDefault(); fcNext(false); }
   else if (e.key === "ArrowRight") { e.preventDefault(); fcNext(true); }

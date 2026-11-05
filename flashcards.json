@@ -1,212 +1,415 @@
 {
- "version": 1,
+ "version": 2,
  "updated": "2026-11-06",
  "topics": {
   "1": [
    {
-    "q": "What is Python, in one line?",
-    "a": "An easy-to-read, general-purpose language made by Guido van Rossum in 1991. It is named after the comedy show Monty Python, not the snake.",
-    "hook": "Python: write the idea, not the ceremony."
-   },
-   {
-    "q": "Why does Python use indentation instead of { } and ;?",
-    "a": "Python was made so code is easy for humans to read. Blocks are shown by indentation (4 spaces by PEP 8), so the code looks like neat notes. Java needs a class and a main method just to print; Python needs one line.",
-    "code": "print(\"Hello\")",
-    "out": "Hello"
-   },
-   {
-    "q": "What happens when you run `python hello.py`? (3 steps)",
-    "a": "1. Python checks the grammar of the WHOLE file (SyntaxError here, nothing runs). 2. It converts the code into bytecode: small step cards. 3. The Python Virtual Machine (PVM) carries out the cards one by one (NameError, TypeError and other runtime errors happen here).",
-    "hook": "Grammar is checked before cooking; missing ingredients are found while cooking."
-   },
-   {
-    "q": "A file has two `print()` lines, then line 3 is `x = = 5`. What prints?",
-    "a": "Nothing. You only get `SyntaxError: invalid syntax`, because Python checks the whole file before running any line.",
-    "trap": true
-   },
-   {
-    "q": "A file has two `print()` lines, then line 3 uses a name that doesn't exist. What prints?",
-    "a": "Both print lines run, then `NameError`. Runtime errors only appear when Python reaches that line.",
-    "code": "print(\"line 1\")\nprint(\"line 2\")\nprint(saffron)",
-    "out": "line 1\nline 2\nNameError: name 'saffron' is not defined",
-    "trap": true
-   },
-   {
-    "q": "What is bytecode?",
-    "a": "The simple step-by-step instructions Python makes from your code, like \"load a, load b, add\". The CPU can't run it directly; the PVM does. You can see it with `dis.dis(function)`."
-   },
-   {
-    "q": "What are `.pyc` files and the `__pycache__` folder?",
-    "a": "Saved bytecode, so Python can skip converting the code again next time. Python saves them only for modules you import, not for the script you run directly."
-   },
-   {
-    "q": "Does the PVM turn bytecode into machine code?",
-    "a": "No. The PVM is a C program that is already machine code. It reads each bytecode instruction and does it directly: the cook follows the card, it doesn't rewrite it. Turning bytecode into machine code is what a JIT does (PyPy, and CPython's experimental JIT).",
-    "hook": "The cook follows the card; a JIT rewrites the card.",
-    "trap": true
+    "q": "What is Python, and why is it so popular?",
+    "a": "A high-level, general-purpose language (Guido van Rossum, 1991) built to be easy to read. Popular because the code is short and readable, there is a library for almost everything (NumPy, pandas, PyTorch, FastAPI), it runs on every OS, and you can write procedural, object-oriented or functional code. Used for AI/ML, data, web backends and automation.",
+    "hook": "Write the idea, not the ceremony."
    },
    {
     "q": "Is Python compiled or interpreted?",
-    "a": "Both. CPython compiles the code to bytecode, then the PVM interprets that bytecode. It is called interpreted because you never run a separate compile step and you never get an .exe.",
-    "hook": "Interview line: \"Usually called interpreted, but technically it's compiled to bytecode and then interpreted.\""
+    "a": "Both. CPython first compiles your code to bytecode, then the Python Virtual Machine (PVM) interprets that bytecode. It is called interpreted because you never run a separate compile step and you never get an .exe.",
+    "hook": "Compiled into step cards, then a cook follows the cards."
    },
    {
-    "q": "What is CPython? Does your Python code go through a C compiler?",
-    "a": "CPython is the normal Python you download: the interpreter program, written in C. Your Python code never goes through a C compiler; it is turned into bytecode and run by the PVM.",
-    "trap": true
+    "q": "What happens when you run `python app.py`?",
+    "a": "1. Python checks the grammar of the whole file; a SyntaxError stops everything before line 1 runs. 2. It compiles the code to bytecode (saved as .pyc in __pycache__ for imported modules). 3. The PVM carries out the bytecode one instruction at a time; NameError, TypeError and other runtime errors happen here. The PVM does not turn bytecode into machine code; only a JIT does that.",
+    "hook": "Grammar is checked before cooking; missing ingredients are found while cooking."
    },
    {
-    "q": "Name other versions (implementations) of Python.",
-    "a": "PyPy (has a JIT, pure-Python loops often run much faster), MicroPython (small microcontroller boards), Jython (runs on Java's JVM), IronPython (runs on .NET)."
+    "q": "What is a dynamically typed language? Is Python strongly typed too?",
+    "a": "Dynamic: types are checked while the program runs, and a variable can point to any type, so `x = 5` then `x = \"five\"` is fine. Strong: Python never silently mixes unrelated types, so `\"1\" + 1` is a TypeError (JavaScript would give \"11\"). Python is both dynamic and strong.",
+    "code": "x = 5\nx = \"five\"\nprint(type(x))\nprint(\"1\" + 1)",
+    "out": "<class 'str'>\nTypeError: can only concatenate str (not \"int\") to str",
+    "hook": "Labels can move (dynamic); apples and oranges never mix (strong)."
    },
    {
-    "q": "What is the latest Python version, and what's new?",
-    "a": "3.15, released October 2026: lazy imports (`lazy import json`), a built-in `frozendict`, UTF-8 as the default encoding, a faster experimental JIT. In 3.14 the free-threaded build (no GIL) became officially supported. Python 2 was retired in 2020."
-   },
-   {
-    "q": "Python 2 vs Python 3: three differences?",
-    "a": "1. `print \"hi\"` became `print(\"hi\")`. 2. `5 / 2` gave 2, now gives 2.5 (use `//` for 2). 3. Text is Unicode by default in Python 3.",
-    "code": "print(5 / 2, 5 // 2)",
-    "out": "2.5 2"
-   },
-   {
-    "q": "\"Everything is an object\": what does that mean?",
-    "a": "Every value (5, \"hi\", a list, even a function) is a box in memory with a value, a type (`type(x)`) and an identity (`id(x)`, its address in CPython). Even a function can get a new label.",
-    "code": "say = print\nsay(\"hi\")\nprint(type(5))",
-    "out": "hi\n<class 'int'>"
-   },
-   {
-    "q": "What is a variable in Python?",
-    "a": "A label (name) stuck on an object, not a box that holds the value. Two labels can point to the same object.",
-    "code": "a = [1, 2]\nb = a\nb.append(3)\nprint(a)",
-    "out": "[1, 2, 3]",
+    "q": "How do variables work in Python?",
+    "a": "A variable is a label stuck on an object, not a box that holds a value. Every value is an object with a type and an identity (`type(x)`, `id(x)`). Two labels can point to the same object, so a change made through one shows up through the other.",
+    "code": "a = [1, 2]\nb = a\nb.append(3)\nprint(a, a is b)",
+    "out": "[1, 2, 3] True",
     "hook": "Variables are labels, not boxes."
    },
    {
-    "q": "What does dynamically typed mean?",
-    "a": "The type belongs to the object, not the variable. A label can move to an object of another type, and types are checked while the program runs. So you never write `int x`.",
-    "code": "x = 5\nprint(type(x))\nx = \"five\"\nprint(type(x))",
-    "out": "<class 'int'>\n<class 'str'>"
+    "q": "How is memory managed in Python?",
+    "a": "Automatically. Each object counts the labels (references) pointing to it, and when the count reaches zero it is freed straight away. A garbage collector also cleans up groups of objects that only point at each other (reference cycles). All objects live in Python's private heap, which CPython manages for you.",
+    "hook": "Count the labels; zero labels means thrown away."
    },
    {
-    "q": "What does strongly typed mean? Can Python mix types at all?",
-    "a": "Python never silently guesses between unrelated types: `\"1\" + 1` is a TypeError. Mixes that make sense are allowed.",
-    "code": "print(3 + 2.5, True + 1, \"ab\" * 3)\nprint(\"1\" + 1)",
-    "out": "5.5 2 ababab\nTypeError: can only concatenate str (not \"int\") to str",
-    "hook": "Labels can move (dynamic); apples and oranges never mix (strong).",
-    "trap": true
+    "q": "What is the GIL?",
+    "a": "The Global Interpreter Lock: in standard CPython only one thread runs Python code at a time. Threads still help with waiting work (downloads, API calls) but not with heavy CPU work; use multiprocessing for that. Since 3.14 there is an official free-threaded build without the GIL.",
+    "hook": "One knife in the kitchen: many cooks, one cutting at a time."
    },
    {
-    "q": "Dynamic vs static, strong vs weak: where do Python, JavaScript, Java and C sit?",
-    "a": "Python: dynamic + strong. JavaScript: dynamic + weak (`\"1\" + 1` gives \"11\"). Java: static + strong. C: static + weak. Dynamic does NOT mean weak.",
-    "trap": true
+    "q": "Why is Python slower than C, and why is it still used for AI?",
+    "a": "Slower because it checks types on every operation while running, and the PVM reads instructions one by one; C checks types once, when it compiles. AI still uses Python because Python only directs the work, while the heavy maths runs in C, C++ or CUDA inside NumPy and PyTorch. Measured: adding 10 million numbers took about 0.46 s with a Python loop and 0.007 s with NumPy.",
+    "hook": "Python checks every time; C checks once. Python is the manager, C is the worker."
    },
    {
-    "q": "How does Python free memory?",
-    "a": "It counts the labels (references) on each object; when the count reaches zero, the object is deleted. A garbage collector also cleans up groups of objects that only point at each other. You never free memory yourself.",
-    "hook": "Count the labels; zero labels = thrown away."
+    "q": "What is a docstring? How is it different from a comment?",
+    "a": "A docstring is a string written as the first line inside a function, class or module. Python keeps it in `__doc__` and `help()` shows it, so it tells people how to use the code. A `#` comment is thrown away by Python and explains why the code does something."
    },
    {
-    "q": "Why is Python slower than C or Rust?",
-    "a": "On every operation, like `a + b`, Python checks the types again because labels may have moved, and the PVM reads instructions one by one. C checks types once, before running.",
-    "hook": "Python checks every time; C checks once."
+    "q": "Why is indentation required in Python?",
+    "a": "Python uses indentation instead of `{ }` to mark blocks: everything indented under a line ending in `:` belongs to it. Wrong indentation is an error, not a style problem: IndentationError, or TabError if tabs and spaces are mixed. Use 4 spaces."
+   }
+  ]
+ },
+ "mcq": {
+  "1": [
+   {
+    "kind": "output",
+    "q": "This file is run. What appears?",
+    "code": "print(\"A\")\nprint(\"B\")\nx = = 5",
+    "out": "SyntaxError: invalid syntax",
+    "options": [
+     "A, B, then a SyntaxError",
+     "Only a SyntaxError: nothing is printed",
+     "A, then a SyntaxError",
+     "A and B, no error"
+    ],
+    "answer": 1,
+    "trap": true,
+    "why": "Python checks the grammar of the whole file before running any line, so the SyntaxError stops it before `print(\"A\")`."
    },
    {
-    "q": "What is the GIL, in simple words?",
-    "a": "In standard CPython only one thread runs Python code at a time: one knife in the kitchen. Fine for waiting jobs (downloads, API calls), no speed-up for heavy CPU work. Since 3.14 there is an official free-threaded build without it."
+    "kind": "output",
+    "q": "This file is run. What appears?",
+    "code": "print(\"A\")\nprint(\"B\")\nprint(total)",
+    "out": "A\nB\nNameError: name 'total' is not defined",
+    "options": [
+     "A, B, then a NameError",
+     "Only a NameError: nothing is printed",
+     "A, B, then None",
+     "A SyntaxError"
+    ],
+    "answer": 0,
+    "why": "NameError is a runtime error: the lines run in order until Python reaches the bad one."
    },
    {
-    "q": "If Python is slow, why is AI built in it?",
-    "a": "Python is the manager; the heavy maths runs in C, C++ or CUDA inside libraries like NumPy and PyTorch. Measured: adding 10 million numbers took ~0.46 s with a Python loop and ~0.007 s with NumPy (~65x). Your Zen-harness: Python logic, llama.cpp (C++) does the model maths.",
-    "hook": "A slow manager doesn't matter when fast workers do 99% of the work."
+    "kind": "error",
+    "q": "Which error does this raise?",
+    "code": "if True:\nprint(\"hi\")",
+    "out": "IndentationError: expected an indented block after 'if' statement on line 1",
+    "options": [
+     "`SyntaxError`",
+     "`IndentationError`",
+     "`TabError`",
+     "`NameError`"
+    ],
+    "answer": 1,
+    "trap": true,
+    "why": "A line ending in `:` must be followed by an indented block. IndentationError is a kind of SyntaxError, but the name you see is IndentationError."
    },
    {
-    "q": "Main reasons to choose Python?",
-    "a": "Fast to write and read, a library for almost everything (NumPy, pandas, PyTorch, FastAPI), a great glue layer over C/C++/Rust, a huge community. Ideal for rapid prototyping and AI."
+    "kind": "error",
+    "q": "Line 2 is indented with a Tab, line 3 with 8 spaces. Which error?",
+    "code": "if True:\n\tprint(1)\n        print(2)",
+    "out": "TabError: inconsistent use of tabs and spaces in indentation",
+    "options": [
+     "`IndentationError`",
+     "`TabError`",
+     "`SyntaxError`",
+     "No error, both lines print"
+    ],
+    "answer": 1,
+    "trap": true,
+    "why": "They look the same on screen, but Python refuses to guess how wide a Tab is. Use 4 spaces everywhere."
    },
    {
-    "q": "Limitations of Python?",
-    "a": "Slow pure-Python loops, the GIL for CPU-heavy threads, more memory per value, weak for mobile and browser apps, and type mistakes only show up when that line runs."
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(print(\"hi\"))",
+    "out": "hi\nNone",
+    "options": [
+     "`hi`",
+     "`hi`, then `None`",
+     "`None`",
+     "An error"
+    ],
+    "answer": 1,
+    "trap": true,
+    "why": "The inner print shows hi and returns None; the outer print then prints that None."
    },
    {
-    "q": "Where is Python used?",
-    "a": "AI/ML (PyTorch, scikit-learn), data (pandas, Jupyter), web backends (Django, Flask, FastAPI), automation and scripting, testing (pytest), science (SciPy)."
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"a\", \"b\", sep=\"-\", end=\"!\")",
+    "out": "a-b!",
+    "options": [
+     "`a b!`",
+     "`a-b!`",
+     "`ab-!`",
+     "`a-b`"
+    ],
+    "answer": 1,
+    "why": "`sep` goes between the values; `end` replaces the newline at the end."
    },
    {
-    "q": "What are a PEP, PEP 8 and PEP 20?",
-    "a": "PEP = Python Enhancement Proposal, the document for proposing changes. PEP 8 = the style guide (4 spaces, snake_case). PEP 20 = the Zen of Python: `import this` shows 19 rules, starting \"Beautiful is better than ugly.\""
+    "kind": "output",
+    "q": "The user types 5. What is printed?",
+    "code": "x = \"5\"  # this is what input() gives you\nprint(x * 2)",
+    "out": "55",
+    "options": [
+     "`10`",
+     "`55`",
+     "`TypeError`",
+     "`5 5`"
+    ],
+    "answer": 1,
+    "trap": true,
+    "why": "`input()` always returns a string, and a string times 2 repeats it. Use `int(input())` for numbers."
    },
    {
-    "q": "Is Python object-oriented or functional?",
-    "a": "Multi-paradigm: you can write procedural code, object-oriented code (classes) and functional code (lambda, map, filter)."
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print(int(\"3.5\"))",
+    "out": "ValueError: invalid literal for int() with base 10: '3.5'",
+    "options": [
+     "`3`",
+     "`4`",
+     "`ValueError`",
+     "`TypeError`"
+    ],
+    "answer": 2,
+    "why": "`int()` only accepts text that is a whole number. `int(float(\"3.5\"))` gives 3."
    },
    {
-    "q": "Is Python case-sensitive?",
-    "a": "Yes: `name` and `Name` are different variables, and `True`, `False`, `None` must start with a capital letter."
+    "kind": "concept",
+    "q": "Which is a valid variable name?",
+    "options": [
+     "`2nd_value`",
+     "`my-value`",
+     "`_value2`",
+     "`class`"
+    ],
+    "answer": 2,
+    "why": "Names use letters, digits and `_`, can't start with a digit, can't contain `-`, and can't be a keyword."
    },
    {
-    "q": "REPL vs script: what is the difference in output?",
-    "a": "The REPL (`python`, the >>> prompt) shows the value of each expression automatically. A script shows only what you `print()`. A script containing only `2 + 3` prints nothing.",
-    "trap": true
+    "kind": "concept",
+    "q": "Which of these is NOT a Python keyword?",
+    "options": [
+     "`None`",
+     "`True`",
+     "`print`",
+     "`pass`"
+    ],
+    "answer": 2,
+    "why": "`print` is a built-in function, not a keyword. Python has 35 keywords, and `True`, `False` and `None` are among them."
    },
    {
-    "q": "What does `python -m` do, and why `python -m pip`?",
-    "a": "It runs a module as a program: `python -m venv .venv`, `python -m json.tool file.json`, `python -m http.server`. `python -m pip` installs into the Python you are running; plain `pip` might belong to another installed version."
-   },
-   {
-    "q": "Name the indentation errors.",
-    "a": "No indent after a `:` line: IndentationError \"expected an indented block\". Uneven dedent: IndentationError \"unindent does not match any outer indentation level\". Mixing tabs and spaces: TabError. For an empty block, write `pass`."
-   },
-   {
-    "q": "Comment vs docstring?",
-    "a": "A `#` comment is ignored completely and explains why. A docstring is the first string inside a function, class or module; it is stored in `__doc__`, shown by `help()`, and explains what the code does and how to use it. A loose triple-quoted string in the middle of code is not a real comment: it is a string created and thrown away.",
-    "code": "def greet(name):\n    \"\"\"Return a greeting for name.\"\"\"\n    return \"Hello \" + name\nprint(greet.__doc__)",
-    "out": "Return a greeting for name."
-   },
-   {
-    "q": "Variable naming rules and PEP 8 style?",
-    "a": "Letters, digits and `_`; cannot start with a digit; case-sensitive; cannot be a keyword. Valid: `_x`, `user2`, `Class`. Invalid: `2x`, `my-var`, `class`. Style: snake_case for variables and functions, PascalCase for classes, UPPER_CASE for constants."
-   },
-   {
-    "q": "What goes wrong here?",
-    "a": "You hid the built-in `list`, so it is no longer callable. Never name variables after built-ins.",
-    "code": "list = [1, 2]\nlist(\"abc\")",
+    "kind": "error",
+    "q": "What happens?",
+    "code": "list = [1, 2]\nprint(list(\"ab\"))",
     "out": "TypeError: 'list' object is not callable",
-    "trap": true
+    "options": [
+     "`['a', 'b']`",
+     "`TypeError`",
+     "`NameError`",
+     "`[1, 2, 'a', 'b']`"
+    ],
+    "answer": 1,
+    "trap": true,
+    "why": "The name `list` now points to your list, so the built-in `list()` is hidden. Never name variables after built-ins."
    },
    {
-    "q": "What does `print(print(\"hi\"))` show? And `sep` / `end`?",
-    "a": "`hi`, then `None`, because `print()` itself returns None. `sep` sets what goes between values, `end` what goes at the end (default newline).",
-    "code": "print(print(\"hi\"))\nprint(\"a\", \"b\", sep=\"-\")\nprint(\"x\", end=\" | \")\nprint(\"y\")",
-    "out": "hi\nNone\na-b\nx | y",
-    "trap": true
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = [1, 2]\nb = a\nb.append(3)\nprint(a)",
+    "out": "[1, 2, 3]",
+    "options": [
+     "`[1, 2]`",
+     "`[1, 2, 3]`",
+     "`[3]`",
+     "An error"
+    ],
+    "answer": 1,
+    "trap": true,
+    "why": "`b = a` sticks a second label on the same list; it doesn't copy it."
    },
    {
-    "q": "What type does `input()` return?",
-    "a": "Always a string. Convert it yourself: `int(input(\"Age: \"))`. Converting text that isn't a whole number raises ValueError.",
-    "code": "s = \"5\"  # what input() would give\nprint(s * 2, int(s) * 2)\nint(\"3.5\")",
-    "out": "55 10\nValueError: invalid literal for int() with base 10: '3.5'",
-    "trap": true
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f():\n    pass\nprint(f())",
+    "out": "None",
+    "options": [
+     "`0`",
+     "Nothing, an empty line",
+     "`None`",
+     "An error"
+    ],
+    "answer": 2,
+    "why": "A function without `return` gives back None."
    },
    {
-    "q": "How many keywords does Python have? Is `print` one?",
-    "a": "35 (`import keyword; keyword.kwlist`). `True`, `False`, `None` are keywords; `print` is not, it is a function. Soft keywords act as keywords only in some places: `match`, `case`, `_`, `type`, and `lazy` (new in 3.15), so `match = 5` still works."
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(None == 0, bool(None))",
+    "out": "False False",
+    "options": [
+     "`True False`",
+     "`False False`",
+     "`False True`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "None is not 0; it is its own \"no value\" object. It counts as false in an if."
    },
    {
-    "q": "What is `None`, and how do you check for it?",
-    "a": "The one \"no value\" object (type NoneType). A function without `return` gives None. It counts as false, and `None == 0` is False. Check with `x is None`, not `x == None`.",
-    "code": "def f():\n    pass\nprint(f(), None == 0, bool(None))",
-    "out": "None False False"
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "x = 5\nx = \"five\"\nprint(type(x))",
+    "out": "<class 'str'>",
+    "options": [
+     "`<class 'int'>`",
+     "`<class 'str'>`",
+     "`TypeError`",
+     "`<class 'object'>`"
+    ],
+    "answer": 1,
+    "why": "Dynamic typing: the label x moved to a new object, a string. The type belongs to the object, not the name."
    },
    {
-    "q": "Swap two variables in one line?",
-    "a": "`a, b = b, a`. Also `x = y = 0` sets both to 0.",
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print(\"1\" + 1)",
+    "out": "TypeError: can only concatenate str (not \"int\") to str",
+    "options": [
+     "`2`",
+     "`11`",
+     "`TypeError`",
+     "`1 1`"
+    ],
+    "answer": 2,
+    "why": "Strong typing: Python won't guess whether you meant text or a number. Convert first: `int(\"1\") + 1`."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(3 + 2.5, True + 1)",
+    "out": "5.5 2",
+    "options": [
+     "`5.5 2`",
+     "`TypeError`",
+     "`5 2`",
+     "`5.5 True1`"
+    ],
+    "answer": 0,
+    "trap": true,
+    "why": "Mixes that make sense are allowed: int + float gives a float, and True counts as 1."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
     "code": "a, b = 1, 2\na, b = b, a\nprint(a, b)",
-    "out": "2 1"
+    "out": "2 1",
+    "options": [
+     "`1 2`",
+     "`2 1`",
+     "`2 2`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "The right side is built first as (2, 1), then unpacked into a and b. That's the one-line swap."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "Name = \"A\"\nname = \"B\"\nprint(Name)",
+    "out": "A",
+    "options": [
+     "`A`",
+     "`B`",
+     "`AB`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "Python is case-sensitive: `Name` and `name` are two different variables."
+   },
+   {
+    "kind": "output",
+    "q": "A file contains only this line. What appears when you run `python file.py`?",
+    "code": "2 + 3",
+    "out": "",
+    "options": [
+     "`5`",
+     "Nothing",
+     "`2 + 3`",
+     "An error"
+    ],
+    "answer": 1,
+    "trap": true,
+    "why": "Only the REPL (the >>> prompt) shows values by itself. A script shows only what you `print()`."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def area(r):\n    \"\"\"Area of a circle.\"\"\"\n    return 3.14 * r * r\nprint(area.__doc__)",
+    "out": "Area of a circle.",
+    "options": [
+     "`None`",
+     "`Area of a circle.`",
+     "`3.14`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "The first string inside a function is its docstring, stored in `__doc__` (and shown by `help(area)`)."
+   },
+   {
+    "kind": "concept",
+    "q": "When does Python save `.pyc` files in `__pycache__`?",
+    "options": [
+     "Every time you run any .py file",
+     "For modules you import",
+     "Only for the script you run directly",
+     "Never: Python 3 has no bytecode files"
+    ],
+    "answer": 1,
+    "why": "The script you run directly is compiled in memory only. Imported modules get their bytecode saved so the next import is faster."
+   },
+   {
+    "kind": "concept",
+    "q": "What does the PVM do with bytecode?",
+    "options": [
+     "Converts it into machine code and saves an .exe",
+     "Carries out each instruction itself, one by one",
+     "Sends it to a C compiler",
+     "Turns it back into Python source"
+    ],
+    "answer": 1,
+    "trap": true,
+    "why": "The PVM is a C program that reads and performs each bytecode instruction. Only a JIT turns bytecode into machine code."
+   },
+   {
+    "kind": "concept",
+    "q": "Which is true about Python's typing?",
+    "options": [
+     "Dynamically and strongly typed",
+     "Dynamically and weakly typed",
+     "Statically and strongly typed",
+     "Statically and weakly typed"
+    ],
+    "answer": 0,
+    "why": "Types are checked while running (dynamic), and unrelated types are never mixed silently (strong)."
+   },
+   {
+    "kind": "concept",
+    "q": "What's the right way to check if `x` is None?",
+    "options": [
+     "`x == None`",
+     "`x is None`",
+     "`x = None`",
+     "`None in x`"
+    ],
+    "answer": 1,
+    "why": "There is only one None object, so check identity with `is`. A class can change what `==` means and give a wrong answer."
    }
   ]
  },
  "notes": {
-  "1": "Taught in chat on 5-6 Nov 2026: Topic 1 theory story and basics."
+  "1": "Topic 1, rebuilt 6 Nov 2026: flashcards = questions interviewers ask out loud (checked against InterviewBit, GeeksforGeeks and PYnative lists); MCQs = predict the output, find the error, concept checks."
  }
 }
