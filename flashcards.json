@@ -1,0 +1,245 @@
+{
+ "version": 1,
+ "updated": "2026-11-06",
+ "topics": {
+  "1": [
+   {
+    "q": "What is Python, in one line?",
+    "a": "An easy-to-read, general-purpose language made by Guido van Rossum in 1991. It is named after the comedy show Monty Python, not the snake.",
+    "hook": "Python: write the idea, not the ceremony."
+   },
+   {
+    "q": "Why does Python use indentation instead of { } and ;?",
+    "a": "Python was made so code is easy for humans to read. Blocks are shown by indentation (4 spaces by PEP 8), so the code looks like neat notes. Java needs a class and a main method just to print; Python needs one line.",
+    "code": "print(\"Hello\")",
+    "out": "Hello"
+   },
+   {
+    "q": "What happens when you run `python hello.py`? (3 steps)",
+    "a": "1. Python checks the grammar of the WHOLE file (SyntaxError here, nothing runs). 2. It converts the code into bytecode: small step cards. 3. The Python Virtual Machine (PVM) carries out the cards one by one (NameError, TypeError and other runtime errors happen here).",
+    "hook": "Grammar is checked before cooking; missing ingredients are found while cooking."
+   },
+   {
+    "q": "A file has two `print()` lines, then line 3 is `x = = 5`. What prints?",
+    "a": "Nothing. You only get `SyntaxError: invalid syntax`, because Python checks the whole file before running any line.",
+    "trap": true
+   },
+   {
+    "q": "A file has two `print()` lines, then line 3 uses a name that doesn't exist. What prints?",
+    "a": "Both print lines run, then `NameError`. Runtime errors only appear when Python reaches that line.",
+    "code": "print(\"line 1\")\nprint(\"line 2\")\nprint(saffron)",
+    "out": "line 1\nline 2\nNameError: name 'saffron' is not defined",
+    "trap": true
+   },
+   {
+    "q": "What is bytecode?",
+    "a": "The simple step-by-step instructions Python makes from your code, like \"load a, load b, add\". The CPU can't run it directly; the PVM does. You can see it with `dis.dis(function)`."
+   },
+   {
+    "q": "What are `.pyc` files and the `__pycache__` folder?",
+    "a": "Saved bytecode, so Python can skip converting the code again next time. Python saves them only for modules you import, not for the script you run directly."
+   },
+   {
+    "q": "Does the PVM turn bytecode into machine code?",
+    "a": "No. The PVM is a C program that is already machine code. It reads each bytecode instruction and does it directly: the cook follows the card, it doesn't rewrite it. Turning bytecode into machine code is what a JIT does (PyPy, and CPython's experimental JIT).",
+    "hook": "The cook follows the card; a JIT rewrites the card.",
+    "trap": true
+   },
+   {
+    "q": "Is Python compiled or interpreted?",
+    "a": "Both. CPython compiles the code to bytecode, then the PVM interprets that bytecode. It is called interpreted because you never run a separate compile step and you never get an .exe.",
+    "hook": "Interview line: \"Usually called interpreted, but technically it's compiled to bytecode and then interpreted.\""
+   },
+   {
+    "q": "What is CPython? Does your Python code go through a C compiler?",
+    "a": "CPython is the normal Python you download: the interpreter program, written in C. Your Python code never goes through a C compiler; it is turned into bytecode and run by the PVM.",
+    "trap": true
+   },
+   {
+    "q": "Name other versions (implementations) of Python.",
+    "a": "PyPy (has a JIT, pure-Python loops often run much faster), MicroPython (small microcontroller boards), Jython (runs on Java's JVM), IronPython (runs on .NET)."
+   },
+   {
+    "q": "What is the latest Python version, and what's new?",
+    "a": "3.15, released October 2026: lazy imports (`lazy import json`), a built-in `frozendict`, UTF-8 as the default encoding, a faster experimental JIT. In 3.14 the free-threaded build (no GIL) became officially supported. Python 2 was retired in 2020."
+   },
+   {
+    "q": "Python 2 vs Python 3: three differences?",
+    "a": "1. `print \"hi\"` became `print(\"hi\")`. 2. `5 / 2` gave 2, now gives 2.5 (use `//` for 2). 3. Text is Unicode by default in Python 3.",
+    "code": "print(5 / 2, 5 // 2)",
+    "out": "2.5 2"
+   },
+   {
+    "q": "\"Everything is an object\": what does that mean?",
+    "a": "Every value (5, \"hi\", a list, even a function) is a box in memory with a value, a type (`type(x)`) and an identity (`id(x)`, its address in CPython). Even a function can get a new label.",
+    "code": "say = print\nsay(\"hi\")\nprint(type(5))",
+    "out": "hi\n<class 'int'>"
+   },
+   {
+    "q": "What is a variable in Python?",
+    "a": "A label (name) stuck on an object, not a box that holds the value. Two labels can point to the same object.",
+    "code": "a = [1, 2]\nb = a\nb.append(3)\nprint(a)",
+    "out": "[1, 2, 3]",
+    "hook": "Variables are labels, not boxes."
+   },
+   {
+    "q": "What does dynamically typed mean?",
+    "a": "The type belongs to the object, not the variable. A label can move to an object of another type, and types are checked while the program runs. So you never write `int x`.",
+    "code": "x = 5\nprint(type(x))\nx = \"five\"\nprint(type(x))",
+    "out": "<class 'int'>\n<class 'str'>"
+   },
+   {
+    "q": "What does strongly typed mean? Can Python mix types at all?",
+    "a": "Python never silently guesses between unrelated types: `\"1\" + 1` is a TypeError. Mixes that make sense are allowed.",
+    "code": "print(3 + 2.5, True + 1, \"ab\" * 3)\nprint(\"1\" + 1)",
+    "out": "5.5 2 ababab\nTypeError: can only concatenate str (not \"int\") to str",
+    "hook": "Labels can move (dynamic); apples and oranges never mix (strong).",
+    "trap": true
+   },
+   {
+    "q": "Dynamic vs static, strong vs weak: where do Python, JavaScript, Java and C sit?",
+    "a": "Python: dynamic + strong. JavaScript: dynamic + weak (`\"1\" + 1` gives \"11\"). Java: static + strong. C: static + weak. Dynamic does NOT mean weak.",
+    "trap": true
+   },
+   {
+    "q": "How does Python free memory?",
+    "a": "It counts the labels (references) on each object; when the count reaches zero, the object is deleted. A garbage collector also cleans up groups of objects that only point at each other. You never free memory yourself.",
+    "hook": "Count the labels; zero labels = thrown away."
+   },
+   {
+    "q": "Why is Python slower than C or Rust?",
+    "a": "On every operation, like `a + b`, Python checks the types again because labels may have moved, and the PVM reads instructions one by one. C checks types once, before running.",
+    "hook": "Python checks every time; C checks once."
+   },
+   {
+    "q": "What is the GIL, in simple words?",
+    "a": "In standard CPython only one thread runs Python code at a time: one knife in the kitchen. Fine for waiting jobs (downloads, API calls), no speed-up for heavy CPU work. Since 3.14 there is an official free-threaded build without it."
+   },
+   {
+    "q": "If Python is slow, why is AI built in it?",
+    "a": "Python is the manager; the heavy maths runs in C, C++ or CUDA inside libraries like NumPy and PyTorch. Measured: adding 10 million numbers took ~0.46 s with a Python loop and ~0.007 s with NumPy (~65x). Your Zen-harness: Python logic, llama.cpp (C++) does the model maths.",
+    "hook": "A slow manager doesn't matter when fast workers do 99% of the work."
+   },
+   {
+    "q": "Main reasons to choose Python?",
+    "a": "Fast to write and read, a library for almost everything (NumPy, pandas, PyTorch, FastAPI), a great glue layer over C/C++/Rust, a huge community. Ideal for rapid prototyping and AI."
+   },
+   {
+    "q": "Limitations of Python?",
+    "a": "Slow pure-Python loops, the GIL for CPU-heavy threads, more memory per value, weak for mobile and browser apps, and type mistakes only show up when that line runs."
+   },
+   {
+    "q": "Where is Python used?",
+    "a": "AI/ML (PyTorch, scikit-learn), data (pandas, Jupyter), web backends (Django, Flask, FastAPI), automation and scripting, testing (pytest), science (SciPy)."
+   },
+   {
+    "q": "What are a PEP, PEP 8 and PEP 20?",
+    "a": "PEP = Python Enhancement Proposal, the document for proposing changes. PEP 8 = the style guide (4 spaces, snake_case). PEP 20 = the Zen of Python: `import this` shows 19 rules, starting \"Beautiful is better than ugly.\""
+   },
+   {
+    "q": "Is Python object-oriented or functional?",
+    "a": "Multi-paradigm: you can write procedural code, object-oriented code (classes) and functional code (lambda, map, filter)."
+   },
+   {
+    "q": "Is Python case-sensitive?",
+    "a": "Yes: `name` and `Name` are different variables, and `True`, `False`, `None` must start with a capital letter."
+   },
+   {
+    "q": "REPL vs script: what is the difference in output?",
+    "a": "The REPL (`python`, the >>> prompt) shows the value of each expression automatically. A script shows only what you `print()`. A script containing only `2 + 3` prints nothing.",
+    "trap": true
+   },
+   {
+    "q": "What does `python -m` do, and why `python -m pip`?",
+    "a": "It runs a module as a program: `python -m venv .venv`, `python -m json.tool file.json`, `python -m http.server`. `python -m pip` installs into the Python you are running; plain `pip` might belong to another installed version."
+   },
+   {
+    "q": "Name the indentation errors.",
+    "a": "No indent after a `:` line: IndentationError \"expected an indented block\". Uneven dedent: IndentationError \"unindent does not match any outer indentation level\". Mixing tabs and spaces: TabError. For an empty block, write `pass`."
+   },
+   {
+    "q": "Comment vs docstring?",
+    "a": "A `#` comment is ignored completely and explains why. A docstring is the first string inside a function, class or module; it is stored in `__doc__`, shown by `help()`, and explains what the code does and how to use it. A loose triple-quoted string in the middle of code is not a real comment: it is a string created and thrown away.",
+    "code": "def greet(name):\n    \"\"\"Return a greeting for name.\"\"\"\n    return \"Hello \" + name\nprint(greet.__doc__)",
+    "out": "Return a greeting for name."
+   },
+   {
+    "q": "Variable naming rules and PEP 8 style?",
+    "a": "Letters, digits and `_`; cannot start with a digit; case-sensitive; cannot be a keyword. Valid: `_x`, `user2`, `Class`. Invalid: `2x`, `my-var`, `class`. Style: snake_case for variables and functions, PascalCase for classes, UPPER_CASE for constants."
+   },
+   {
+    "q": "What goes wrong here?",
+    "a": "You hid the built-in `list`, so it is no longer callable. Never name variables after built-ins.",
+    "code": "list = [1, 2]\nlist(\"abc\")",
+    "out": "TypeError: 'list' object is not callable",
+    "trap": true
+   },
+   {
+    "q": "What does `print(print(\"hi\"))` show? And `sep` / `end`?",
+    "a": "`hi`, then `None`, because `print()` itself returns None. `sep` sets what goes between values, `end` what goes at the end (default newline).",
+    "code": "print(print(\"hi\"))\nprint(\"a\", \"b\", sep=\"-\")\nprint(\"x\", end=\" | \")\nprint(\"y\")",
+    "out": "hi\nNone\na-b\nx | y",
+    "trap": true
+   },
+   {
+    "q": "What type does `input()` return?",
+    "a": "Always a string. Convert it yourself: `int(input(\"Age: \"))`. Converting text that isn't a whole number raises ValueError.",
+    "code": "s = \"5\"  # what input() would give\nprint(s * 2, int(s) * 2)\nint(\"3.5\")",
+    "out": "55 10\nValueError: invalid literal for int() with base 10: '3.5'",
+    "trap": true
+   },
+   {
+    "q": "How many keywords does Python have? Is `print` one?",
+    "a": "35 (`import keyword; keyword.kwlist`). `True`, `False`, `None` are keywords; `print` is not, it is a function. Soft keywords act as keywords only in some places: `match`, `case`, `_`, `type`, and `lazy` (new in 3.15), so `match = 5` still works."
+   },
+   {
+    "q": "What is `None`, and how do you check for it?",
+    "a": "The one \"no value\" object (type NoneType). A function without `return` gives None. It counts as false, and `None == 0` is False. Check with `x is None`, not `x == None`.",
+    "code": "def f():\n    pass\nprint(f(), None == 0, bool(None))",
+    "out": "None False False"
+   },
+   {
+    "q": "Swap two variables in one line?",
+    "a": "`a, b = b, a`. Also `x = y = 0` sets both to 0.",
+    "code": "a, b = 1, 2\na, b = b, a\nprint(a, b)",
+    "out": "2 1"
+   }
+  ],
+  "70": [
+   {
+    "q": "Why Rust for zen but Python for Zen-harness?",
+    "a": "Measured on my machine: the Python prototype took ~12 s per reply, the Rust version ~3 s, with the same models. zen handles audio every 20 ms and must stop instantly when interrupted, so it needs a fast manager with real parallelism and no GIL in callbacks, shipped as one .exe. Zen-harness mostly waits seconds for the model, so Python's ecosystem wins.",
+    "hook": "Pick the language for the bottleneck: milliseconds -> Rust, model time -> Python."
+   },
+   {
+    "q": "Interviewer: \"The models are C++ either way. Why was Python 4x slower?\"",
+    "a": "The gain came from orchestration, not raw speed: in zen the stages stream and overlap (speech starts with the first ~250 ms audio chunk), C callbacks never wait for a GIL, and the models stay loaded. Check which of these was true for your Python prototype before you say it.",
+    "trap": true
+   },
+   {
+    "q": "Rust reason 1: the C libraries call back into your code.",
+    "a": "The TTS DLL calls Rust with every audio chunk (~250 ms) and checks a Rust cancel flag between chunks (`tts.rs`). In Python, every callback from C must grab the GIL first, so it can wait. Callbacks are wrapped in `catch_unwind`, and the native libraries run in separate worker processes."
+   },
+   {
+    "q": "Rust reason 2: many jobs at once, safely.",
+    "a": "Capture every 20 ms, voice detection, transcription on its own thread, LLM streaming, speech streaming, all cancellable at once. Rust runs them truly in parallel (tokio + threads), and data races are compile errors. Python's asyncio is one thread, and Python never checks for races at compile time, even without the GIL."
+   },
+   {
+    "q": "Rust reason 3: wrong states can't be written.",
+    "a": "Every background job carries the generation number of its turn, so a stale reply after an interruption is dropped, never spoken (`session.rs`). An LLM slot ID outside 0-1 can't even be created (`engine.rs`). About 300 Rust tests."
+   },
+   {
+    "q": "What does choosing Rust cost?",
+    "a": "Slower to write, long optimised builds, a smaller ML ecosystem. That's why Zen-harness is Python. Saying the trade-off out loud makes the choice sound deliberate."
+   },
+   {
+    "q": "Define FFI and data race.",
+    "a": "FFI: one language calling functions written in another (Rust calling the C/C++ speech libraries). Data race: two threads use the same data at the same time and at least one of them writes; Rust refuses to compile that."
+   }
+  ]
+ },
+ "notes": {
+  "1": "Taught in chat on 5-6 Nov 2026: Topic 1 theory story and basics.",
+  "70": "From the zen discussion on 6 Nov 2026."
+ }
+}

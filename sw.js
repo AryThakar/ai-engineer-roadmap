@@ -1,9 +1,10 @@
 // Offline support for the AI Engineer Interview Roadmap.
-const VERSION = "air-v1";
+const VERSION = "air-v2";
 const SHELL = [
   "./",
   "index.html",
   "manifest.webmanifest",
+  "flashcards.json",
   "icons/icon-192.png",
   "icons/icon-512.png",
   "icons/icon-maskable-512.png",
@@ -49,6 +50,17 @@ self.addEventListener("fetch", event => {
           return hit || net;
         })
       )
+    );
+    return;
+  }
+
+  // Flashcards change often: try the network first so new cards show up, use the saved copy offline.
+  if (url.origin === self.location.origin && url.pathname.endsWith("/flashcards.json")) {
+    event.respondWith(
+      fetch(req).then(res => {
+        if (res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put("flashcards.json", copy)); }
+        return res;
+      }).catch(() => caches.match("flashcards.json"))
     );
     return;
   }

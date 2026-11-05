@@ -32,7 +32,16 @@ These come from his direct feedback during the chat. Follow them.
 
 - Answer directly in the chat. Short lists, not long essays. He said he has no time to read long documents.
 - Before building anything (a plan, a file, a change to the app), lay out the plan in the chat and wait for his OK.
-- No "lesson, then test" teaching. He wants topics listed and tagged by interview level, and he revises them himself. Don't test him on something before he has revised it.
+- **Teach each topic yourself** (his request, 5 Nov 2026). He built the roadmap and resources for you to use together with your own knowledge. Don't hand him a list of chapters and links to study; resources are only for extra practice.
+- **How he learns best** (his feedback on the Topic 1 lessons):
+  - One connected story per topic, in simple words, with everyday analogies (for Python: recipe, step cards, cook, boxes and labels, one knife).
+  - Understanding first, then the interview word in brackets. Heavy jargon and long definition lists don't stick for him.
+  - Short memory hooks ("Python checks every time; C checks once"), small proofs he can try himself, and a 30-second interview answer at the end.
+  - Link to his own projects where it fits (zen, Zen-harness).
+- **He checks himself by writing his own summary.** Mark it point by point (correct, wrong, small fix), then give a fixed version for him to memorise.
+- Don't quiz him until he asks ("quiz 1"). Don't test him on something before he has revised it.
+- Run every code example (Python 3.15) before you show its output.
+- After each topic, add its flashcards to `flashcards.json` and run the checker (section 6).
 - Use the same three levels everywhere:
   - **Coding**: he writes it live in an editor, with no AI help.
   - **Concept**: he explains it clearly and reasons about code he is shown.
@@ -42,7 +51,7 @@ These come from his direct feedback during the chat. Follow them.
 - Quality over speed. Check facts and links before stating them, don't make things up, and work step by step. If you're not sure, say so.
 - Change his GitHub repo only when he asks.
 
-## 3. Where things stand (5 Nov 2026)
+## 3. Where things stand (6 Nov 2026)
 
 Done, in order:
 1. Read 23 fresher listings on Internshala (13 AI engineer, 10 ML) and counted the skills they ask for (section 4).
@@ -51,10 +60,14 @@ Done, in order:
 4. Collected 84 learning and practice resources and checked every link on 5 Nov 2026. Left out repos whose answers are paywalled or mostly missing (the Devinterview repos show only about 15 free answers; llmgenai's answers are paywalled).
 5. Built the roadmap as an installable phone app on GitHub Pages that works offline (section 6).
 6. Answered whether about ₹12 LPA is reachable, and whether a chat can move to another account (section 5).
+7. Started Stage 1. Read every Stage 1 resource and gave exact chapters and problem lists (notes in section 5). He then asked to be taught directly instead.
+8. **Taught Topic 1 (Basics and setup)**: the theory as one story (what Python is, how it runs, typing, memory, speed, GIL, why AI uses it) plus the basics (REPL, `-m`, indentation, comments, naming, `print`/`input`, keywords, `None`). He wrote his own summary and it was corrected (section 5).
+9. Added a flashcard viewer to the app and 46 cards: 39 for topic 1 and 7 for topic 70 (his zen/Rust interview answers).
 
 Next:
-- When this was written he had not started studying yet. He starts at Stage 1. His real progress is in the app's backup (section 6).
-- Likely requests: explain a topic; practice at the right level (MCQs for MCQ topics, explain-it questions for Concept topics, live problems for Coding topics); mock interviews; help with the Build project; changes to the app.
+- **Topic 2: Data types and operators** (MCQ level). Teach it the same way, then add its flashcards.
+- He revises Topic 1 with the flashcards. His real progress is in the app's backup (section 6).
+- Open question: what exactly his ~12 s Python prototype of zen measured, and why it was slower (section 5).
 
 ## 4. Internshala research (4 Nov 2026)
 
@@ -87,6 +100,27 @@ Next:
 
 - **Can he reach about ₹12 LPA?** Answered with 2026 figures: most freshers get ₹6–9 LPA, and GenAI freshers with a strong portfolio get ₹12–22 LPA (Instahyre). So ₹12 LPA is possible but above the usual fresher range. Check current figures again before quoting them.
 - **Can this chat move to another account?** No. Shared chats are view-only, and exported data can't be imported into another personal account. That is why this file exists.
+- **Topic 1, his own summary (6 Nov):** mostly right. The mistakes he made, worth re-checking later:
+  - He said Python "runs on a C compiler". Correct: CPython is written in C; his code never goes through a C compiler.
+  - He said the PVM converts bytecode to machine code. Correct: the PVM carries out each instruction directly; only a JIT makes machine code.
+  - He said 3.14 is the latest. Correct: 3.15 (October 2026).
+  - "You can never mix types" was too strong. `3 + 2.5`, `True + 1` and `"ab" * 3` work; only guessing mixes like `"1" + 1` fail.
+  - "Python checks the value each time" should be "checks the type each time".
+- **Is Python compiled or interpreted?** Both: compiled to bytecode, then the PVM interprets it. Officially called interpreted.
+- **Why zen uses Rust (topic 70 flashcards):** he measured a Python prototype at ~12 s per reply and the Rust version at ~3 s, with the same models on the same machine. The reasons found in the zen code:
+  - The TTS library calls back into Rust with each audio chunk and polls a Rust cancel flag (`tts.rs`), and Python callbacks would need the GIL.
+  - Capture, transcription, LLM and speech run in parallel, and data races are compile errors in Rust.
+  - Generation numbers drop stale replies (`session.rs`), and slot IDs are checked by the type system (`engine.rs`).
+  - It ships as one exe.
+  - Still open: ask him what the 12 s measured. The gain probably came from orchestration (streaming, overlap, models staying loaded), not raw speed, but don't claim that until it's confirmed.
+- **PYnative "Top 100 Basic Python Interview Questions"** (pynative.com/beginner-python-interview-questions, updated April 2025): good for revision, not as the only source.
+  - Weak points: Q2 skips bytecode and the PVM; Q18 says `PYTHONCASEOK` is Windows-only (docs: Windows and macOS); Q68 skips negative floor division.
+  - Question map by topic: 1: Q1–5, 16–18, 24–25 · 2: Q19–23, 68 · 3: Q26–38 · 4: Q6–15 · 5: Q53–67 · 6: Q39–47, 84 · 7: Q85–88 · 8: Q69–73, 93 · 9: Q89–93 · 10: Q74–83.
+- **Stage 1 resource notes (5 Nov):**
+  - The Chanda-Abdul patterns repo has JavaScript solutions; leetcode-patterns has Java solutions and some Premium problems. Use NeetCode 150 for topics 17–18.
+  - PYnative has no quiz on exceptions; CS50P doesn't teach decorators (use Real Python's decorator article).
+  - The PrepInsta aptitude link led to an LTI-specific page; use IndiaBIX for topic 69.
+  - LeetCode SQL 50 has 7 sections; the first 4 (29 problems) cover the Stage 1 check.
 
 ## 6. The roadmap app
 
@@ -116,13 +150,26 @@ Next:
   - `LANES`, `STAGES`: the parallel plan and each stage's "Move on when" check.
   - `KINDS`, `RES`: resources, `[name, url, kind, note, [topic ids]]`. Kind is `Learn`, `Practice`, `MCQ` or `QA`.
 - Don't renumber topics or reorder subtopics. Progress keys depend on topic ids and subtopic order, so add new subtopics at the end.
-- `sw.js` (offline support): the page loads network-first, so changes to `index.html` show up on their own. Other files (manifest, icons) are served from the cache first, so raise `VERSION` in `sw.js` when you change them.
+- `sw.js` (offline support, `VERSION` is `air-v2`): the page and `flashcards.json` load network-first, so changes to them show up on their own. Other files (manifest, icons) are served from the cache first, so raise `VERSION` in `sw.js` when you change them.
 - Deploying: GitHub Pages serves the `gh-pages` branch. Keep `main` and `gh-pages` the same: commit on `main`, then run `git push origin main main:gh-pages`.
-- Section 7 below is generated from `index.html`. After changing the data, run `node tools/update-claude-md.js` from the repo root to bring it up to date.
+- Section 7 below is generated from `index.html` and `flashcards.json`. After changing either, run `node tools/update-claude-md.js` from the repo root to bring it up to date.
+
+### Flashcards
+
+- In the app, the yellow "Flashcards" button opens all cards, and each topic's panel has a "Revise" button when that topic has cards.
+- A session works as a queue: "Got it" removes the card, and "Again" sends it to the back. On a laptop, Space flips, ← means again and → means got it. Nothing about cards is saved in the progress backup.
+- The cards live in `flashcards.json`: `{"version": 1, "updated": "YYYY-MM-DD", "topics": {"<topic id>": [card, ...]}, "notes": {...}}`.
+- A card has these fields:
+  - `q` and `a` (both required). Backticks become inline code.
+  - `hook` (optional): a memory line.
+  - `code` and `out` (optional, always together): the front shows the code, and the back shows its exact output. If the code ends in an error, the last line of `out` is `ErrorName: message`.
+  - `trap: true` (optional): shows a red "Trap" badge.
+- Write cards like the lessons: simple words, one idea per card, short answers.
+- Add new cards to the end of a topic's list, then run `python tools/check-flashcards.py` with Python 3.15. It checks every card's shape and runs every `code` to confirm `out` matches exactly.
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ.
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 46 (topics 1, 70).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -185,7 +232,7 @@ Move to the next stage only when its "Move on when" check is true. There is no f
 Format: **id. title** [level, where]. Check = what he must be able to do. Subtopic numbers start at 0 and match the progress backup keys.
 
 #### A. Python
-- **1. Basics and setup** [MCQ, stage 1, Core lane]
+- **1. Basics and setup** [MCQ, stage 1, Core lane, 39 flashcards]
   - Check: Explain how Python runs your code and answer basic syntax questions.
   - Subtopics: (0) What Python is: interpreted, dynamically typed, high-level; (1) Installing Python; versions 3.14 and 3.15; (2) REPL vs running a `.py` script; `python -m module`; (3) Indentation defines blocks; (4) Comments and docstrings; (5) Variables and naming rules (PEP 8 style); (6) `print()` and `input()`; (7) Keywords and `None`
 - **2. Data types and operators** [MCQ, stage 1, Core lane]
@@ -416,7 +463,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
 - **69. Aptitude and reasoning** [MCQ, every day]
   - Check: Solve aptitude and reasoning questions quickly and accurately.
   - Subtopics: (0) Percentages, ratios, averages; (1) Profit and loss; (2) Time, speed and distance; (3) Time and work; (4) Probability, permutations and combinations; (5) Number series; (6) Logical reasoning: blood relations, seating, syllogisms; (7) Data interpretation
-- **70. Project discussion and HR** [Concept, stage 6, Core lane]
+- **70. Project discussion and HR** [Concept, stage 6, Core lane, 7 flashcards]
   - Check: Explain each project in 2 minutes, then handle deep follow-up questions.
   - Subtopics: (0) Each project end to end in 2 minutes; (1) Architecture and design choices; (2) Hardest bug and how you fixed it; (3) Metrics and results; (4) What you'd improve next; (5) Tell me about yourself; (6) Strengths and weaknesses; (7) Why this company
 - **71. Frontend basics (optional)** [MCQ, optional]

@@ -201,6 +201,34 @@ body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-ins
 header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
 .drawer { padding-top: calc(18px + env(safe-area-inset-top)); padding-bottom: calc(30px + env(safe-area-inset-bottom)); }
 
+/* Flashcards: a full-screen deck. Front = question (and code to predict), back = answer, output and memory hook. */
+.reset.fc-open { background: var(--section); font-weight: 600; }
+.d-fc { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 18px 0 0; padding: 10px 12px; background: var(--node); border: 2px solid var(--ink); border-radius: 8px; }
+.d-fc p { margin: 0; font-size: 14px; }
+.fc { position: fixed; inset: 0; z-index: 30; background: var(--paper); display: flex; flex-direction: column; gap: 12px; padding: calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left)); }
+.fc-bar, .fc-card, .fc-actions { width: 100%; max-width: 760px; margin: 0 auto; }
+.fc-bar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; }
+.fc-bar select { flex: 1 1 220px; min-width: 0; border: 2px solid var(--ink); border-radius: 8px; background: #fff; padding: 6px 8px; font-size: 14px; }
+.fc-count { font: 500 13px/1 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.fc-card { flex: 1; min-height: 0; overflow-y: auto; background: #fff; border: 2.5px solid var(--ink); border-radius: 12px; box-shadow: 5px 5px 0 var(--ink); padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; }
+.fc-card.back { background: #fffdf3; }
+.fc-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.fc-q { margin: 0; font: 800 clamp(20px, 3.6vw, 28px)/1.2 var(--font-display); text-wrap: balance; }
+.fc-a { margin: 0; font-size: 16px; line-height: 1.55; }
+.fc-label { margin: 2px 0 -6px; font: 500 11.5px/1 var(--font-mono); text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.fc pre { margin: 0; padding: 10px 12px; background: var(--ink); color: #f4f1e8; border-radius: 6px; font: 500 13.5px/1.5 var(--font-mono); overflow-x: auto; white-space: pre; cursor: auto; }
+.fc pre.out { background: #eef6f0; color: var(--ink); border: 1.5px solid var(--done); }
+.fc-hook { margin: 0; padding: 8px 10px; background: var(--node); border: 1.5px solid var(--ink); border-radius: 6px; font-size: 14.5px; }
+.fc-hint { margin: auto 0 0; font-size: 13px; color: var(--muted); }
+@media (hover: none) { .fc-keys { display: none; } }
+.fc-trap { font: 600 11.5px/1 var(--font-body); color: var(--code); border: 1.5px solid var(--code); border-radius: 999px; padding: 4px 8px; background: #fff; }
+.fc-done { margin: auto; text-align: center; display: grid; gap: 12px; justify-items: center; }
+.fc-done b { font: 800 26px/1.2 var(--font-display); }
+.fc-actions { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 10px; }
+.fc-actions button { border: 2px solid var(--ink); border-radius: 8px; padding: 11px 8px; font-weight: 600; font-size: 15px; background: #fff; }
+.fc-actions .again { color: var(--code); border-color: var(--code); }
+.fc-actions .got { background: var(--done); border-color: var(--done); color: #fff; }
+
 @media (max-width: 860px) {
   .summary { grid-template-columns: 1fr; }
   .lanes { grid-template-columns: repeat(2, 1fr); }
@@ -247,6 +275,7 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
         <select id="stage-filter"><option value="all">All stages</option></select>
       </label>
       <label class="ctl" for="hide-done"><input type="checkbox" id="hide-done"> Hide done</label>
+      <button type="button" class="reset slim fc-open" id="fc-open" hidden>Flashcards</button>
       <button type="button" class="reset" id="backup-open">Back up or move progress</button>
       <button type="button" class="reset slim" id="reset">Reset progress</button>
     </div>
@@ -307,6 +336,7 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
   <ul class="subs" id="d-subs"></ul>
   <h3>Interview check</h3>
   <p class="check" id="d-check"></p>
+  <div class="d-fc" id="d-fc" hidden><p id="d-fc-text"></p><button type="button" class="close" id="d-fc-btn">Revise</button></div>
   <div id="d-res-wrap">
     <h3>Where to learn and practise <small id="d-rescount"></small></h3>
     <ul class="d-res" id="d-res"></ul>
@@ -317,6 +347,23 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
   </div>
   <div class="d-nav"><button type="button" id="d-prev"></button><button type="button" id="d-next"></button></div>
 </aside>
+
+<div class="fc" id="fc" role="dialog" aria-modal="true" aria-labelledby="fc-title" hidden>
+  <div class="fc-bar">
+    <h2 class="sr" id="fc-title">Flashcards</h2>
+    <label class="sr" for="fc-deck">Deck</label>
+    <select id="fc-deck"></select>
+    <span class="fc-count" id="fc-count" role="status"></span>
+    <button type="button" class="close" id="fc-shuffle">Shuffle</button>
+    <button type="button" class="close" id="fc-close">Close</button>
+  </div>
+  <div class="fc-card" id="fc-card" tabindex="0" aria-live="polite"></div>
+  <div class="fc-actions" id="fc-actions">
+    <button type="button" class="again" id="fc-again">Again</button>
+    <button type="button" id="fc-flip">Show answer</button>
+    <button type="button" class="got" id="fc-got">Got it</button>
+  </div>
+</div>
 
 <script>window.PWA_BUILD = true;</script>
 <script>
@@ -740,6 +787,7 @@ function openTopic(id) {
   document.getElementById("d-rescount").textContent = mine.length + (mine.length === 1 ? " link" : " links");
   mine.forEach(r => { const li = h("li"); li.appendChild(h("span", "kind " + r.kind, KINDS[r.kind])); li.appendChild(resLink(r)); li.appendChild(h("p", null, r.note)); dres.appendChild(li); });
   chk.style.borderLeftColor = "var(--" + t.level + ")";
+  renderDrawerCards(id);
   const pw = document.getElementById("d-pairs"), pairs = PAIRS[id] || [];
   pw.textContent = ""; document.getElementById("d-pairs-wrap").hidden = !pairs.length;
   pairs.forEach(pid => { const pb = h("button", null, pid + ". " + byId.get(pid).title); pb.type = "button"; pb.addEventListener("click", () => openTopic(pid)); pw.appendChild(pb); });
@@ -762,7 +810,7 @@ scrim.addEventListener("click", closeDrawer);
 document.getElementById("d-prev").addEventListener("click", () => openTopic(current - 1));
 document.getElementById("d-next").addEventListener("click", () => openTopic(current + 1));
 document.addEventListener("keydown", e => {
-  if (!drawer.classList.contains("open")) return;
+  if (!drawer.classList.contains("open") || !fc.hidden) return;
   if (e.key === "Escape") closeDrawer();
   if (e.key === "Tab") {
     const f = [...drawer.querySelectorAll("button:not(:disabled), input")].filter(x => x.offsetParent !== null);
@@ -795,6 +843,114 @@ document.getElementById("backup-load").addEventListener("click", () => {
     save(); applyState();
     backupMsg.style.color = "var(--done)"; backupMsg.textContent = "Loaded: " + Object.values(state.status).filter(v => v === "done").length + " topics done.";
   } catch (e) { backupMsg.style.color = "var(--code)"; backupMsg.textContent = "That text is not a progress backup from this roadmap."; }
+});
+
+/* Flashcards: cards live in flashcards.json, keyed by topic id (format in CLAUDE.md).
+   A session is a queue: "Got it" removes the card, "Again" sends it to the back. */
+const fc = document.getElementById("fc"), fcCard = document.getElementById("fc-card"), fcDeck = document.getElementById("fc-deck");
+const fcCount = document.getElementById("fc-count"), fcFlip = document.getElementById("fc-flip"), fcActions = document.getElementById("fc-actions");
+let CARDS = null, fcQueue = [], fcKnown = 0, fcFlipped = false, fcLastFocus = null;
+function cardsFor(id) { return (CARDS && CARDS[String(id)]) || []; }
+function deckTopics() { return CARDS ? Object.keys(CARDS).map(Number).filter(id => byId.has(id) && cardsFor(id).length).sort((a, b) => a - b) : []; }
+function renderDrawerCards(id) {
+  const n = cardsFor(id).length;
+  document.getElementById("d-fc").hidden = !n;
+  if (n) document.getElementById("d-fc-text").textContent = n + (n === 1 ? " flashcard" : " flashcards") + " for this topic";
+}
+fetch("flashcards.json", { cache: "no-cache" })
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => {
+    CARDS = d && d.topics ? d.topics : {};
+    const ids = deckTopics(); if (!ids.length) return;
+    const total = ids.reduce((s, id) => s + cardsFor(id).length, 0);
+    fcDeck.textContent = "";
+    const all = h("option", null, "All topics · " + total + " cards"); all.value = "all"; fcDeck.appendChild(all);
+    ids.forEach(id => { const o = h("option", null, id + ". " + byId.get(id).title + " · " + cardsFor(id).length); o.value = String(id); fcDeck.appendChild(o); });
+    const open = document.getElementById("fc-open"); open.textContent = "Flashcards · " + total; open.hidden = false;
+    if (current) renderDrawerCards(current);
+  })
+  .catch(() => {});
+function fcStart(deck) {
+  fcDeck.value = deck;
+  const ids = deck === "all" ? deckTopics() : [Number(deck)];
+  fcQueue = []; ids.forEach(id => cardsFor(id).forEach(c => fcQueue.push({ id, c })));
+  fcKnown = 0; fcFlipped = false; fcRender();
+}
+function fcRender() {
+  fcCard.textContent = ""; fcCard.classList.toggle("back", fcFlipped);
+  fcCount.textContent = fcQueue.length + " left · " + fcKnown + " known";
+  fcActions.hidden = !fcQueue.length;
+  if (!fcQueue.length) {
+    const d = h("div", "fc-done");
+    d.appendChild(h("b", null, fcKnown ? "Deck done: " + fcKnown + " known" : "No cards here yet"));
+    const again = h("button", "close", "Start again"); again.type = "button";
+    again.addEventListener("click", () => { fcStart(fcDeck.value); fcCard.focus({ preventScroll: true }); });
+    d.appendChild(again); fcCard.appendChild(d);
+    return;
+  }
+  const { id, c } = fcQueue[0];
+  const meta = h("div", "fc-meta");
+  meta.appendChild(h("span", "tag", "Topic " + id + " · " + byId.get(id).title));
+  if (c.trap) meta.appendChild(h("span", "fc-trap", "Trap"));
+  fcCard.appendChild(meta);
+  fcCard.appendChild(fmt(h("p", "fc-q"), c.q));
+  if (c.code) { fcCard.appendChild(h("p", "fc-label", "Code")); fcCard.appendChild(h("pre", null, c.code)); }
+  if (fcFlipped) {
+    if (c.out) { fcCard.appendChild(h("p", "fc-label", "Output")); fcCard.appendChild(h("pre", "out", c.out)); }
+    fcCard.appendChild(fmt(h("p", "fc-a"), c.a));
+    if (c.hook) { const hk = h("p", "fc-hook"); hk.appendChild(h("b", null, "Remember: ")); fmt(hk, c.hook); fcCard.appendChild(hk); }
+  } else {
+    const hint = h("p", "fc-hint", c.code ? "Predict the output, then tap the card to check. " : "Answer it out loud, then tap the card to check. ");
+    hint.appendChild(h("span", "fc-keys", "Keys: Space flips, ← again, → got it."));
+    fcCard.appendChild(hint);
+  }
+  fcFlip.textContent = fcFlipped ? "Show question" : "Show answer";
+  fcCard.scrollTop = 0;
+}
+function fcFlipCard() { if (!fcQueue.length) return; fcFlipped = !fcFlipped; fcRender(); }
+function fcNext(known) {
+  if (!fcQueue.length) return;
+  const cur = fcQueue.shift();
+  if (known) fcKnown++; else fcQueue.push(cur);
+  fcFlipped = false; fcRender(); fcCard.focus({ preventScroll: true });
+}
+function fcOpen(deck) {
+  if (!CARDS) return;
+  fcLastFocus = document.activeElement;
+  fc.hidden = false; document.body.style.overflow = "hidden";
+  fcStart(deck); fcCard.focus({ preventScroll: true });
+}
+function fcClose() {
+  fc.hidden = true; document.body.style.overflow = "";
+  if (fcLastFocus && fcLastFocus.focus) fcLastFocus.focus({ preventScroll: true });
+}
+fcCard.addEventListener("click", e => { if (e.target.closest("button") || String(window.getSelection())) return; fcFlipCard(); });
+fcFlip.addEventListener("click", fcFlipCard);
+document.getElementById("fc-again").addEventListener("click", () => fcNext(false));
+document.getElementById("fc-got").addEventListener("click", () => fcNext(true));
+document.getElementById("fc-shuffle").addEventListener("click", () => {
+  for (let i = fcQueue.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [fcQueue[i], fcQueue[j]] = [fcQueue[j], fcQueue[i]]; }
+  fcFlipped = false; fcRender();
+});
+document.getElementById("fc-close").addEventListener("click", fcClose);
+fcDeck.addEventListener("change", () => fcStart(fcDeck.value));
+document.getElementById("fc-open").addEventListener("click", () => fcOpen("all"));
+document.getElementById("d-fc-btn").addEventListener("click", () => fcOpen(String(current)));
+document.addEventListener("keydown", e => {
+  if (fc.hidden) return;
+  const tag = e.target.tagName;
+  if (e.key === "Escape") { e.preventDefault(); fcClose(); return; }
+  if (e.key === "Tab") {
+    const f = [...fc.querySelectorAll("select, button, [tabindex='0']")].filter(x => x.offsetParent !== null && !x.disabled);
+    if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+    return;
+  }
+  if (tag === "SELECT" || (tag === "BUTTON" && (e.key === " " || e.key === "Enter"))) return;
+  if (e.key === " " || e.key === "Enter") { e.preventDefault(); fcFlipCard(); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); fcNext(false); }
+  else if (e.key === "ArrowRight") { e.preventDefault(); fcNext(true); }
 });
 
 /* Install prompt (only in the installable build) */
