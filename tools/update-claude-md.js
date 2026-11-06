@@ -1,5 +1,5 @@
 // Regenerates section 7 of CLAUDE.md (the roadmap reference) from the data inside index.html
-// and the card counts in flashcards.json,
+// and the counts in flashcards.json and practice/tasks.json,
 // so the handoff file always matches what the app shows. Sections 1-6 are kept as written.
 // Run from the repo root:  node tools/update-claude-md.js
 const fs = require("fs");
@@ -21,6 +21,11 @@ let CARDS = {}, MCQS = {};
 try { const d = JSON.parse(fs.readFileSync(path.join(root, "flashcards.json"), "utf8")); CARDS = d.topics || {}; MCQS = d.mcq || {}; } catch (e) {}
 const cardCount = id => (CARDS[String(id)] || []).length;
 const mcqCount = id => (MCQS[String(id)] || []).length;
+let TASKS = {};
+try { TASKS = JSON.parse(fs.readFileSync(path.join(root, "practice", "tasks.json"), "utf8")).topics || {}; } catch (e) {}
+const taskCount = id => (TASKS[String(id)] || []).length;
+const totalTasks = Object.values(TASKS).reduce((s, c) => s + c.length, 0);
+const taskTopics = Object.keys(TASKS).filter(k => TASKS[k].length).sort((a, b) => a - b);
 const totalCards = Object.values(CARDS).reduce((s, c) => s + c.length, 0);
 const totalMcqs = Object.values(MCQS).reduce((s, c) => s + c.length, 0);
 const cardTopics = [...new Set([...Object.keys(CARDS).filter(k => CARDS[k].length), ...Object.keys(MCQS).filter(k => MCQS[k].length)])].sort((a, b) => a - b);
@@ -35,7 +40,8 @@ out.push(`${MARKER} (generated from the app's data, do not edit by hand)`);
 out.push("");
 out.push(`Totals: ${topics.length} topics in ${SECTIONS.length} sections, ${STAGES.length} stages, ${RES.length} resources. ` +
   `Levels: ${count("code")} Coding, ${count("concept")} Concept, ${count("mcq")} MCQ. ` +
-  `Flashcards: ${totalCards}, MCQs: ${totalMcqs}${cardTopics.length ? (cardTopics.length === 1 ? " (topic " : " (topics ") + cardTopics.join(", ") + ")" : ""}.`);
+  `Flashcards: ${totalCards}, MCQs: ${totalMcqs}${cardTopics.length ? (cardTopics.length === 1 ? " (topic " : " (topics ") + cardTopics.join(", ") + ")" : ""}. ` +
+  `Coding tasks: ${totalTasks}${taskTopics.length ? (taskTopics.length === 1 ? " (topic " : " (topics ") + taskTopics.join(", ") + ")" : ""}.`);
 out.push("");
 out.push("### Levels");
 for (const v of Object.values(LEVELS)) out.push(`- **${v.label}**: ${v.short}`);
@@ -63,7 +69,7 @@ for (const [sec, sname] of SECTIONS) {
   out.push(`#### ${sec}. ${sname}`);
   for (const t of topics.filter(x => x.sec === sec)) {
     const where = t.stage === "Daily" ? "every day" : t.stage === "Optional" ? "optional" : `stage ${t.stage}, ${t.lane} lane`;
-    const cards = (cardCount(t.id) ? `, ${cardCount(t.id)} flashcards` : "") + (mcqCount(t.id) ? `, ${mcqCount(t.id)} MCQs` : "");
+    const cards = (cardCount(t.id) ? `, ${cardCount(t.id)} flashcards` : "") + (mcqCount(t.id) ? `, ${mcqCount(t.id)} MCQs` : "") + (taskCount(t.id) ? `, ${taskCount(t.id)} coding tasks` : "");
     out.push(`- **${t.id}. ${t.title}** [${LEVELS[t.level].label}, ${where}${cards}]`);
     out.push(`  - Check: ${t.check}`);
     out.push(`  - Subtopics: ${t.subs.map((s, i) => `(${i}) ${s}`).join("; ")}`);

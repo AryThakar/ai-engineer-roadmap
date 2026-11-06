@@ -45,6 +45,7 @@ These come from his direct feedback during the chat. Follow them.
   - **Flashcards are only for questions an interviewer asks you to explain out loud.** Keep one only if it appears in real question lists (InterviewBit, GeeksforGeeks, PYnative), or if it's a common question for AI roles.
   - **No trivia flashcards** (he rejected these on 6 Nov): PEP numbers, version history, Python 2 vs 3, lists of other implementations.
   - **MCQs** are for what online tests ask: predict the output, find the error, pick the valid option. Syntax rules and trap questions go here.
+- For Coding-level topics, also add practice tasks to `practice/tasks.json`, with a time and space target and a speed check, and run `tools/check-practice.py` (section 6). He asked for these on 6 Nov.
 - Use the same three levels everywhere:
   - **Coding**: he writes it live in an editor, with no AI help.
   - **Concept**: he explains it clearly and reasons about code he is shown.
@@ -76,12 +77,17 @@ Done, in order:
     - The story was "a train of letter carriages": seat numbers and slicing, the welded train (immutable), the toolbox (split/join, strip/replace/count, in/find/index, checks and case), f-strings, escapes and raw strings, str vs bytes, and join vs `+=`.
     - Measured: `+=` 3.2 ms vs join 2.5 ms for 100k pieces, but 128 ms when a second reference breaks CPython's shortcut.
     - He then got 8 flashcards and 37 MCQs.
-    - He was given 6 coding tasks to write himself, with expected outputs and hints but no answers: reverse_words, is_palindrome, is_anagram, first_unique, count_vowels, compress ("aaabbc" → "a3b2c1"). Reference answers were checked in a scratch file, not shown.
+    - He was given 6 coding tasks to write himself, with expected outputs and hints but no answers: reverse_words, is_palindrome, is_anagram, first_unique, count_vowels, compress ("aaabbc" → "a3b2c1").
+
+13. **Added in-app code practice** (6 Nov, his request). A "Code practice" screen runs real Python on his phone, offline after the first use (section 6).
+    - The 6 Topic 3 tasks are in it. Each task shows its time and space target ("Time O(n) · Space O(1)").
+    - Check runs hidden tests, then a speed check on a big input. An O(n²) answer gets "Too slow", and the reason for the target appears only after he passes.
+    - The reference answers are in `tools/practice_solutions.py` in the public repo. Never show or quote them to him before he has tried.
 
 Next:
-- **Review his Topic 3 code** when he sends it, like an interviewer would: correctness on the given examples, edge cases (empty string, extra spaces, case), Big-O, and cleaner Python. Don't give him full answers before he tries.
+- **Review his Topic 3 code** when he sends it (he may solve the tasks in the app first), like an interviewer would: correctness, edge cases (empty string, extra spaces, case), Big-O, and cleaner Python. Passing the app's checks doesn't mean the code is clean. Don't give him full answers before he tries.
 - If he sends a Topic 2 or Topic 3 summary, check it point by point.
-- Then **Topic 4: Control flow and loops** (Coding level).
+- Then **Topic 4: Control flow and loops** (Coding level): lesson, flashcards, MCQs and practice tasks.
 - He revises Topics 1–3 with the flashcards and MCQs.
 - **GitHub Pages publishing failed on 5–6 Nov.** The deploy step timed out at "updating_pages", and a stuck queued re-run of cbdc44c couldn't be cancelled ("has not yet queued"). Each push to gh-pages starts a new deploy. If the live `flashcards.json` lacks the newest topics, check the runs with `gh api repos/AryThakar/ai-engineer-roadmap/actions/runs` and re-run or push again. Check the live file with a cache-busting query (`?check=...`), because the fetch tool caches URLs for 15 minutes. His real progress is in the app's backup (section 6).
 - Project work (zen, Zen-harness) waits until topic 70. Don't bring it up before then. When we get there, start from the zen notes in section 5.
@@ -168,9 +174,9 @@ Next:
   - `LANES`, `STAGES`: the parallel plan and each stage's "Move on when" check.
   - `KINDS`, `RES`: resources, `[name, url, kind, note, [topic ids]]`. Kind is `Learn`, `Practice`, `MCQ` or `QA`.
 - Don't renumber topics or reorder subtopics. Progress keys depend on topic ids and subtopic order, so add new subtopics at the end.
-- `sw.js` (offline support, `VERSION` is `air-v2`): the page and `flashcards.json` load network-first, so changes to them show up on their own. Other files (manifest, icons) are served from the cache first, so raise `VERSION` in `sw.js` when you change them.
+- `sw.js` (offline support, `VERSION` is `air-v3`): the page, `flashcards.json` and the `practice/` files load network-first, so changes to them show up on their own. Other files (manifest, icons) are served from the cache first, so raise `VERSION` in `sw.js` when you change them. The Pyodide files are cached on first use in their own cache (`PYODIDE_CACHE`), which survives app updates.
 - Deploying: GitHub Pages serves the `gh-pages` branch. Keep `main` and `gh-pages` the same: commit on `main`, then run `git push origin main main:gh-pages`.
-- Section 7 below is generated from `index.html` and `flashcards.json`. After changing either, run `node tools/update-claude-md.js` from the repo root to bring it up to date.
+- Section 7 below is generated from `index.html`, `flashcards.json` and `practice/tasks.json`. After changing any of them, run `node tools/update-claude-md.js` from the repo root to bring it up to date.
 
 ### Flashcards and MCQs
 
@@ -202,9 +208,44 @@ Next:
   - It checks every item's shape and runs every `code` to confirm `out` matches exactly. Syntax errors are shown the way a terminal shows them.
   - It also confirms each MCQ's marked answer matches what the code really does.
 
+### Code practice
+
+- The yellow "Code practice" button, or "Code" in a topic's panel, opens the screen: the task (examples, the time and space target, a hint) on one side, and an editor with Run, Check, Stop and Reset on the other.
+- **Python runs in the browser**: Pyodide 314.0.7 (Python 3.14.2) in `pyodide/314.0.7/`, about 13 MB, downloaded on first use and then kept for offline use.
+  - It runs inside a Web Worker (`practice/worker.js`), so Stop and the time limits end a stuck loop by ending the worker; a fresh one starts by itself.
+  - It's Python 3.14, not 3.15, so a few error messages can differ slightly from his laptop.
+  - License notes are in `pyodide/README.md`.
+- **Run** runs the code as a script and shows its prints (10 s limit; `input()` is blocked with a clear message).
+- **Check** calls the function on every test and shows ✅/❌ with expected vs got, or the error and its line. If all pass, it runs the speed check:
+  - It times the function on the task's big input, with a 4 s limit.
+  - Pass: "⚡ Fast enough", the task is marked solved, and the "why" of the target appears.
+  - Fail: "🐢 Too slow… probably O(n²)", with common causes to look for.
+  - Space isn't measured; the screen tells him to compare his answer with the target.
+- Editor keys:
+  - Tab gives 4 spaces and Shift+Tab removes them, also on a selection of lines.
+  - Enter keeps the indent and adds 4 after a colon; Backspace in the indent removes 4.
+  - Ctrl+Enter runs, Ctrl+Shift+Enter checks, and Esc leaves the editor.
+  - Touch screens get Tab → and ← Tab buttons.
+- His code and solved tasks are saved in the browser (localStorage key `aiEngineerRoadmap.practice.v1`), not in the progress backup.
+- `practice/harness.py` judges the code, in both the browser and the checker, so they always agree. Comparisons are strict: `True` isn't accepted for `1`, and `None` must be `None`.
+- Tasks are in `practice/tasks.json`: `{"version": 1, "updated": ..., "python": ..., "topics": {"<topic id>": [task, ...]}}`. A task has:
+  - `id` (like `t3-compress`), `title` and `func` (the function name he must write).
+  - `prompt`: backticks become code.
+  - `starter`: a function stub plus a couple of example prints. It must not pass the tests.
+  - `tests`: `[{"args": [...], "expect": ..., "show": true}]`. `show` marks the examples shown on the task. Don't use whole-number floats like `3.0`, because the app would show them as `3`.
+  - `target`: `{"time": "O(n)", "space": "O(1)", "why": "..."}`.
+  - `speed`: `{"setup": "args = (...)", "label": "1,200,000 letters", "limit": 4}`. `setup` is Python that builds `args`.
+  - `hint`.
+- To add tasks:
+  1. Add them to `practice/tasks.json`.
+  2. Put a correct answer in `SOLUTIONS` and a correct but O(n²) answer in `SLOW` in `tools/practice_solutions.py`.
+  3. Run `python tools/check-practice.py` with Python 3.15. It checks that the reference passes and takes under a tenth of the limit, and that the starter fails. It also checks that the slow answer still passes the tests but takes over twice the limit.
+  4. Size the speed input so this holds.
+- On 6 Nov 2026 in browser Python, the references took 0.01–0.18 s and the slow answers 13–45+ s.
+
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 25, MCQs: 101 (topics 1, 2, 3).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 25, MCQs: 101 (topics 1, 2, 3). Coding tasks: 6 (topic 3).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -273,7 +314,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
 - **2. Data types and operators** [MCQ, stage 1, Core lane, 7 flashcards, 39 MCQs]
   - Check: Predict results like `-7 // 2`, `0.1 + 0.2`, `'a' or 'b'` and `1 < x < 5`.
   - Subtopics: (0) `int`, `float`, `complex`, `bool`, `str`, `None`; (1) `type()` vs `isinstance()`; (2) Type conversion: `int()`, `float()`, `str()`, `bool()`; (3) Truthy and falsy values; (4) Arithmetic: `/`, `//`, `%`, `**`; floor division with negatives; (5) Comparison and chained comparison; (6) `and` / `or` / `not`: short-circuiting and returning operands; (7) Bitwise operators: `&`, `|`, `^`, `~`, `<<`, `>>`; (8) Identity (`is`) vs equality (`==`); membership (`in`); (9) Operator precedence; (10) Float precision: why `0.1 + 0.2 != 0.3`
-- **3. Strings** [Coding, stage 1, Core lane, 8 flashcards, 37 MCQs]
+- **3. Strings** [Coding, stage 1, Core lane, 8 flashcards, 37 MCQs, 6 coding tasks]
   - Check: Reverse words, check a palindrome or anagram, and find the first non-repeating character.
   - Subtopics: (0) Indexing and negative indexing; (1) Slicing with a step; `s[::-1]`; (2) Strings are immutable; (3) Methods: `split`, `join`, `strip`, `replace`, `count`; (4) `find` (returns -1) vs `index` (raises an error); (5) `startswith`, `endswith`, `upper`, `lower`, `isdigit`, `isalpha`; (6) f-strings and format specs: `{x:.2f}`, `{x:>10}`; (7) Escape sequences and raw strings `r'...'`; (8) Multiline strings; (9) Unicode, `encode` / `decode`, `bytes`; (10) Build strings with `''.join(parts)`, not `+=` in a loop
 - **4. Control flow and loops** [Coding, stage 1, Core lane]

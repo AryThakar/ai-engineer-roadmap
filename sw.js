@@ -1,10 +1,14 @@
 // Offline support for the AI Engineer Interview Roadmap.
-const VERSION = "air-v2";
+const VERSION = "air-v3";
+const PYODIDE_CACHE = "air-pyodide-314.0.7";   // big, never changes: kept across app updates
 const SHELL = [
   "./",
   "index.html",
   "manifest.webmanifest",
   "flashcards.json",
+  "practice/tasks.json",
+  "practice/harness.py",
+  "practice/worker.js",
   "icons/icon-192.png",
   "icons/icon-512.png",
   "icons/icon-maskable-512.png",
@@ -17,27 +21,29 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("activate", event => {
+  const keep = [VERSION, VERSION + "-fonts", PYODIDE_CACHE];
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== VERSION && k !== VERSION + "-fonts").map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => !keep.includes(k)).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
+
+// Try the network first so updates show up; fall back to the saved copy offline.
+function networkFirst(req, key) {
+  return fetch(req).then(res => {
+    if (res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put(key, copy)); }
+    return res;
+  }).catch(() => caches.match(key));
+}
 
 self.addEventListener("fetch", event => {
   const req = event.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
 
-  // Page: try the network first so updates show up, fall back to the saved copy offline.
   if (req.mode === "navigate") {
-    event.respondWith(
-      fetch(req).then(res => {
-        const copy = res.clone();
-        caches.open(VERSION).then(c => c.put("index.html", copy));
-        return res;
-      }).catch(() => caches.match("index.html"))
-    );
+    event.respondWith(networkFirst(req, "index.html"));
     return;
   }
 
@@ -54,19 +60,26 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // Flashcards change often: try the network first so new cards show up, use the saved copy offline.
-  if (url.origin === self.location.origin && url.pathname.endsWith("/flashcards.json")) {
+  if (url.origin !== self.location.origin) return;
+  const path = url.pathname;
+
+  // Python in the browser: download once on first use, then always serve the saved copy.
+  if (path.includes("/pyodide/")) {
     event.respondWith(
-      fetch(req).then(res => {
-        if (res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put("flashcards.json", copy)); }
-        return res;
-      }).catch(() => caches.match("flashcards.json"))
+      caches.open(PYODIDE_CACHE).then(cache =>
+        cache.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req).then(res => {
+          if (res.ok) cache.put(req, res.clone());
+          return res;
+        }))
+      )
     );
     return;
   }
 
-  // Own files: saved copy first.
-  if (url.origin === self.location.origin) {
-    event.respondWith(caches.match(req).then(hit => hit || fetch(req)));
-  }
+  // Cards, tasks and the practice runner change often.
+  if (path.endsWith("/flashcards.json")) { event.respondWith(networkFirst(req, "flashcards.json")); return; }
+  if (path.includes("/practice/")) { event.respondWith(networkFirst(req, "practice/" + path.split("/practice/")[1])); return; }
+
+  // Other own files: saved copy first.
+  event.respondWith(caches.match(req).then(hit => hit || fetch(req)));
 });

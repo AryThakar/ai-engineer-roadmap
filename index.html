@@ -250,9 +250,64 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
 .mcq-result.ok { color: var(--done); }
 .mcq-result.bad { color: var(--code); }
 
+/* Code practice: task on the left, editor and results on the right (one column on phones).
+   Python runs in a Web Worker (practice/worker.js), so a stuck loop can be stopped. */
+.d-fc { flex-wrap: wrap; }
+.pr .fc-bar { max-width: 1200px; }
+.pr-title { margin: 0; font: 800 19px/1.2 var(--font-display); flex: none; }
+.pr-body { width: 100%; max-width: 1200px; margin: 0 auto; flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(260px, 1fr) minmax(0, 1.6fr); gap: 14px; }
+.pr-info { overflow-y: auto; background: #fff; border: 2.5px solid var(--ink); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.pr-info > * { flex-shrink: 0; margin: 0; }
+.pr-info > button { align-self: flex-start; }
+.pr-info h3 { margin: 0; font: 800 23px/1.2 var(--font-display); }
+.pr-info p { line-height: 1.5; }
+.pr-ex { list-style: none; padding: 0; display: grid; gap: 4px; font: 500 13px/1.5 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.pr-target { display: flex; flex-wrap: wrap; gap: 6px; }
+.pr-chip { font: 600 12.5px/1.3 var(--font-mono); padding: 5px 9px; border: 1.5px solid var(--ink); border-radius: 999px; background: var(--node); }
+.pr-why, .pr-hint { padding: 8px 10px; border: 1.5px solid var(--ink); border-radius: 6px; font-size: 14px; }
+.pr-why { background: var(--done-bg); border-color: var(--done); }
+.pr-hint { background: var(--node); }
+.pr-small { font-size: 13px; color: var(--muted); }
+.pr-work { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.pr-code { flex: 1 1 auto; min-height: 200px; width: 100%; resize: none; margin: 0; border: 2.5px solid var(--ink); border-radius: 12px; background: var(--ink); color: #f4f1e8; caret-color: var(--section); font: 500 14px/1.55 var(--font-mono); padding: 12px 14px; tab-size: 4; white-space: pre; overflow: auto; }
+.pr-code:focus-visible { outline: 3px solid var(--section); outline-offset: 2px; }
+.pr-btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.pr-btns button { border: 2px solid var(--ink); border-radius: 8px; padding: 9px 14px; font-weight: 600; font-size: 14.5px; background: #fff; }
+.pr-btns .run { background: var(--ink); color: #fff; }
+.pr-btns .chk { background: var(--done); border-color: var(--done); color: #fff; }
+.pr-btns .stop { color: var(--code); border-color: var(--code); }
+.pr-btns button:disabled { opacity: .4; cursor: default; }
+.pr-keys { display: none; gap: 6px; }
+.pr-keys button { padding: 9px 10px; font: 500 13px/1 var(--font-mono); }
+@media (hover: none) { .pr-keys { display: flex; } .pr-kb { display: none; } .pr-code, .fc-bar select { font-size: 16px; } }  /* 16px stops iPhone zooming in on tap */
+.pr-pos { margin-left: auto; font: 500 12.5px/1 var(--font-mono); color: var(--muted); white-space: nowrap; }
+.pr-out { flex: 0 1 auto; max-height: 45%; overflow-y: auto; background: #fff; border: 2px solid var(--ink); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.pr-out:empty { display: none; }
+.pr-out > * { flex-shrink: 0; margin: 0; }
+.pr-out > button { align-self: flex-start; }
+.pr-out pre { margin: 0; font: 500 13px/1.5 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.pr-out pre.none { color: var(--muted); }
+.pr-out .err { color: var(--code); }
+.pr-res { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; font: 500 13px/1.45 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.pr-res li { padding: 3px 6px; border-radius: 4px; }
+.pr-res li.bad { background: #ffe3dc; }
+.pr-res small { display: block; padding-left: 1.9em; font-size: 12.5px; color: var(--ink); }
+.pr-sum { font: 800 18px/1.25 var(--font-display); }
+.pr-sum.ok { color: var(--done); }
+.pr-sum.bad { color: var(--code); }
+.pr-note { padding: 8px 10px; border: 1.5px solid var(--ink); border-radius: 6px; font-size: 14px; line-height: 1.5; }
+.pr-note.ok { background: var(--done-bg); border-color: var(--done); }
+.pr-note.bad { background: #ffe3dc; border-color: var(--code); }
+
 @media (max-width: 860px) {
   .summary { grid-template-columns: 1fr; }
   .lanes { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 860px) {
+  .pr-body { display: block; overflow-y: auto; }
+  .pr-info { overflow: visible; margin-bottom: 12px; }
+  .pr-code { flex: none; height: 52vh; }
+  .pr-out { max-height: none; }
 }
 @media (max-width: 720px) {
   .legend { grid-template-columns: 1fr; }
@@ -270,6 +325,7 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
   #fc-close { order: 3; }
   .fc-bar select { order: 4; flex-basis: 100%; }
   .fc-count { order: 5; flex-basis: 100%; }
+  .pr-title { flex: 1; }
   .drawer { padding-top: 18px; top: auto; bottom: 0; height: 88%; width: 100%; border-left: 0; border-top: 2.5px solid var(--ink); border-radius: 14px 14px 0 0; transform: translateY(105%); }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -302,6 +358,7 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
       </label>
       <label class="ctl" for="hide-done"><input type="checkbox" id="hide-done"> Hide done</label>
       <button type="button" class="reset slim fc-open" id="fc-open" hidden>Flashcards &amp; MCQs</button>
+      <button type="button" class="reset slim fc-open" id="pr-open" hidden>Code practice</button>
       <button type="button" class="reset" id="backup-open">Back up or move progress</button>
       <button type="button" class="reset slim" id="reset">Reset progress</button>
     </div>
@@ -362,7 +419,7 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
   <ul class="subs" id="d-subs"></ul>
   <h3>Interview check</h3>
   <p class="check" id="d-check"></p>
-  <div class="d-fc" id="d-fc" hidden><p id="d-fc-text"></p><span class="d-fc-btns"><button type="button" class="close" id="d-fc-btn">Cards</button><button type="button" class="close" id="d-mcq-btn">MCQ</button></span></div>
+  <div class="d-fc" id="d-fc" hidden><p id="d-fc-text"></p><span class="d-fc-btns"><button type="button" class="close" id="d-fc-btn">Cards</button><button type="button" class="close" id="d-mcq-btn">MCQ</button><button type="button" class="close" id="d-pr-btn">Code</button></span></div>
   <div id="d-res-wrap">
     <h3>Where to learn and practise <small id="d-rescount"></small></h3>
     <ul class="d-res" id="d-res"></ul>
@@ -392,6 +449,32 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
   </div>
   <div class="fc-actions mcq-actions" id="mcq-actions" hidden>
     <button type="button" class="got" id="mcq-next" disabled>Next question</button>
+  </div>
+</div>
+
+<div class="fc pr" id="pr" role="dialog" aria-modal="true" aria-labelledby="pr-title" hidden>
+  <div class="fc-bar">
+    <h2 class="pr-title" id="pr-title">Code practice</h2>
+    <label class="sr" for="pr-task">Task</label>
+    <select id="pr-task"></select>
+    <span class="fc-count" id="pr-status" role="status"></span>
+    <button type="button" class="close" id="pr-close">Close</button>
+  </div>
+  <div class="pr-body">
+    <section class="pr-info" id="pr-info" aria-label="The task"></section>
+    <div class="pr-work">
+      <label class="sr" for="pr-code">Your code</label>
+      <textarea class="pr-code" id="pr-code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off"></textarea>
+      <div class="pr-btns">
+        <button type="button" class="run" id="pr-run">Run</button>
+        <button type="button" class="chk" id="pr-check">Check</button>
+        <button type="button" class="stop" id="pr-stop" disabled>Stop</button>
+        <button type="button" id="pr-reset">Reset</button>
+        <span class="pr-keys"><button type="button" id="pr-tab" aria-label="Indent">Tab →</button><button type="button" id="pr-dedent" aria-label="Unindent">← Tab</button></span>
+        <span class="pr-pos" id="pr-pos" aria-hidden="true"></span>
+      </div>
+      <div class="pr-out" id="pr-out" aria-live="polite"></div>
+    </div>
   </div>
 </div>
 
@@ -840,7 +923,7 @@ scrim.addEventListener("click", closeDrawer);
 document.getElementById("d-prev").addEventListener("click", () => openTopic(current - 1));
 document.getElementById("d-next").addEventListener("click", () => openTopic(current + 1));
 document.addEventListener("keydown", e => {
-  if (!drawer.classList.contains("open") || !fc.hidden) return;
+  if (!drawer.classList.contains("open") || !fc.hidden || !pr.hidden) return;
   if (e.key === "Escape") closeDrawer();
   if (e.key === "Tab") {
     const f = [...drawer.querySelectorAll("button:not(:disabled), input")].filter(x => x.offsetParent !== null);
@@ -883,6 +966,8 @@ const fcCount = document.getElementById("fc-count"), fcFlip = document.getElemen
 const fcActions = document.getElementById("fc-actions"), mcqActions = document.getElementById("mcq-actions"), mcqNext = document.getElementById("mcq-next");
 const KIND = { output: "Predict the output", error: "Find the error", concept: "Concept check" };
 const DECK = { cards: null, mcq: null };
+const PRACTICE = { topics: null, list: [], byTask: new Map() };
+const tasksFor = id => (PRACTICE.topics && PRACTICE.topics[String(id)]) || [];
 let fcMode = "cards", fcQueue = [], fcKnown = 0, fcFlipped = false, fcLastFocus = null;
 let mq = { list: [], i: 0, right: 0, wrong: [], picked: null, order: [] };
 const itemsFor = (mode, id) => (DECK[mode] && DECK[mode][String(id)]) || [];
@@ -891,14 +976,16 @@ const totalOf = mode => deckTopics(mode).reduce((n, id) => n + itemsFor(mode, id
 const plural = (n, one, many) => n + " " + (n === 1 ? one : many);
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function renderDrawerCards(id) {
-  const nc = itemsFor("cards", id).length, nm = itemsFor("mcq", id).length;
-  document.getElementById("d-fc").hidden = !(nc || nm);
+  const nc = itemsFor("cards", id).length, nm = itemsFor("mcq", id).length, np = tasksFor(id).length;
+  document.getElementById("d-fc").hidden = !(nc || nm || np);
   const parts = [];
   if (nc) parts.push(plural(nc, "flashcard", "flashcards"));
   if (nm) parts.push(plural(nm, "MCQ", "MCQs"));
+  if (np) parts.push(plural(np, "coding task", "coding tasks"));
   document.getElementById("d-fc-text").textContent = parts.join(" · ") + " for this topic";
   document.getElementById("d-fc-btn").hidden = !nc;
   document.getElementById("d-mcq-btn").hidden = !nm;
+  document.getElementById("d-pr-btn").hidden = !np;
 }
 fetch("flashcards.json", { cache: "no-cache" })
   .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
@@ -1071,6 +1158,423 @@ document.addEventListener("keydown", e => {
   if (e.key === " " || e.key === "Enter") { e.preventDefault(); fcFlipCard(); }
   else if (e.key === "ArrowLeft") { e.preventDefault(); fcNext(false); }
   else if (e.key === "ArrowRight") { e.preventDefault(); fcNext(true); }
+});
+
+/* Code practice: tasks live in practice/tasks.json, keyed by topic id (format in CLAUDE.md).
+   Python (Pyodide) runs in practice/worker.js, off the page, so Stop and time limits can end a stuck loop.
+   Check = every test must pass, then a speed check times the function on a big input against the task's limit. */
+const pr = document.getElementById("pr"), prTask = document.getElementById("pr-task"), prInfo = document.getElementById("pr-info");
+const prCode = document.getElementById("pr-code"), prOut = document.getElementById("pr-out"), prStatus = document.getElementById("pr-status");
+const prRun = document.getElementById("pr-run"), prCheck = document.getElementById("pr-check"), prStop = document.getElementById("pr-stop"), prReset = document.getElementById("pr-reset");
+const PR_KEY = "aiEngineerRoadmap.practice.v1", PR_LIMIT = 10, PR_MAX_OUT = 20000, IND = "    ";
+let prState = { code: {}, solved: {}, last: null };
+try { const s = JSON.parse(localStorage.getItem(PR_KEY)); if (s && typeof s === "object") prState = { code: s.code || {}, solved: s.solved || {}, last: s.last || null }; } catch (e) {}
+let prCur = null, prLastFocus = null, prSaveTimer = 0, prResetTimer = 0;
+function prSave() { try { localStorage.setItem(PR_KEY, JSON.stringify(prState)); } catch (e) {} }
+function prStoreCode() { clearTimeout(prSaveTimer); if (prCur) { prState.code[prCur.id] = prCode.value; prSave(); } }
+fetch("practice/tasks.json", { cache: "no-cache" })
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => {
+    const all = (d && d.topics) || {}, topicsOk = {};
+    Object.keys(all).map(Number).filter(id => byId.has(id)).sort((a, b) => a - b).forEach(id => {
+      const list = (all[String(id)] || []).filter(t => t && t.id && t.func && Array.isArray(t.tests));
+      if (!list.length) return;
+      topicsOk[String(id)] = list;
+      list.forEach((t, i) => { t.topic = id; t.n = i + 1; PRACTICE.list.push(t); PRACTICE.byTask.set(t.id, t); });
+    });
+    if (!PRACTICE.list.length) return;
+    PRACTICE.topics = topicsOk;
+    const b = document.getElementById("pr-open"); b.textContent = "Code practice · " + PRACTICE.list.length; b.hidden = false;
+    if (current) renderDrawerCards(current);
+  })
+  .catch(() => {});
+
+/* How Python would print a value: the app shows tests the way you'd see them in a terminal. */
+function pyStr(s) {
+  const q = s.includes("'") && !s.includes('"') ? '"' : "'";
+  let out = "";
+  for (const ch of s) {
+    if (ch === "\\") out += "\\\\";
+    else if (ch === q) out += "\\" + q;
+    else if (ch === "\n") out += "\\n";
+    else if (ch === "\t") out += "\\t";
+    else if (ch === "\r") out += "\\r";
+    else if (ch < " " || ch === "\x7f") out += "\\x" + ch.charCodeAt(0).toString(16).padStart(2, "0");
+    else out += ch;
+  }
+  return q + out + q;
+}
+function pyRepr(v) {
+  if (v === null || v === undefined) return "None";
+  if (v === true) return "True";
+  if (v === false) return "False";
+  if (typeof v === "number") return String(v);
+  if (typeof v === "string") return pyStr(v);
+  if (Array.isArray(v)) return "[" + v.map(pyRepr).join(", ") + "]";
+  return "{" + Object.entries(v).map(([k, x]) => pyStr(k) + ": " + pyRepr(x)).join(", ") + "}";
+}
+const clip = (s, n) => s.length > n ? s.slice(0, n - 1) + "…" : s;
+const callText = (t, args) => t.func + "(" + args.map(a => clip(pyRepr(a), 60)).join(", ") + ")";
+const secText = s => s < 0.01 ? "under 0.01 s" : s.toFixed(2) + " s";
+const prReveal = el => { if (el && el.isConnected) el.scrollIntoView({ block: "nearest" }); };
+
+/* The Python worker. One job at a time; a job that runs too long, or is stopped, ends the worker and a fresh one starts. */
+let pyW = null, pyReady = false, pyEverReady = false, pyVersion = "", pyJob = null, pySeq = 0, pyFailed = "";
+function prSetStatus(text, bad) { prStatus.textContent = text; prStatus.style.color = bad ? "var(--code)" : ""; }
+function prIdleStatus() {
+  if (pyJob) return;
+  if (pyFailed) prSetStatus(pyFailed, true);
+  else if (pyReady) prSetStatus("Python " + pyVersion + " ready");
+}
+function pyBoot() {
+  pyReady = false; pyFailed = "";
+  prSetStatus(pyEverReady ? "Restarting Python…" : "Starting Python… the first time downloads about 13 MB");
+  let w;
+  try { w = new Worker("practice/worker.js", { type: "module" }); }
+  catch (e) { pyW = null; pyFailed = "This browser can't run Python here."; prIdleStatus(); return; }
+  pyW = w;
+  const fail = text => {
+    if (w !== pyW) return;
+    pyW = null; w.terminate();
+    pyFailed = navigator.onLine === false && !pyEverReady
+      ? "Python isn't downloaded yet. Connect to the internet once and open Code practice."
+      : "Python couldn't start. Close this screen and try again.";
+    if (pyJob) pyFinish({ fatal: text || pyFailed }); else prIdleStatus();
+  };
+  w.onmessage = ({ data: m }) => {
+    if (w !== pyW) return;
+    if (m.type === "ready") {
+      pyReady = true; pyEverReady = true; pyVersion = m.version;
+      if (pyJob && !pyJob.sent) pySend(); else prIdleStatus();
+    } else if (m.type === "out" || m.type === "err") {
+      if (pyJob && pyJob.onOut) pyJob.onOut(m.text, m.type === "err");
+    } else if (m.type === "speed-start") {
+      if (pyJob && pyJob.id === m.id) {
+        clearTimeout(pyJob.timer);
+        pyJob.timer = setTimeout(() => pyAbort({ slow: true }), pyJob.speedLimit * 1000 + 1500);
+        if (pyJob.onSpeed) pyJob.onSpeed();
+      }
+    } else if (m.type === "done") {
+      if (pyJob && pyJob.id === m.id) pyFinish(m.result);
+    } else if (m.type === "fatal") fail(m.text);
+  };
+  w.onerror = e => { if (e && e.preventDefault) e.preventDefault(); fail(e && e.message); };
+}
+function pySend() {
+  const j = pyJob; j.sent = true;
+  if (j.status) prSetStatus(j.status);
+  pyW.postMessage(j.msg);
+  j.timer = setTimeout(() => pyAbort({ timeout: true }), j.limit * 1000);
+}
+function pyRun(msg, opts) {
+  return new Promise(resolve => {
+    if (!pyW) pyBoot();
+    const id = ++pySeq;
+    pyJob = { id, msg: Object.assign({ id }, msg), limit: opts.limit, speedLimit: opts.speedLimit || 0, onOut: opts.onOut, onSpeed: opts.onSpeed, status: opts.status, resolve, sent: false, timer: 0 };
+    prBusy(true);
+    if (!pyW) { pyFinish({ fatal: pyFailed }); return; }
+    if (pyReady) pySend(); else prSetStatus((pyEverReady ? "Restarting" : "Starting") + " Python… your code runs when it's ready");
+  });
+}
+function pyFinish(result) {
+  const j = pyJob; if (!j) return;
+  clearTimeout(j.timer); pyJob = null; prBusy(false); prIdleStatus();
+  j.resolve(result || {});
+}
+function pyAbort(result) {
+  const j = pyJob; if (!j) return;
+  if (!j.sent) { pyFinish(result); return; }
+  const w = pyW; pyW = null; if (w) w.terminate();
+  pyFinish(result);
+  pyBoot();
+}
+function prBusy(on) {
+  prRun.disabled = prCheck.disabled = prReset.disabled = prTask.disabled = on;
+  prStop.disabled = !on;
+}
+
+/* The task panel */
+function prFillSelect() {
+  prTask.textContent = "";
+  Object.keys(PRACTICE.topics).forEach(k => {
+    const g = document.createElement("optgroup"); g.label = "Topic " + k + " · " + byId.get(Number(k)).title;
+    PRACTICE.topics[k].forEach(t => { const o = h("option", null, (prState.solved[t.id] ? "✓ " : "") + t.n + ". " + t.title); o.value = t.id; g.appendChild(o); });
+    prTask.appendChild(g);
+  });
+  if (prCur) prTask.value = prCur.id;
+}
+function whyBox(t) {
+  const w = h("p", "pr-why");
+  w.appendChild(h("b", null, "Why " + t.target.time + " time and " + t.target.space + " space: "));
+  return fmt(w, t.target.why);
+}
+function prInfoRender() {
+  const t = prCur; prInfo.textContent = "";
+  prInfo.appendChild(h("p", "pr-small", "Topic " + t.topic + " · " + byId.get(t.topic).title + " · task " + t.n + " of " + tasksFor(t.topic).length + (prState.solved[t.id] ? " · ✓ solved" : "")));
+  prInfo.appendChild(h("h3", null, t.title));
+  prInfo.appendChild(fmt(h("p"), t.prompt));
+  prInfo.appendChild(h("p", "fc-label", "Examples"));
+  const ul = h("ul", "pr-ex");
+  t.tests.filter(x => x.show).forEach(x => ul.appendChild(h("li", null, callText(t, x.args) + "  →  " + pyRepr(x.expect))));
+  prInfo.appendChild(ul);
+  prInfo.appendChild(h("p", "fc-label", "Aim for"));
+  const tg = h("div", "pr-target");
+  tg.appendChild(h("span", "pr-chip", "Time " + t.target.time));
+  tg.appendChild(h("span", "pr-chip", "Space " + t.target.space));
+  prInfo.appendChild(tg);
+  if (prState.solved[t.id]) prInfo.appendChild(whyBox(t));
+  else prInfo.appendChild(h("p", "pr-small", "The reason for this target shows up once your answer passes."));
+  const hb = h("button", "close", "Show hint"); hb.type = "button";
+  const hint = fmt(h("p", "pr-hint"), t.hint); hint.hidden = true;
+  hb.addEventListener("click", () => { hint.hidden = !hint.hidden; hb.textContent = hint.hidden ? "Show hint" : "Hide hint"; });
+  prInfo.appendChild(hb); prInfo.appendChild(hint);
+  const how = h("p", "pr-small", "Run shows what your code prints. Check calls " + t.func + "() on " + t.tests.length + " tests, then times it on " + t.speed.label + " (limit " + t.speed.limit + " s). Space isn't measured, so compare yours with the target. ");
+  how.appendChild(h("span", "pr-kb", "Keys: Ctrl+Enter runs, Ctrl+Shift+Enter checks, Esc leaves the editor."));
+  prInfo.appendChild(how);
+  prInfo.scrollTop = 0;
+}
+function prShow(tid) {
+  const t = PRACTICE.byTask.get(tid) || PRACTICE.list[0];
+  prCur = t; prState.last = t.id; prSave();
+  prTask.value = t.id;
+  prCode.value = prState.code[t.id] != null ? prState.code[t.id] : t.starter;
+  prCode.scrollTop = 0; prCode.scrollLeft = 0; prCode.setSelectionRange(0, 0);
+  prResetArm(false);
+  prOut.textContent = "";
+  prInfoRender(); prPos();
+  pr.querySelector(".pr-body").scrollTop = 0;
+}
+function prOpen(topicId) {
+  if (!PRACTICE.list.length) return;
+  if (pr.hidden) prLastFocus = document.activeElement;
+  let t = null;
+  if (topicId != null) { const list = tasksFor(topicId); t = list.find(x => !prState.solved[x.id]) || list[0]; }
+  if (!t) t = PRACTICE.byTask.get(prState.last) || PRACTICE.list.find(x => !prState.solved[x.id]) || PRACTICE.list[0];
+  prFillSelect();
+  pr.hidden = false; document.body.style.overflow = "hidden";
+  if (!pyJob) prShow(t.id);
+  if (!pyW) pyBoot(); else prIdleStatus();
+  prTask.focus({ preventScroll: true });
+}
+function prClose() {
+  prStoreCode();
+  pr.hidden = true; document.body.style.overflow = "";
+  if (prLastFocus && prLastFocus.focus) prLastFocus.focus({ preventScroll: true });
+}
+function prResetArm(on) {
+  clearTimeout(prResetTimer);
+  prReset.textContent = on ? "Sure? Tap again" : "Reset";
+  prReset.dataset.armed = on ? "1" : "";
+  if (on) prResetTimer = setTimeout(() => prResetArm(false), 3000);
+}
+
+/* Run: the code runs as a script and its prints show up below. */
+async function prDoRun() {
+  if (pyJob || !prCur) return;
+  prStoreCode();
+  prOut.textContent = "";
+  prOut.appendChild(h("p", "fc-label", "Output"));
+  const pre = h("pre"); prOut.appendChild(pre);
+  let size = 0, cut = false;
+  const add = (text, isErr) => {
+    if (cut) return;
+    if (size + text.length > PR_MAX_OUT) { text = text.slice(0, PR_MAX_OUT - size); cut = true; }
+    size += text.length;
+    const last = pre.lastChild, cls = isErr ? "err" : "";
+    if (last && last.className === cls) last.textContent += text;
+    else { const sp = h("span", cls || null, text); sp.className = cls; pre.appendChild(sp); }
+    if (cut) pre.appendChild(h("span", "err", "\n… output cut off after 20,000 characters"));
+  };
+  const r = await pyRun({ kind: "run", code: prCode.value }, { limit: PR_LIMIT, onOut: add, status: "Running…" });
+  if (r.error) add(r.error + "\n", true);
+  if (!pre.textContent) { pre.className = "none"; pre.textContent = "(nothing was printed)"; }
+  prNote(r);
+  prReveal(prOut.lastChild);
+}
+function prNote(r) {
+  let text = "";
+  if (r.timeout) text = "Stopped after " + PR_LIMIT + " s. Is there a loop that never ends?";
+  else if (r.stopped) text = "Stopped.";
+  else if (r.fatal) text = "Python isn't available: " + r.fatal;
+  if (text) prReveal(prOut.appendChild(h("p", "pr-note bad", text)));
+  return !!text;
+}
+
+/* Check: every test, then the speed check. */
+async function prDoCheck() {
+  if (pyJob || !prCur) return;
+  const t = prCur;
+  prStoreCode();
+  prOut.textContent = "";
+  const code = prCode.value;
+  const r = await pyRun({ kind: "check", code, func: t.func, tests: t.tests }, { limit: PR_LIMIT, status: "Checking…" });
+  if (prNote(r)) return;
+  if (r.error) {
+    prOut.appendChild(h("p", "pr-sum bad", "Your code doesn't run yet"));
+    prReveal(prOut.appendChild(h("pre", "err", r.error)));
+    return;
+  }
+  const res = r.results || [];
+  let pass = 0;
+  const ul = h("ul", "pr-res");
+  res.forEach((x, i) => {
+    const test = t.tests[i], li = h("li", x.ok ? "ok" : "bad", (x.ok ? "✅ " : "❌ ") + callText(t, test.args));
+    if (x.ok) pass++;
+    else li.appendChild(h("small", null, x.error ? x.error : "expected " + clip(pyRepr(test.expect), 80) + ", got " + clip(String(x.got), 80)));
+    ul.appendChild(li);
+  });
+  const allOk = res.length > 0 && pass === res.length;
+  prOut.appendChild(h("p", "pr-sum " + (allOk ? "ok" : "bad"), pass + " of " + res.length + " tests passed"));
+  prOut.appendChild(ul);
+  if (!allOk) { prReveal(ul.querySelector(".bad")); return; }
+  const sp = h("p", "pr-note", "Speed check: getting " + t.speed.label + " ready…");
+  prOut.appendChild(sp); prReveal(sp);
+  const s = await pyRun({ kind: "speed", code, func: t.func, setup: t.speed.setup }, {
+    limit: PR_LIMIT, speedLimit: t.speed.limit, status: "Speed check…",
+    onSpeed: () => { sp.textContent = "Speed check: timing " + t.func + "() on " + t.speed.label + " (limit " + t.speed.limit + " s)…"; }
+  });
+  sp.textContent = "";
+  if (s.slow || (typeof s.seconds === "number" && s.seconds > t.speed.limit)) {
+    sp.className = "pr-note bad";
+    sp.appendChild(h("b", null, "🐢 Too slow. "));
+    fmt(sp, "It was still running after " + t.speed.limit + " s on " + t.speed.label + ". It's probably O(n²) or worse; the target is " + t.target.time + ". Look for slow work repeated inside a loop, like `s.count(...)`, `x in some_list`, `list.remove(...)`, `pop(0)` or slicing.");
+    prReveal(sp);
+    return;
+  }
+  if (typeof s.seconds !== "number") {
+    sp.remove();
+    if (!prNote(s)) prOut.appendChild(h("p", "pr-note bad", "The speed check hit an error: " + (s.error || "unknown")));
+    return;
+  }
+  sp.className = "pr-note ok";
+  sp.appendChild(h("b", null, "⚡ Fast enough: "));
+  sp.appendChild(document.createTextNode(secText(s.seconds) + " on " + t.speed.label + " (limit " + t.speed.limit + " s). An O(n²) answer can't finish that in time."));
+  const first = !prState.solved[t.id];
+  prState.solved[t.id] = true; prSave();
+  prOut.appendChild(h("p", "pr-sum ok", first ? "Solved! 🎉" : "Solved again"));
+  prOut.appendChild(whyBox(t));
+  const i = PRACTICE.list.indexOf(t), next = PRACTICE.list.slice(i + 1).find(x => !prState.solved[x.id]);
+  if (next) { const nb = h("button", "close", "Next task: " + next.title + " →"); nb.type = "button"; nb.addEventListener("click", () => { prStoreCode(); prShow(next.id); }); prOut.appendChild(nb); }
+  prFillSelect(); prInfoRender();
+  if (current) renderDrawerCards(current);
+  prReveal(prOut.lastChild);
+}
+
+/* The editor: a plain textarea with the keys Python needs. Tab = 4 spaces, Enter keeps the indent
+   (and adds 4 after a colon), Backspace in the indent removes 4. Edits go through insertText so Undo works. */
+let edBusy = false;
+function edInsert(text) {
+  if (document.activeElement !== prCode) prCode.focus({ preventScroll: true });
+  edBusy = true;
+  let ok = false;
+  try { ok = document.execCommand("insertText", false, text); } catch (e) {}
+  if (!ok || (text === "" && prCode.selectionStart !== prCode.selectionEnd)) {
+    prCode.setRangeText(text, prCode.selectionStart, prCode.selectionEnd, "end");
+    prCode.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+  edBusy = false;
+}
+const edLineStart = pos => prCode.value.lastIndexOf("\n", pos - 1) + 1;
+function edIndent(dedent) {
+  const v = prCode.value, s = prCode.selectionStart, e = prCode.selectionEnd;
+  if (!dedent && s === e) return edInsert(IND.slice((s - edLineStart(s)) % 4));
+  const ls = edLineStart(s);
+  let le = e; if (e > s && v[e - 1] === "\n") le = e - 1;
+  const nl = v.indexOf("\n", le), end = nl === -1 ? v.length : nl;
+  const lines = v.slice(ls, end).split("\n");
+  let first = 0, total = 0;
+  const out = lines.map((ln, i) => {
+    let d = 0;
+    if (dedent) { const m = ln.match(/^ {1,4}/); d = m ? -m[0].length : 0; ln = ln.slice(-d); }
+    else if (ln.trim() || lines.length === 1) { d = 4; ln = IND + ln; }
+    if (i === 0) first = d;
+    total += d;
+    return ln;
+  });
+  if (!total) return;
+  prCode.setSelectionRange(ls, end);
+  edInsert(out.join("\n"));
+  if (s === e) { const p = Math.max(ls, s + first); prCode.setSelectionRange(p, p); }
+  else prCode.setSelectionRange(Math.max(ls, s + first), Math.max(ls, e + total));
+  prPos();
+}
+function edNewlineIndent(before) {
+  let ind = before.match(/^ */)[0];
+  if (/:\s*$/.test(before.replace(/#.*$/, ""))) ind += IND;
+  return ind;
+}
+prCode.addEventListener("keydown", e => {
+  const mod = e.ctrlKey || e.metaKey;
+  if (e.key === "Enter" && mod) { e.preventDefault(); if (e.shiftKey) prDoCheck(); else prDoRun(); return; }
+  if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); prRun.focus(); return; }
+  if (e.isComposing || e.keyCode === 229 || mod || e.altKey) return;
+  if (e.key === "Tab") { e.preventDefault(); edIndent(e.shiftKey); return; }
+  const s = prCode.selectionStart;
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    const ls = edLineStart(s);
+    edInsert("\n" + edNewlineIndent(prCode.value.slice(ls, s)));
+    return;
+  }
+  if (e.key === "Backspace" && s === prCode.selectionEnd) {
+    const before = prCode.value.slice(edLineStart(s), s);
+    if (before.length > 1 && /^ +$/.test(before)) {
+      const n = before.length % 4 || 4;
+      if (n > 1) { e.preventDefault(); prCode.setSelectionRange(s - n, s); edInsert(""); }
+    }
+  }
+});
+prCode.addEventListener("input", e => {
+  // Phone keyboards often skip keydown for Enter, so add the indent after the browser's own new line.
+  if (!edBusy && (e.inputType === "insertLineBreak" || e.inputType === "insertParagraph")) {
+    const s = prCode.selectionStart, ls = edLineStart(s);
+    if (s === ls && ls > 0) {
+      const prev = prCode.value.slice(edLineStart(ls - 1), ls - 1);
+      const ind = edNewlineIndent(prev);
+      if (ind) edInsert(ind);
+    }
+  }
+  clearTimeout(prSaveTimer); prSaveTimer = setTimeout(prStoreCode, 400);
+  prPos();
+});
+function prPos() {
+  const s = prCode.selectionStart, ls = edLineStart(s);
+  document.getElementById("pr-pos").textContent = "Line " + (prCode.value.slice(0, s).split("\n").length) + ", col " + (s - ls + 1);
+}
+["keyup", "click", "focus"].forEach(ev => prCode.addEventListener(ev, prPos));
+[["pr-tab", false], ["pr-dedent", true]].forEach(([id, dedent]) => {
+  const b = document.getElementById(id);
+  b.addEventListener("pointerdown", e => e.preventDefault());
+  b.addEventListener("mousedown", e => e.preventDefault());
+  b.addEventListener("click", () => edIndent(dedent));
+});
+
+prRun.addEventListener("click", prDoRun);
+prCheck.addEventListener("click", prDoCheck);
+prStop.addEventListener("click", () => pyAbort({ stopped: true }));
+prReset.addEventListener("click", () => {
+  if (!prCur) return;
+  if (!prReset.dataset.armed) { prResetArm(true); return; }
+  prResetArm(false);
+  prCode.focus({ preventScroll: true }); prCode.select();
+  edInsert(prCur.starter);
+  prCode.setSelectionRange(0, 0); prCode.scrollTop = 0;
+  prOut.textContent = ""; prStoreCode(); prPos();
+});
+prTask.addEventListener("change", () => { prStoreCode(); prShow(prTask.value); });
+document.getElementById("pr-close").addEventListener("click", prClose);
+document.getElementById("pr-open").addEventListener("click", () => prOpen(null));
+document.getElementById("d-pr-btn").addEventListener("click", () => prOpen(current));
+window.addEventListener("pagehide", prStoreCode);
+document.addEventListener("keydown", e => {
+  if (pr.hidden || e.target === prCode) return;
+  if (e.key === "Escape") { e.preventDefault(); prClose(); return; }
+  if (e.key === "Tab") {
+    const f = [...pr.querySelectorAll("select, button, textarea")].filter(x => x.offsetParent !== null && !x.disabled);
+    if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+  }
 });
 
 /* Install prompt (only in the installable build) */
