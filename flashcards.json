@@ -104,6 +104,59 @@
     "out": "0.30000000000000004 True",
     "hook": "1/3 can't be exact in decimal; 0.1 can't be exact in binary."
    }
+  ],
+  "3": [
+   {
+    "q": "What is slicing? How do negative indexes work?",
+    "a": "Slicing takes part of a sequence with `[start:stop:step]`: start is included, stop is not. Negative indexes count from the end: `s[-1]` is the last item. A step of -1 walks backwards. A wrong index raises IndexError, but a slice never does; it returns whatever exists.",
+    "code": "s = \"PYTHON\"\nprint(s[1:4], s[-3:], s[::2], s[1:100])",
+    "out": "YTH HON PTO YTHON",
+    "hook": "Start is IN, stop is OUT."
+   },
+   {
+    "q": "How do you reverse a string?",
+    "a": "`s[::-1]`: a slice with step -1 walks the string backwards. Another way is `\"\".join(reversed(s))`. To reverse the words instead of the letters: `\" \".join(s.split()[::-1])`.",
+    "code": "s = \"hello world\"\nprint(s[::-1])\nprint(\" \".join(s.split()[::-1]))",
+    "out": "dlrow olleh\nworld hello"
+   },
+   {
+    "q": "Strings are immutable. What does that mean?",
+    "a": "You can't change a string after it's made: `s[0] = \"J\"` raises TypeError. Methods like `upper()` and `replace()` return a new string and leave the original as it was, so you must reassign: `s = s.upper()`. That's also why strings can be dict keys.",
+    "code": "t = \"hello\"\nt.upper()\nprint(t, \"J\" + t[1:])",
+    "out": "hello Jello",
+    "hook": "The train is welded: build a new one, don't swap a carriage."
+   },
+   {
+    "q": "Explain `split()` and `join()`.",
+    "a": "`split` breaks a string into a list: with no argument it splits on any run of spaces and drops empty pieces; `split(\",\")` splits on each comma and keeps empty pieces. `join` glues a list of strings together and is called on the glue: `\"-\".join(parts)`. join only accepts strings.",
+    "code": "print(\"a b  c\".split(), \"a b  c\".split(\" \"))\nprint(\"-\".join([\"a\", \"b\", \"c\"]))",
+    "out": "['a', 'b', 'c'] ['a', 'b', '', 'c']\na-b-c",
+    "hook": "Split breaks, join glues; join is called on the glue."
+   },
+   {
+    "q": "How do you format strings in Python?",
+    "a": "Use f-strings: `f\"{name} is {age}\"`. You can format inside the braces: `{x:.2f}` for 2 decimals, `{x:,}` for thousands commas, `{s:>10}` to right-align, `{n:05d}` to pad with zeros, `{x=}` to debug. Older ways are `\"{}\".format(x)` and `\"%s\" % x`. f-strings are the fastest and easiest to read.",
+    "code": "price = 1234.5678\nprint(f\"{price:.2f} | {price:,.2f} | {42:05d}\")",
+    "out": "1234.57 | 1,234.57 | 00042"
+   },
+   {
+    "q": "Why use `join` instead of `+=` to build a long string?",
+    "a": "Strings are immutable, so each `+=` can copy the whole string so far, which makes the loop O(n²). Collecting pieces in a list and calling `\"\".join(parts)` once is O(n). CPython has a shortcut that often makes `+=` fast, but it breaks if anything else points to the string: measured 128 ms vs 2.5 ms for 100,000 pieces.",
+    "hook": "Collect in a list, join once."
+   },
+   {
+    "q": "What's the difference between `find()` and `index()`?",
+    "a": "Both return the position of a substring. If it's missing, `find` returns -1 and `index` raises ValueError. Careful: -1 counts as True and position 0 as False, so never write `if s.find(x):`. To check if something is there, use `in`.",
+    "code": "print(\"banana\".find(\"an\"), \"banana\".find(\"x\"), \"an\" in \"banana\")",
+    "out": "1 -1 True"
+   },
+   {
+    "q": "What's the difference between `str` and `bytes`? What do encode and decode do?",
+    "a": "A `str` holds text (Unicode characters); `bytes` holds raw numbers 0–255, which files and networks carry. `encode()` turns text into bytes (UTF-8 by default), and `decode()` turns bytes back into text. One character can take several bytes: é is 2, an emoji is 4. str and bytes can't be added together.",
+    "code": "print(len(\"é\"), len(\"é\".encode()), \"é\".encode())",
+    "out": "1 2 b'\\xc3\\xa9'",
+    "hook": "encode packs text for shipping; decode unpacks it."
+   }
   ]
  },
  "mcq": {
@@ -1013,10 +1066,541 @@
     "answer": 2,
     "why": "Floats carry tiny storage errors, so check that they're close enough instead of exactly equal."
    }
+  ],
+  "3": [
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "s = \"PYTHON\"\nprint(s[-1])",
+    "out": "N",
+    "options": [
+     "`Y`",
+     "`N`",
+     "`O`",
+     "`P`"
+    ],
+    "answer": 1,
+    "why": "-1 is always the last character."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "s = \"PYTHON\"\nprint(s[6])",
+    "out": "IndexError: string index out of range",
+    "options": [
+     "`N`",
+     "`IndexError`",
+     "An empty string",
+     "`ValueError`"
+    ],
+    "answer": 1,
+    "why": "The seats go 0 to 5, so index 6 doesn't exist. (A slice like `s[6:]` would return '' instead.)",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "s = \"PYTHON\"\nprint(s[1:4])",
+    "out": "YTH",
+    "options": [
+     "`YTHO`",
+     "`YTH`",
+     "`PYTH`",
+     "`PYT`"
+    ],
+    "answer": 1,
+    "why": "Start is included, stop is not: seats 1, 2 and 3.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "s = \"PYTHON\"\nprint(s[1:100])",
+    "out": "YTHON",
+    "options": [
+     "`IndexError`",
+     "`YTHON`",
+     "`PYTHON`",
+     "An empty string"
+    ],
+    "answer": 1,
+    "why": "Slices never crash: they stop at the end of the string.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed (between the brackets)?",
+    "code": "s = \"PYTHON\"\nprint(f\"[{s[4:1]}]\")",
+    "out": "[]",
+    "options": [
+     "`[OHT]`",
+     "`[]`",
+     "`[HTY]`",
+     "`IndexError`"
+    ],
+    "answer": 1,
+    "why": "With the normal step +1, going from 4 forward to 1 finds nothing. `s[4:1:-1]` would give 'OHT'.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "s = \"PYTHON\"\nprint(s[::2])",
+    "out": "PTO",
+    "options": [
+     "`PTO`",
+     "`YHN`",
+     "`PYT`",
+     "`NOH`"
+    ],
+    "answer": 0,
+    "why": "Step 2 takes every second character starting at 0: P, T, O."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "s = \"PYTHON\"\nprint(s[4:1:-1])",
+    "out": "OHT",
+    "options": [
+     "`OHT`",
+     "`HTY`",
+     "`OHTY`",
+     "An empty string"
+    ],
+    "answer": 0,
+    "why": "Step -1 walks backwards from seat 4 (O) and stops before seat 1: O, H, T."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "s = \"PYTHON\"\nprint(s[-3:])",
+    "out": "HON",
+    "options": [
+     "`HON`",
+     "`NOH`",
+     "`THON`",
+     "`ON`"
+    ],
+    "answer": 0,
+    "why": "`[-3:]` means from the third-last character to the end."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "t = \"hello\"\nt[0] = \"J\"",
+    "out": "TypeError: 'str' object does not support item assignment",
+    "options": [
+     "`Jello`",
+     "`TypeError`",
+     "`ValueError`",
+     "`hello`"
+    ],
+    "answer": 1,
+    "why": "Strings can't be changed in place. Build a new one: `\"J\" + t[1:]`.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "t = \"hello\"\nt.upper()\nprint(t)",
+    "out": "hello",
+    "options": [
+     "`HELLO`",
+     "`hello`",
+     "`None`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "`upper()` returns a new string, and nothing saved it. t is unchanged. Write `t = t.upper()`.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"a b  c\".split(\" \"))",
+    "out": "['a', 'b', '', 'c']",
+    "options": [
+     "`['a', 'b', 'c']`",
+     "`['a', 'b', '', 'c']`",
+     "`['a b  c']`",
+     "`['a', ' b', ' c']`"
+    ],
+    "answer": 1,
+    "why": "`split(\" \")` splits on every single space, so two spaces in a row leave an empty piece. `split()` with no argument would drop it.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"a,b,c\".split(\",\", 1))",
+    "out": "['a', 'b,c']",
+    "options": [
+     "`['a', 'b', 'c']`",
+     "`['a', 'b,c']`",
+     "`['a,b', 'c']`",
+     "`['a', 'b']`"
+    ],
+    "answer": 1,
+    "why": "The second argument is the maximum number of splits."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print(\"\".join([\"1\", 2]))",
+    "out": "TypeError: sequence item 1: expected str instance, int found",
+    "options": [
+     "`12`",
+     "`TypeError`",
+     "`'1 2'`",
+     "`ValueError`"
+    ],
+    "answer": 1,
+    "why": "`join` only accepts strings. Convert first: `\"\".join(map(str, items))`."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"abcba\".strip(\"ab\"))",
+    "out": "c",
+    "options": [
+     "`cba`",
+     "`c`",
+     "`abcba`",
+     "`bcb`"
+    ],
+    "answer": 1,
+    "why": "`strip(\"ab\")` removes any a or b from both ends, letter by letter, not the word \"ab\".",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"aaa\".replace(\"a\", \"b\", 2))",
+    "out": "bba",
+    "options": [
+     "`bbb`",
+     "`bba`",
+     "`abb`",
+     "`baa`"
+    ],
+    "answer": 1,
+    "why": "The third argument limits how many replacements are made, from the left."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"aaaa\".count(\"aa\"))",
+    "out": "2",
+    "options": [
+     "`3`",
+     "`2`",
+     "`4`",
+     "`1`"
+    ],
+    "answer": 1,
+    "why": "`count` doesn't count overlapping matches: after one \"aa\" it continues after it.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(bool(\"banana\".find(\"x\")))",
+    "out": "True",
+    "options": [
+     "`True`",
+     "`False`",
+     "`-1`",
+     "`0`"
+    ],
+    "answer": 0,
+    "why": "find returns -1 when missing, and -1 is truthy! That's why `if s.find(x):` is a bug. Use `in`.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print(\"banana\".index(\"x\"))",
+    "out": "ValueError: substring not found",
+    "options": [
+     "`-1`",
+     "`None`",
+     "`ValueError`",
+     "`IndexError`"
+    ],
+    "answer": 2,
+    "why": "`index` raises ValueError when the substring is missing; `find` would return -1."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"banana\".find(\"an\"), \"banana\".rfind(\"an\"))",
+    "out": "1 3",
+    "options": [
+     "`1 3`",
+     "`1 1`",
+     "`3 3`",
+     "`1 5`"
+    ],
+    "answer": 0,
+    "why": "`find` searches from the left, `rfind` from the right."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"-5\".isdigit(), \"3.5\".isdigit())",
+    "out": "False False",
+    "options": [
+     "`True True`",
+     "`False False`",
+     "`True False`",
+     "`False True`"
+    ],
+    "answer": 1,
+    "why": "`isdigit` is only True for 0–9: a minus sign or a dot makes it False.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"hello world\".capitalize())",
+    "out": "Hello world",
+    "options": [
+     "`Hello World`",
+     "`Hello world`",
+     "`HELLO WORLD`",
+     "`hello World`"
+    ],
+    "answer": 1,
+    "why": "`capitalize` changes only the first letter of the whole string; `title` would capitalise every word."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"pic.jpg\".endswith((\".jpg\", \".png\")))",
+    "out": "True",
+    "options": [
+     "`True`",
+     "`False`",
+     "`TypeError`",
+     "`.jpg`"
+    ],
+    "answer": 0,
+    "why": "`startswith`/`endswith` accept a tuple and return True if any of them match."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "price = 1234.5678\nprint(f\"{price:.2f}\")",
+    "out": "1234.57",
+    "options": [
+     "`1234.56`",
+     "`1234.57`",
+     "`1234.5678`",
+     "`1,234.57`"
+    ],
+    "answer": 1,
+    "why": "`.2f` rounds to 2 decimal places."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed (between the brackets)?",
+    "code": "name = \"Ary\"\nprint(f\"[{name:>6}]\")",
+    "out": "[   Ary]",
+    "options": [
+     "`[Ary   ]`",
+     "`[   Ary]`",
+     "`[  Ary  ]`",
+     "`[Ary]`"
+    ],
+    "answer": 1,
+    "why": "`>6` right-aligns in a box 6 characters wide; `<` left-aligns and `^` centres."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(f\"{42:05d}\")",
+    "out": "00042",
+    "options": [
+     "`42`",
+     "`00042`",
+     "`42000`",
+     "`4200`"
+    ],
+    "answer": 1,
+    "why": "`05d` pads the number with zeros to 5 digits."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "n = 42\nprint(f\"{n=}\")",
+    "out": "n=42",
+    "options": [
+     "`42`",
+     "`n=42`",
+     "`{n}`",
+     "`n`"
+    ],
+    "answer": 1,
+    "why": "`{n=}` prints the name and the value, which is handy for debugging."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print(\"Age: \" + 21)",
+    "out": "TypeError: can only concatenate str (not \"int\") to str",
+    "options": [
+     "`Age: 21`",
+     "`TypeError`",
+     "`Age: 21.0`",
+     "`ValueError`"
+    ],
+    "answer": 1,
+    "why": "Strong typing: Python won't glue text and a number. Use `f\"Age: {21}\"` or `str(21)`."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(\"C:\\new\")",
+    "out": "C:\new",
+    "options": [
+     "`C:\\new`",
+     "`C:` then `ew` on the next line",
+     "`C:new`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "`\\n` inside a normal string is a newline. Use a raw string `r\"C:\\new\"` or a double backslash for Windows paths.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(len(r\"C:\\new\"))",
+    "out": "6",
+    "options": [
+     "`5`",
+     "`6`",
+     "`4`",
+     "`7`"
+    ],
+    "answer": 1,
+    "why": "In a raw string the backslash is kept as a real character: C, :, \\, n, e, w."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print([\"a\" \"b\", \"c\"])",
+    "out": "['ab', 'c']",
+    "options": [
+     "`['a', 'b', 'c']`",
+     "`['ab', 'c']`",
+     "`SyntaxError`",
+     "`['a b', 'c']`"
+    ],
+    "answer": 1,
+    "why": "Strings written next to each other are joined automatically, so a missing comma silently merges two items.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(len(\"a\\nb\"))",
+    "out": "3",
+    "options": [
+     "`2`",
+     "`3`",
+     "`4`",
+     "`1`"
+    ],
+    "answer": 1,
+    "why": "`\\n` is one character (a newline), so the string is a, newline, b."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(len(\"é\"), len(\"é\".encode()))",
+    "out": "1 2",
+    "options": [
+     "`1 1`",
+     "`1 2`",
+     "`2 2`",
+     "`2 1`"
+    ],
+    "answer": 1,
+    "why": "One letter, but UTF-8 needs 2 bytes for é.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print(\"hi\" + b\"hi\")",
+    "out": "TypeError: can only concatenate str (not \"bytes\") to str",
+    "options": [
+     "`hihi`",
+     "`TypeError`",
+     "`b'hihi'`",
+     "`ValueError`"
+    ],
+    "answer": 1,
+    "why": "Text (str) and raw bytes can't be mixed. Encode or decode first."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(b\"hi\"[0])",
+    "out": "104",
+    "options": [
+     "`h`",
+     "`104`",
+     "`b'h'`",
+     "`'h'`"
+    ],
+    "answer": 1,
+    "why": "Indexing bytes gives a number 0–255 (the byte value of 'h' is 104)."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(sorted(\"bca\"))",
+    "out": "['a', 'b', 'c']",
+    "options": [
+     "`['a', 'b', 'c']`",
+     "`abc`",
+     "`cba`",
+     "`('a', 'b', 'c')`"
+    ],
+    "answer": 0,
+    "why": "`sorted` on a string returns a list of characters. Use `\"\".join(sorted(s))` to get a string. (That's how you check anagrams.)"
+   },
+   {
+    "kind": "concept",
+    "q": "What is the best way to build a long string from many pieces?",
+    "options": [
+     "`+=` inside the loop",
+     "Collect the pieces in a list, then `\"\".join(parts)`",
+     "`str.format` inside the loop",
+     "`%` formatting inside the loop"
+    ],
+    "answer": 1,
+    "why": "join builds the result in one pass (O(n)). Repeated `+=` can copy the whole string each time (O(n²))."
+   },
+   {
+    "kind": "concept",
+    "q": "Which is the right way to check if \"x\" is in a string `s`?",
+    "options": [
+     "`if s.find(\"x\"):`",
+     "`if \"x\" in s:`",
+     "`if s.index(\"x\"):`",
+     "`if s.count(\"x\") == 1:`"
+    ],
+    "answer": 1,
+    "why": "`in` returns True/False directly. `find` gives -1 or a position (0 is falsy), and `index` raises an error when missing."
+   }
   ]
  },
  "notes": {
   "1": "Topic 1, rebuilt 6 Nov 2026: flashcards = questions interviewers ask out loud (checked against InterviewBit, GeeksforGeeks and PYnative lists); MCQs = predict the output, find the error, concept checks.",
-  "2": "Topic 2, 6 Nov 2026: flashcards = built-in types, mutable vs immutable, / vs //, == vs is, type vs isinstance, conversion, float precision (asked in InterviewBit, GeeksforGeeks and PYnative lists); MCQs = traps on operators, truthiness, comparison, precedence and floats."
+  "2": "Topic 2, 6 Nov 2026: flashcards = built-in types, mutable vs immutable, / vs //, == vs is, type vs isinstance, conversion, float precision (asked in InterviewBit, GeeksforGeeks and PYnative lists); MCQs = traps on operators, truthiness, comparison, precedence and floats.",
+  "3": "Topic 3, 6 Nov 2026: flashcards = slicing and negative indexes, reversing, immutability, split/join, formatting, join vs +=, find vs index, str vs bytes (InterviewBit, GeeksforGeeks and PYnative Q26-38); MCQs = slicing traps, methods, f-string formats, escapes, raw strings, bytes."
  }
 }

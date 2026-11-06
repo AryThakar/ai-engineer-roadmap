@@ -72,10 +72,18 @@ Done, in order:
 
 11. **Taught Topic 2 (Data types and operators)** on 6 Nov, as one story: "the kinds of boxes" (types, sealed vs open, `type` vs `isinstance`, conversion, truthy/falsy), then "the machines" (arithmetic, comparison, `and`/`or`, bits, `is` vs `==`, `in`, precedence), then "the float surprise". He then got 7 flashcards and 39 MCQs for it.
 
+12. **Taught Topic 3 (Strings)** on 6 Nov. He said "continue" without sending a Topic 2 summary.
+    - The story was "a train of letter carriages": seat numbers and slicing, the welded train (immutable), the toolbox (split/join, strip/replace/count, in/find/index, checks and case), f-strings, escapes and raw strings, str vs bytes, and join vs `+=`.
+    - Measured: `+=` 3.2 ms vs join 2.5 ms for 100k pieces, but 128 ms when a second reference breaks CPython's shortcut.
+    - He then got 8 flashcards and 37 MCQs.
+    - He was given 6 coding tasks to write himself, with expected outputs and hints but no answers: reverse_words, is_palindrome, is_anagram, first_unique, count_vowels, compress ("aaabbc" → "a3b2c1"). Reference answers were checked in a scratch file, not shown.
+
 Next:
-- **Check his Topic 2 summary** when he sends it (point by point, then a fixed version), the same way as Topic 1.
-- Then **Topic 3: Strings** (Coding level). That's the first Coding topic, so include small tasks he types himself with no AI help, then add its flashcards and MCQs.
-- He revises Topics 1–2 with the flashcards and MCQs. His real progress is in the app's backup (section 6).
+- **Review his Topic 3 code** when he sends it, like an interviewer would: correctness on the given examples, edge cases (empty string, extra spaces, case), Big-O, and cleaner Python. Don't give him full answers before he tries.
+- If he sends a Topic 2 or Topic 3 summary, check it point by point.
+- Then **Topic 4: Control flow and loops** (Coding level).
+- He revises Topics 1–3 with the flashcards and MCQs.
+- **GitHub Pages publishing failed on 5–6 Nov.** The deploy step timed out at "updating_pages", and a stuck queued re-run of cbdc44c couldn't be cancelled ("has not yet queued"). Each push to gh-pages starts a new deploy. If the live `flashcards.json` lacks the newest topics, check the runs with `gh api repos/AryThakar/ai-engineer-roadmap/actions/runs` and re-run or push again. Check the live file with a cache-busting query (`?check=...`), because the fetch tool caches URLs for 15 minutes. His real progress is in the app's backup (section 6).
 - Project work (zen, Zen-harness) waits until topic 70. Don't bring it up before then. When we get there, start from the zen notes in section 5.
 
 ## 4. Internshala research (4 Nov 2026)
@@ -196,7 +204,7 @@ Next:
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 17, MCQs: 64 (topics 1, 2).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 30 Coding, 29 Concept, 12 MCQ. Flashcards: 25, MCQs: 101 (topics 1, 2, 3).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -265,7 +273,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
 - **2. Data types and operators** [MCQ, stage 1, Core lane, 7 flashcards, 39 MCQs]
   - Check: Predict results like `-7 // 2`, `0.1 + 0.2`, `'a' or 'b'` and `1 < x < 5`.
   - Subtopics: (0) `int`, `float`, `complex`, `bool`, `str`, `None`; (1) `type()` vs `isinstance()`; (2) Type conversion: `int()`, `float()`, `str()`, `bool()`; (3) Truthy and falsy values; (4) Arithmetic: `/`, `//`, `%`, `**`; floor division with negatives; (5) Comparison and chained comparison; (6) `and` / `or` / `not`: short-circuiting and returning operands; (7) Bitwise operators: `&`, `|`, `^`, `~`, `<<`, `>>`; (8) Identity (`is`) vs equality (`==`); membership (`in`); (9) Operator precedence; (10) Float precision: why `0.1 + 0.2 != 0.3`
-- **3. Strings** [Coding, stage 1, Core lane]
+- **3. Strings** [Coding, stage 1, Core lane, 8 flashcards, 37 MCQs]
   - Check: Reverse words, check a palindrome or anagram, and find the first non-repeating character.
   - Subtopics: (0) Indexing and negative indexing; (1) Slicing with a step; `s[::-1]`; (2) Strings are immutable; (3) Methods: `split`, `join`, `strip`, `replace`, `count`; (4) `find` (returns -1) vs `index` (raises an error); (5) `startswith`, `endswith`, `upper`, `lower`, `isdigit`, `isalpha`; (6) f-strings and format specs: `{x:.2f}`, `{x:>10}`; (7) Escape sequences and raw strings `r'...'`; (8) Multiline strings; (9) Unicode, `encode` / `decode`, `bytes`; (10) Build strings with `''.join(parts)`, not `+=` in a loop
 - **4. Control flow and loops** [Coding, stage 1, Core lane]
