@@ -20,7 +20,7 @@ Tap **Flashcards & MCQs** to revise everything taught so far, or **Cards** / **M
 
 ## LeetCode problems
 
-Topics 4, 17 and 18 have a **LeetCode problems** box: free problems in pattern order, Easy first, with direct links. Solve them on LeetCode and tick each one you solved on your own. The ticks are saved in your progress backup.
+Topics 16, 17 and 18 have a **LeetCode problems** box: free problems in pattern order, Easy first, with direct links. Solve them on LeetCode and tick each one you solved on your own. The ticks are saved in your progress backup.
 
 ## Code practice
 

@@ -61,13 +61,19 @@ These come from his direct feedback during the chat. Follow them.
   - Targets: at least about 110 problems, and all the free NeetCode 150 problems by Stage 6.
   - Level: 2 Mediums in about an hour, explaining out loud.
   - The 2 DSA hours a day are never skipped.
-- **Fast Python pass** (his request, 7 Nov):
-  - Topics 4–15 are taught quickly, at explain and syntax (MCQ) level, then revised daily with cards and MCQs.
-  - DSA and SQL run alongside it from now on, with practical Python tasks as each topic comes.
-  - After the pass: REST APIs + NumPy/pandas + maths basics, then ML, then GenAI.
-  - Keep it to 3–4 tracks at once.
+- **The map (his plan, 7 Nov; he considers it final, so don't reshuffle it without his say):**
+  - **Stage 1, core Python, fast:**
+    - Topics 4–9 are taught quickly, at explain and syntax (MCQ) level, with flashcards and MCQs after each one. He revises them every day.
+    - No DSA, SQL or coding practice in Stage 1, only aptitude.
+  - **Stage 2, everything together:**
+    - Advanced Python and OOP (10–15, 58)
+    - REST APIs (28–30)
+    - DSA: 16–21, starting with the warm-ups on Topic 16
+    - SQL (56)
+    - The practical Python programs
+  - **Stages 3–6:** Stage 3 maths and data (plus DBMS, OS, networks), Stage 4 ML, Stage 5 GenAI, Stage 6 ship and design.
 - **Frozen decks:** Topics 1–3 are final (`"frozen"` in `flashcards.json`, shown as "final set ✓"). Change them only to fix a real mistake.
-- **Python vs DSA split** (agreed 7 Nov). Algorithm-style problems (strings, arrays, counting, two pointers) are DSA. They go in the app as LeetCode lists on the DSA topics (and Topic 4 warm-ups), not as in-app tasks.
+- **Python vs DSA split** (agreed 7 Nov). Algorithm-style problems (strings, arrays, counting, two pointers) are DSA. They go in the app as LeetCode lists on the DSA topics (the warm-ups are on Topic 16), not as in-app tasks.
   - **MCQ and concept only:** topics 1–5, 11 and 12.
   - **In-app practice tasks** (section 6), only for Python skills LeetCode doesn't test:
     - 6: a decorator and a closure
@@ -75,23 +81,22 @@ These come from his direct feedback during the chat. Follow them.
     - 8: a custom exception
     - 9: reading and writing JSON/CSV
     - 10: class design
-    - Also proposed on 7 Nov (confirm with him before building):
+    - Also planned for the start of Stage 2 (confirm with him before building):
       - a Topic 4 basics pack of 8 classic programs for mass-recruiter tests: prime, GCD, Armstrong number, reverse a number, digit sum, factorial, star pattern, leap year
       - 5 Topic 5 data tasks: grouping and counting lists of dicts
     - Each task gets a time and space target and a speed check. Run `tools/check-practice.py`.
   - **On his laptop:** 13 (`asyncio.gather` with a Semaphore), 14 (a pydantic model) and 15 (pytest). The app's Python has only the standard library.
-- **Python unlocks DSA**, so pair them:
-  - 4 + 16 (Big-O), with the Topic 4 LeetCode warm-ups
-  - 5 + 17
-  - 6 + 18
-  - 7–9: keep going with 17 and 18, Easy then Medium
-  - Stage 2: `deque` leads to 19, `bisect` to 20, and `Node` classes (topic 10) to 21
+- **DSA order** (Stage 2, after all of core Python):
+  - 16 (Big-O + warm-ups) → 17 → 18 → 19 → 20 → 21, Easy then Medium
+  - `Node` classes (topic 10) come just before 21
   - Later: recursion leads to 25 and 26, and `heapq` to 23
 - **Daily rhythm** (his request, 7 Nov). Hours are a guide; the stage checks decide when he moves on.
-  - Python, about 4 h: lesson, run the examples, MCQs. Use each new tool in code the same day.
-  - DSA, about 2 h: 1–2 LeetCode problems using only tools he has learned.
-  - SQL, about 1 h: topic 56.
-  - Revision, 30–60 min: flashcards plus 10 aptitude questions.
+  - Stage 1: Python lessons (typing and running the small examples), cards and MCQs, revision of earlier topics, and 10 aptitude questions.
+  - From Stage 2:
+    - Python and APIs, about 4 h
+    - DSA, about 2 h: 1–2 LeetCode problems
+    - SQL, about 1 h
+    - Revision, 30–60 min: flashcards plus 10 aptitude questions
 - **LeetCode reviews:**
   - He solves on LeetCode (laptop) and pastes his code. Review it like an interviewer: correctness, edge cases, Big-O, cleaner Python.
   - Don't give full answers before he tries.
@@ -141,7 +146,7 @@ Done, in order:
     - Topics 3 and 4 are now MCQ level and Topic 5 is Concept, with new checks. Stage 1's "Move on when" was updated.
     - The 6 string tasks were removed. Their LeetCode versions are in the lists below.
     - Each topic panel now has a "LeetCode problems" box with links and ticks; the ticks are saved in the backup. 29 free problems, all confirmed on 7 Nov:
-      - Topic 4: 7 warm-ups
+      - Topic 4: 7 warm-ups (moved to Topic 16 on 7 Nov, where DSA starts)
       - Topic 17: 10 hashing problems
       - Topic 18: 12 two-pointer and sliding-window problems
 
@@ -154,6 +159,13 @@ Done, in order:
     - 5 MCQs were added for gaps: `python -m pip`, `^` and `>>`, `7.0 // 2`, triple-quoted strings, `ord`/`chr`.
     - Now 25 flashcards and 106 MCQs, all checked.
 
+20. **New map (7 Nov, his plan; section 2).**
+    - Stage 1 is now core Python only (1–9), fast. DSA (16–18) and SQL (56) moved to Stage 2, and so did REST APIs (28–30).
+    - OS (59) moved to Stage 3, next to DBMS and networks.
+    - The Topic 4 warm-ups moved to Topic 16, and the Topic 4 check no longer mentions them.
+    - Stage 1's "Move on when" is now: 80% on the Topics 1–9 MCQs and the flashcards answered out loud.
+    - The Build lane now adds features to Zen-harness (Stages 3–6).
+
 19. **His projects (7 Nov).**
     - He says he built zen and Zen-harness with AI help.
     - Instead of a new Build-lane project, he'll add features he writes himself to Zen-harness, chosen to cover what AI jobs ask: a FastAPI endpoint, RAG with a vector database, an eval set, Docker, deployment, CI.
@@ -161,10 +173,11 @@ Done, in order:
     - At topic 70, go through both projects until he can explain and change every part.
 
 Next:
-- **Fast Python pass, starting with Topic 4** (control flow and loops): a short lesson, then flashcards and MCQs. Then Topics 5, 6, 7… in the same way.
-- **Alongside it, starting now:**
-  - DSA: Topic 16 (Big-O), the Topic 4 LeetCode warm-ups, then the 17 and 18 lists
-  - SQL: Topic 56, LeetCode SQL 50 in order (Select, Basic Joins, Basic Aggregate Functions, Sorting and Grouping = 29 problems for Stage 1)
+- **Stage 1 fast pass, starting with Topic 4** (control flow and loops): a short lesson, then flashcards and MCQs. Then Topics 5, 6, 7, 8, 9 in the same way. He revises every day.
+- **Then Stage 2:**
+  - Start by building the basics pack and data tasks (with his OK).
+  - DSA from Topic 16's warm-ups.
+  - SQL: LeetCode SQL 50 in order (Select, Basic Joins, Basic Aggregate Functions, Sorting and Grouping first).
 - **Review any LeetCode code he pastes** (section 2).
 - If he sends a Topic 2 or Topic 3 summary, check it point by point.
 - He revises Topics 1–3 with the flashcards and MCQs.
@@ -256,7 +269,7 @@ Next:
   - `LC`: LeetCode problems by topic id, `[number, slug, title, difficulty, note]`. The link is `https://leetcode.com/problems/<slug>/`.
     - The number is the backup key, so never reuse it for another problem.
     - Free problems only: confirm a problem isn't Premium before adding it.
-    - Lists exist for topics 4, 17 and 18. Add the next DSA topic's list when he reaches it (Stage 2: 19, 20, 21).
+    - Lists exist for topics 16 (warm-ups), 17 and 18. Add the next DSA topic's list when he reaches it (19, 20, 21, all in Stage 2).
 - Don't renumber topics or reorder subtopics. Progress keys depend on topic ids and subtopic order, so add new subtopics at the end.
 - `sw.js` (offline support, `VERSION` is `air-v3`): the page, `flashcards.json` and the `practice/` files load network-first, so changes to them show up on their own. Other files (manifest, icons) are served from the cache first, so raise `VERSION` in `sw.js` when you change them. The Pyodide files are cached on first use in their own cache (`PYODIDE_CACHE`), which survives app updates.
 - Deploying: GitHub Pages serves the `gh-pages` branch. Keep `main` and `gh-pages` the same: commit on `main`, then run `git push origin main main:gh-pages`.
@@ -330,7 +343,7 @@ Next:
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 25, MCQs: 106 (topics 1, 2, 3). Coding tasks: 0. LeetCode problems: 29 (topics 4, 17, 18).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 25, MCQs: 106 (topics 1, 2, 3). Coding tasks: 0. LeetCode problems: 29 (topics 16, 17, 18).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -347,47 +360,47 @@ Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 
 ### Stages
 Move to the next stage only when its "Move on when" check is true. There is no fixed number of days.
 
-**Stage 1: Python core**
+**Stage 1: Python core, fast**
 - Core: 1 Basics and setup, 2 Data types and operators, 3 Strings, 4 Control flow and loops, 5 Data structures, 6 Functions, 7 Iterators and generators, 8 Error handling, 9 Files and data formats
-- Coding: 16 Big-O complexity, 17 Arrays and hashing, 18 Two pointers and sliding window
+- Coding: None yet: DSA starts in Stage 2, once you know all of core Python.
+- Light: none
+- Build: On your laptop: set up Git, a virtual environment and one repo for all your practice code.
+- Move on when: you score 80% or more on the MCQs for Topics 1–9 and can answer their flashcards out loud without notes.
+
+**Stage 2: Python depth, APIs and coding**
+- Core: 10 Classes and objects, 11 Modules, packages and environment, 12 Memory and internals, 13 Concurrency and async, 14 Type hints, 15 Testing and code quality, 58 OOP principles, 28 HTTP and REST concepts, 29 FastAPI and pydantic, 30 Calling APIs (requests, httpx)
+- Coding: 16 Big-O complexity, 17 Arrays and hashing, 18 Two pointers and sliding window, 19 Stack and queue, 20 Binary search, 21 Linked list
 - Light: 56 SQL queries
-- Build: Set up Git, a virtual environment and one repo for all your practice code.
-- Move on when: you can write a decorator, a generator and a JSON/CSV script from a blank file; solve Easy hashing and two-pointer LeetCode problems alone; and write a JOIN with GROUP BY.
+- Build: Practical Python programs (basics, data tasks, decorators, generators, files, classes), saved with pytest tests in your practice repo.
+- Move on when: you can write a decorator, a generator, a JSON/CSV script and a small class from a blank file; build a validated FastAPI endpoint and call an API with retries; explain copying, scope, the GIL and async; solve Easy and Medium hashing, two-pointer, stack, binary search and linked-list problems alone; and write a JOIN with GROUP BY.
 
-**Stage 2: Python depth**
-- Core: 10 Classes and objects, 11 Modules, packages and environment, 12 Memory and internals, 13 Concurrency and async, 14 Type hints, 15 Testing and code quality, 58 OOP principles
-- Coding: 19 Stack and queue, 20 Binary search, 21 Linked list
-- Light: 59 Operating systems
-- Build: Add pytest tests to your practice code.
-- Move on when: you can design a small class and explain copying, scope, the GIL and async; solve easy and medium stack, binary search and linked-list problems; and do well on an OS quiz.
-
-**Stage 3: Web, maths and data**
-- Core: 28 HTTP and REST concepts, 29 FastAPI and pydantic, 30 Calling APIs (requests, httpx), 31 Linear algebra basics, 32 Probability and statistics, 33 NumPy, 34 pandas, 35 Data visualisation
+**Stage 3: Maths and data**
+- Core: 31 Linear algebra basics, 32 Probability and statistics, 33 NumPy, 34 pandas, 35 Data visualisation
 - Coding: 22 Trees, 23 Heap
-- Light: 57 DBMS concepts, 60 Computer networks
-- Build: 29 FastAPI and pydantic, 30 Calling APIs (requests, httpx), 47 LLM APIs. Start the project: a FastAPI app that calls an LLM API.
-- Move on when: you can build a validated FastAPI endpoint, clean a dataset in pandas, and explain dot product and p-values; and solve tree and heap problems.
+- Light: 57 DBMS concepts, 59 Operating systems, 60 Computer networks
+- Build: 47 LLM APIs. Read Zen-harness's code with Claude, then add a FastAPI endpoint to it that calls the LLM.
+- Move on when: you can clean a dataset in pandas, vectorise a loop in NumPy, and explain dot product and p-values; solve tree and heap problems; do well on DBMS, OS and networks quizzes; and Zen-harness has a FastAPI endpoint you wrote.
 
 **Stage 4: ML and deep learning**
 - Core: 36 ML fundamentals, 37 ML algorithms, 38 Evaluation metrics, 39 scikit-learn workflow, 40 Neural network basics, 41 CNN, RNN and LSTM, 42 PyTorch basics
 - Coding: 24 Graphs (BFS, DFS), 25 Recursion and backtracking
 - Light: 61 Git and GitHub, 62 Linux and the shell
-- Build: 43 NLP basics (tokens, embeddings), 49 Vector databases. Add embeddings and similarity search to the project.
+- Build: 43 NLP basics (tokens, embeddings), 49 Vector databases. Add embeddings and similarity search to Zen-harness.
 - Move on when: you can train and evaluate an sklearn pipeline without leakage, explain the metrics and bias vs variance, and write a PyTorch training loop; and solve BFS/DFS and backtracking basics.
 
 **Stage 5: GenAI**
 - Core: 43 NLP basics (tokens, embeddings), 44 Transformers and attention, 45 How LLMs generate, 46 Prompt engineering and structured output, 47 LLM APIs, 48 RAG, 49 Vector databases, 50 LangChain, LangGraph, LlamaIndex, 51 Agents and tool calling, 52 Evaluating LLM apps, 53 Fine-tuning and quantisation, 54 Guardrails and prompt injection, 55 LLMOps
 - Coding: 26 Dynamic programming basics, 27 Sorting algorithms
 - Light: 63 Docker
-- Build: 48 RAG, 51 Agents and tool calling, 52 Evaluating LLM apps, 63 Docker. Turn the project into RAG plus an agent, with an eval set and a Dockerfile.
-- Move on when: your project runs in Docker with eval numbers you can explain, and you answer LLM, RAG and agent questions without notes.
+- Build: 48 RAG, 51 Agents and tool calling, 52 Evaluating LLM apps, 63 Docker. Add the GenAI features Zen-harness doesn't have yet (such as RAG and an eval set) and a Dockerfile.
+- Move on when: Zen-harness runs in Docker with eval numbers you can explain, and you answer LLM, RAG and agent questions without notes.
 
 **Stage 6: Ship and design**
 - Core: 67 System design basics, 68 Designing an LLM app, 70 Project discussion and HR
 - Coding: Timed, mixed problems from every pattern, as in a real round.
 - Light: 64 Kubernetes basics
-- Build: 65 Cloud basics (AWS), 66 CI/CD basics. Deploy the project and add CI.
-- Move on when: your project is deployed with CI, you can design an LLM app in 30 minutes, and you can tell each project's story in 2 minutes.
+- Build: 65 Cloud basics (AWS), 66 CI/CD basics. Deploy Zen-harness and add CI.
+- Move on when: Zen-harness is deployed with CI, you can design an LLM app in 30 minutes, and you can tell each project's story in 2 minutes.
 
 ### All topics
 Format: **id. title** [level, where]. Check = what he must be able to do. Subtopic numbers start at 0 and match the progress backup keys.
@@ -403,9 +416,8 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
   - Check: Predict string results (slicing, `find` vs `index`, f-strings), and explain why strings are immutable and why `join` beats `+=`.
   - Subtopics: (0) Indexing and negative indexing; (1) Slicing with a step; `s[::-1]`; (2) Strings are immutable; (3) Methods: `split`, `join`, `strip`, `replace`, `count`; (4) `find` (returns -1) vs `index` (raises an error); (5) `startswith`, `endswith`, `upper`, `lower`, `isdigit`, `isalpha`; (6) f-strings and format specs: `{x:.2f}`, `{x:>10}`; (7) Escape sequences and raw strings `r'...'`; (8) Multiline strings; (9) Unicode, `encode` / `decode`, `bytes`; (10) Build strings with `''.join(parts)`, not `+=` in a loop
 - **4. Control flow and loops** [MCQ, stage 1, Core lane]
-  - Check: Predict what loops print, use `range`, `enumerate` and `zip`, say when a loop's `else` runs, and solve the warm-up LeetCode problems.
+  - Check: Predict what loops print, use `range`, `enumerate` and `zip`, and say when a loop's `else` runs.
   - Subtopics: (0) `if` / `elif` / `else`; (1) Conditional expression: `a if cond else b`; (2) `match` / `case` (3.10+); (3) `for` over any iterable; (4) `while` loops; (5) `range(start, stop, step)`; (6) `break`, `continue`, `pass`; (7) `else` on `for` and `while`; (8) `enumerate` and `zip`; (9) Nested loops and their cost
-  - LeetCode (backup key = number): 412 Fizz Buzz (Easy); 509 Fibonacci Number (Easy); 9 Palindrome Number (Easy); 1342 Number of Steps to Reduce a Number to Zero (Easy); 1480 Running Sum of 1d Array (Easy); 1672 Richest Customer Wealth (Easy); 151 Reverse Words in a String (Medium)
 - **5. Data structures** [Concept, stage 1, Core lane]
   - Check: Pick the right structure for a job, state the Big-O of its operations (`x in list` vs `x in set`), and spot traps like `[[0]*3]*3`.
   - Subtopics: (0) list: `append` vs `extend`, `insert`, `pop`, `remove`; (1) `sort()` vs `sorted()`; sorting with `key=`; (2) tuple: `(1,)`, unpacking, `first, *rest = items`; (3) set: `&`, `|`, `-`, `^`; `add`, `discard` vs `remove`; (4) dict: `get`, `setdefault`, `items`, `update`, merge with `|`; (5) dict keeps insertion order; keys must be hashable; (6) List, dict and set comprehensions; (7) `collections`: `Counter`, `defaultdict`, `deque`, `namedtuple`; (8) `heapq` and `bisect`; (9) Big-O of each operation (`x in list` vs `x in set`); (10) Trap: `[[0]*3]*3` shares one inner list
@@ -441,14 +453,15 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
   - Subtopics: (0) `unittest` basics; (1) pytest: test functions, `assert`, fixtures, `parametrize`; (2) Mocking with `unittest.mock`; (3) Debugging with `pdb` / `breakpoint()`; (4) `logging` vs `print`; (5) PEP 8 style; (6) `ruff` for linting and formatting; (7) `timeit` and `cProfile`
 
 #### B. DSA
-- **16. Big-O complexity** [Concept, stage 1, Coding lane]
+- **16. Big-O complexity** [Concept, stage 2, Coding lane]
   - Check: State the time and space complexity of any solution you write.
   - Subtopics: (0) Time vs space complexity; (1) O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ); (2) Best, average and worst case; (3) Counting loops and nested loops; (4) Complexity of recursion; (5) Amortised O(1): `list.append`; (6) Big-O of Python built-ins
-- **17. Arrays and hashing** [Coding, stage 1, Coding lane]
+  - LeetCode (backup key = number): 412 Fizz Buzz (Easy); 509 Fibonacci Number (Easy); 9 Palindrome Number (Easy); 1342 Number of Steps to Reduce a Number to Zero (Easy); 1480 Running Sum of 1d Array (Easy); 1672 Richest Customer Wealth (Easy); 151 Reverse Words in a String (Medium)
+- **17. Arrays and hashing** [Coding, stage 2, Coding lane]
   - Check: Solve two-sum, group anagrams and top-k frequent in one pass with a hash map.
   - Subtopics: (0) Frequency counting with a dict or `Counter`; (1) Two-sum with a hash map; (2) Contains duplicate; (3) Group anagrams; (4) Top-k frequent elements; (5) Prefix sums; (6) Product of array except self; (7) Longest consecutive sequence
   - LeetCode (backup key = number): 217 Contains Duplicate (Easy); 242 Valid Anagram (Easy); 387 First Unique Character in a String (Easy); 1 Two Sum (Easy); 724 Find Pivot Index (Easy); 49 Group Anagrams (Medium); 347 Top K Frequent Elements (Medium); 238 Product of Array Except Self (Medium); 128 Longest Consecutive Sequence (Medium); 560 Subarray Sum Equals K (Medium)
-- **18. Two pointers and sliding window** [Coding, stage 1, Coding lane]
+- **18. Two pointers and sliding window** [Coding, stage 2, Coding lane]
   - Check: Spot when a sorted-array or substring problem needs two pointers or a window.
   - Subtopics: (0) Two pointers on a sorted array; (1) Valid palindrome; (2) 3-sum; (3) Container with most water; (4) Fixed-size sliding window; (5) Variable-size sliding window; (6) Longest substring without repeating characters; (7) Best time to buy and sell stock
   - LeetCode (backup key = number): 125 Valid Palindrome (Easy); 283 Move Zeroes (Easy); 167 Two Sum II - Input Array Is Sorted (Medium); 15 3Sum (Medium); 11 Container With Most Water (Medium); 443 String Compression (Medium); 121 Best Time to Buy and Sell Stock (Easy); 643 Maximum Average Subarray I (Easy); 3 Longest Substring Without Repeating Characters (Medium); 1456 Maximum Number of Vowels in a Substring of Given Length (Medium); 424 Longest Repeating Character Replacement (Medium); 567 Permutation in String (Medium)
@@ -481,13 +494,13 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
   - Subtopics: (0) Bubble, selection and insertion sort; (1) Merge sort; (2) Quick sort; (3) Time and space complexity of each; (4) Stable vs unstable sorts; (5) Python's `sorted`: Timsort (merge policy updated to Powersort in 3.11), and `key=`; (6) Counting sort (the idea)
 
 #### C. REST API
-- **28. HTTP and REST concepts** [Concept, stage 3, Core lane]
+- **28. HTTP and REST concepts** [Concept, stage 2, Core lane]
   - Check: Explain HTTP methods, status codes, idempotency and API authentication.
   - Subtopics: (0) Client and server; request and response; (1) Methods: GET, POST, PUT, PATCH, DELETE; (2) Status codes: 200, 201, 204, 400, 401, 403, 404, 422, 429, 500; (3) Headers, path params, query params, body; (4) JSON payloads; (5) REST principles: resources, statelessness; (6) Idempotency; (7) Auth: API keys, Bearer tokens, JWT, OAuth (the idea); (8) CORS; (9) Rate limiting; (10) Streaming: Server-Sent Events vs WebSockets
-- **29. FastAPI and pydantic** [Coding, stage 3, Core lane]
+- **29. FastAPI and pydantic** [Coding, stage 2, Core lane]
   - Check: Build a POST endpoint with a pydantic body, validation and a response model.
   - Subtopics: (0) Create an app; path operations; (1) Path and query parameters; (2) Request bodies with pydantic models; (3) `response_model`; (4) Validation errors (422); (5) Dependencies with `Depends`; (6) `async` endpoints; (7) Streaming responses; (8) `HTTPException` and error handling; (9) Background tasks; (10) Automatic docs at `/docs`; (11) Running with `uvicorn`
-- **30. Calling APIs (requests, httpx)** [Coding, stage 3, Core lane]
+- **30. Calling APIs (requests, httpx)** [Coding, stage 2, Core lane]
   - Check: Call an API with a timeout, retries with backoff, and JSON parsing.
   - Subtopics: (0) `requests.get` / `requests.post`; (1) `httpx` sync and async clients; (2) Headers and auth; (3) Timeouts; (4) `raise_for_status()`; (5) Retries with exponential backoff; (6) Parsing JSON responses; (7) Handling 429 rate limits; (8) Many calls at once: `asyncio.gather` + Semaphore
 
@@ -577,7 +590,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
   - Subtopics: (0) Logging prompts and responses; (1) Monitoring quality, latency and cost; (2) Caching; (3) Fallbacks and model routing; (4) Versioning prompts and models; (5) Deploying LLM apps
 
 #### I. Databases
-- **56. SQL queries** [Coding, stage 1, Light lane]
+- **56. SQL queries** [Coding, stage 2, Light lane]
   - Check: Write joins, GROUP BY with HAVING, and top-N per group with window functions.
   - Subtopics: (0) `SELECT`, `WHERE`, `ORDER BY`, `LIMIT`; (1) `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`; (2) `GROUP BY` and `HAVING`; (3) Joins: inner, left, right, full, self; (4) Subqueries and CTEs (`WITH`); (5) Window functions: `ROW_NUMBER`, `RANK`, `DENSE_RANK`, `LAG`, `LEAD`; (6) `CASE WHEN`; (7) `NULL` handling; (8) `INSERT`, `UPDATE`, `DELETE`; (9) Classics: second-highest salary, duplicates, top-N per group
 - **57. DBMS concepts** [Concept, stage 3, Light lane]
@@ -588,7 +601,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
 - **58. OOP principles** [Concept, stage 2, Core lane]
   - Check: Explain the four OOP pillars with examples from your own code.
   - Subtopics: (0) Encapsulation, abstraction, inheritance, polymorphism; (1) Class vs object; (2) Overloading vs overriding; (3) Composition vs inheritance; (4) SOLID principles (basic); (5) Design patterns: singleton, factory (the idea)
-- **59. Operating systems** [MCQ, stage 2, Light lane]
+- **59. Operating systems** [MCQ, stage 3, Light lane]
   - Check: Answer MCQs on processes, threads, scheduling, deadlock and paging.
   - Subtopics: (0) Process vs thread; (1) Process states; (2) CPU scheduling: FCFS, SJF, round robin, priority; (3) Context switching; (4) Deadlock: four conditions, prevention; (5) Mutex and semaphore; (6) Paging, segmentation, virtual memory; (7) Thrashing
 - **60. Computer networks** [MCQ, stage 3, Light lane]
