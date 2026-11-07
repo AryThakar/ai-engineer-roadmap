@@ -203,6 +203,15 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
 
 /* Flashcards: a full-screen deck. Front = question (and code to predict), back = answer, output and memory hook. */
 .reset.fc-open { background: var(--section); font-weight: 600; }
+.lc-how { margin: 0 0 6px; font-size: 13.5px; color: var(--muted); }
+.lc-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.lc-row a { color: var(--ink); font-weight: 600; text-underline-offset: 2px; }
+.lc-row small { flex-basis: 100%; font-size: 12.5px; color: var(--muted); }
+.subs.lc input:checked + .lc-row a { color: var(--muted); }
+.subs.lc input:checked + .lc-row { text-decoration: none; }
+.diff { font: 600 11px/1 var(--font-mono); padding: 3px 6px; border-radius: 4px; border: 1.5px solid currentColor; }
+.diff.Easy { color: var(--done); }
+.diff.Medium { color: #9a5800; }
 .d-fc { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 18px 0 0; padding: 10px 12px; background: var(--node); border: 2px solid var(--ink); border-radius: 8px; }
 .d-fc p { margin: 0; font-size: 14px; }
 .fc { position: fixed; inset: 0; z-index: 30; background: var(--paper); display: flex; flex-direction: column; gap: 12px; padding: calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left)); }
@@ -420,6 +429,11 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
   <h3>Interview check</h3>
   <p class="check" id="d-check"></p>
   <div class="d-fc" id="d-fc" hidden><p id="d-fc-text"></p><span class="d-fc-btns"><button type="button" class="close" id="d-fc-btn">Cards</button><button type="button" class="close" id="d-mcq-btn">MCQ</button><button type="button" class="close" id="d-pr-btn">Code</button></span></div>
+  <div id="d-lc-wrap" hidden>
+    <h3>LeetCode problems <small id="d-lccount"></small></h3>
+    <p class="lc-how">Solve each one on LeetCode, then paste your code in the Claude chat for a review. Tick it once you've solved it on your own.</p>
+    <ul class="subs lc" id="d-lc"></ul>
+  </div>
   <div id="d-res-wrap">
     <h3>Where to learn and practise <small id="d-rescount"></small></h3>
     <ul class="d-res" id="d-res"></ul>
@@ -489,9 +503,9 @@ const LEVELS = {
 const T = [
 [1,"A","Basics and setup","mcq","1","Core","Explain how Python runs your code and answer basic syntax questions.",["What Python is: interpreted, dynamically typed, high-level","Installing Python; versions 3.14 and 3.15","REPL vs running a `.py` script; `python -m module`","Indentation defines blocks","Comments and docstrings","Variables and naming rules (PEP 8 style)","`print()` and `input()`","Keywords and `None`"]],
 [2,"A","Data types and operators","mcq","1","Core","Predict results like `-7 // 2`, `0.1 + 0.2`, `'a' or 'b'` and `1 < x < 5`.",["`int`, `float`, `complex`, `bool`, `str`, `None`","`type()` vs `isinstance()`","Type conversion: `int()`, `float()`, `str()`, `bool()`","Truthy and falsy values","Arithmetic: `/`, `//`, `%`, `**`; floor division with negatives","Comparison and chained comparison","`and` / `or` / `not`: short-circuiting and returning operands","Bitwise operators: `&`, `|`, `^`, `~`, `<<`, `>>`","Identity (`is`) vs equality (`==`); membership (`in`)","Operator precedence","Float precision: why `0.1 + 0.2 != 0.3`"]],
-[3,"A","Strings","code","1","Core","Reverse words, check a palindrome or anagram, and find the first non-repeating character.",["Indexing and negative indexing","Slicing with a step; `s[::-1]`","Strings are immutable","Methods: `split`, `join`, `strip`, `replace`, `count`","`find` (returns -1) vs `index` (raises an error)","`startswith`, `endswith`, `upper`, `lower`, `isdigit`, `isalpha`","f-strings and format specs: `{x:.2f}`, `{x:>10}`","Escape sequences and raw strings `r'...'`","Multiline strings","Unicode, `encode` / `decode`, `bytes`","Build strings with `''.join(parts)`, not `+=` in a loop"]],
-[4,"A","Control flow and loops","code","1","Core","Write loops with `enumerate` and `zip`, and say when a loop's `else` runs.",["`if` / `elif` / `else`","Conditional expression: `a if cond else b`","`match` / `case` (3.10+)","`for` over any iterable","`while` loops","`range(start, stop, step)`","`break`, `continue`, `pass`","`else` on `for` and `while`","`enumerate` and `zip`","Nested loops and their cost"]],
-[5,"A","Data structures","code","1","Core","Pick the right structure, state its Big-O, and solve counting and grouping tasks live.",["list: `append` vs `extend`, `insert`, `pop`, `remove`","`sort()` vs `sorted()`; sorting with `key=`","tuple: `(1,)`, unpacking, `first, *rest = items`","set: `&`, `|`, `-`, `^`; `add`, `discard` vs `remove`","dict: `get`, `setdefault`, `items`, `update`, merge with `|`","dict keeps insertion order; keys must be hashable","List, dict and set comprehensions","`collections`: `Counter`, `defaultdict`, `deque`, `namedtuple`","`heapq` and `bisect`","Big-O of each operation (`x in list` vs `x in set`)","Trap: `[[0]*3]*3` shares one inner list"]],
+[3,"A","Strings","mcq","1","Core","Predict string results (slicing, `find` vs `index`, f-strings), and explain why strings are immutable and why `join` beats `+=`.",["Indexing and negative indexing","Slicing with a step; `s[::-1]`","Strings are immutable","Methods: `split`, `join`, `strip`, `replace`, `count`","`find` (returns -1) vs `index` (raises an error)","`startswith`, `endswith`, `upper`, `lower`, `isdigit`, `isalpha`","f-strings and format specs: `{x:.2f}`, `{x:>10}`","Escape sequences and raw strings `r'...'`","Multiline strings","Unicode, `encode` / `decode`, `bytes`","Build strings with `''.join(parts)`, not `+=` in a loop"]],
+[4,"A","Control flow and loops","mcq","1","Core","Predict what loops print, use `range`, `enumerate` and `zip`, say when a loop's `else` runs, and solve the warm-up LeetCode problems.",["`if` / `elif` / `else`","Conditional expression: `a if cond else b`","`match` / `case` (3.10+)","`for` over any iterable","`while` loops","`range(start, stop, step)`","`break`, `continue`, `pass`","`else` on `for` and `while`","`enumerate` and `zip`","Nested loops and their cost"]],
+[5,"A","Data structures","concept","1","Core","Pick the right structure for a job, state the Big-O of its operations (`x in list` vs `x in set`), and spot traps like `[[0]*3]*3`.",["list: `append` vs `extend`, `insert`, `pop`, `remove`","`sort()` vs `sorted()`; sorting with `key=`","tuple: `(1,)`, unpacking, `first, *rest = items`","set: `&`, `|`, `-`, `^`; `add`, `discard` vs `remove`","dict: `get`, `setdefault`, `items`, `update`, merge with `|`","dict keeps insertion order; keys must be hashable","List, dict and set comprehensions","`collections`: `Counter`, `defaultdict`, `deque`, `namedtuple`","`heapq` and `bisect`","Big-O of each operation (`x in list` vs `x in set`)","Trap: `[[0]*3]*3` shares one inner list"]],
 [6,"A","Functions","code","1","Core","Write a retry decorator, and explain closures and the mutable default trap.",["`def`, `return`, returning several values","Positional, keyword and default arguments","Mutable default argument trap","`*args` and `**kwargs`; unpacking at the call site","Keyword-only (`*`) and positional-only (`/`) parameters","Scope rules (LEGB), `global`, `nonlocal`","`lambda`","Functions as objects; higher-order functions","`map`, `filter`, `functools.reduce`","Recursion and the recursion limit","Closures","Decorators, `functools.wraps`, decorators with arguments","`functools.partial` and `lru_cache`"]],
 [7,"A","Iterators and generators","code","1","Core","Write a batching generator and explain why generators save memory.",["Iterable vs iterator","`iter()`, `next()`, `StopIteration`","`__iter__` and `__next__`","How a `for` loop works underneath","Generators with `yield`","Generator expressions vs list comprehensions","A used-up generator returns nothing","`yield from`","`itertools`: `chain`, `islice`, `groupby`, `product`, `permutations`, `combinations`"]],
 [8,"A","Error handling","code","1","Core","Handle errors cleanly and write a custom exception.",["`try` / `except` / `else` / `finally`","Catch specific exceptions; several `except` blocks","`raise` and re-raise","Chaining: `raise ... from err`","Custom exception classes","Hierarchy: `BaseException` vs `Exception`","`assert`","Common errors: `KeyError`, `IndexError`, `TypeError`, `ValueError`, `AttributeError`","EAFP vs LBYL style","`ExceptionGroup` and `except*` (3.11+)"]],
@@ -569,7 +583,7 @@ const LANES = [
 ];
 const STAGES = [
   { n: "1", name: "Python core", core: range(1, 9), coding: [16, 17, 18], light: [56], build: [], buildNote: "Set up Git, a virtual environment and one repo for all your practice code.",
-    gate: "you can write the string, list and dict tasks, a decorator and a generator from a blank file; solve easy hashing and two-pointer problems alone; and write a JOIN with GROUP BY." },
+    gate: "you can write a decorator, a generator and a JSON/CSV script from a blank file; solve Easy hashing and two-pointer LeetCode problems alone; and write a JOIN with GROUP BY." },
   { n: "2", name: "Python depth", core: range(10, 15).concat([58]), coding: [19, 20, 21], light: [59], build: [], buildNote: "Add pytest tests to your practice code.",
     gate: "you can design a small class and explain copying, scope, the GIL and async; solve easy and medium stack, binary search and linked-list problems; and do well on an OS quiz." },
   { n: "3", name: "Web, maths and data", core: range(28, 35), coding: [22, 23], light: [57, 60], build: [29, 30, 47], buildNote: "Start the project: a FastAPI app that calls an LLM API.",
@@ -669,14 +683,21 @@ const RES = [
 ["sudheerj/javascript-interview-questions","https://github.com/sudheerj/javascript-interview-questions","QA","JavaScript interview questions with answers.",[71]],
 ["sudheerj/reactjs-interview-questions","https://github.com/sudheerj/reactjs-interview-questions","QA","React interview questions with answers.",[71]]
 ];
+/* LeetCode problems per topic: [number, slug, title, difficulty, note]. Free problems only (checked 7 Nov 2026).
+   Ticks are saved in the progress backup under "lc", keyed by problem number, so never reuse a number for another problem. */
+const LC = {
+  4: [[412,"fizz-buzz","Fizz Buzz","Easy",""],[509,"fibonacci-number","Fibonacci Number","Easy",""],[9,"palindrome-number","Palindrome Number","Easy","Try it without turning the number into a string."],[1342,"number-of-steps-to-reduce-a-number-to-zero","Number of Steps to Reduce a Number to Zero","Easy",""],[1480,"running-sum-of-1d-array","Running Sum of 1d Array","Easy",""],[1672,"richest-customer-wealth","Richest Customer Wealth","Easy","Nested loops."],[151,"reverse-words-in-a-string","Reverse Words in a String","Medium","Was your reverse_words task."]],
+  17: [[217,"contains-duplicate","Contains Duplicate","Easy",""],[242,"valid-anagram","Valid Anagram","Easy","Was your is_anagram task."],[387,"first-unique-character-in-a-string","First Unique Character in a String","Easy","Was your first_unique task."],[1,"two-sum","Two Sum","Easy",""],[724,"find-pivot-index","Find Pivot Index","Easy","Prefix sums."],[49,"group-anagrams","Group Anagrams","Medium",""],[347,"top-k-frequent-elements","Top K Frequent Elements","Medium",""],[238,"product-of-array-except-self","Product of Array Except Self","Medium",""],[128,"longest-consecutive-sequence","Longest Consecutive Sequence","Medium",""],[560,"subarray-sum-equals-k","Subarray Sum Equals K","Medium","Prefix sums with a dict."]],
+  18: [[125,"valid-palindrome","Valid Palindrome","Easy","Was your is_palindrome task."],[283,"move-zeroes","Move Zeroes","Easy",""],[167,"two-sum-ii-input-array-is-sorted","Two Sum II - Input Array Is Sorted","Medium",""],[15,"3sum","3Sum","Medium",""],[11,"container-with-most-water","Container With Most Water","Medium",""],[443,"string-compression","String Compression","Medium","Was your compress task, done in place."],[121,"best-time-to-buy-and-sell-stock","Best Time to Buy and Sell Stock","Easy",""],[643,"maximum-average-subarray-i","Maximum Average Subarray I","Easy","Fixed-size window."],[3,"longest-substring-without-repeating-characters","Longest Substring Without Repeating Characters","Medium",""],[1456,"maximum-number-of-vowels-in-a-substring-of-given-length","Maximum Number of Vowels in a Substring of Given Length","Medium","Your count_vowels task, with a window."],[424,"longest-repeating-character-replacement","Longest Repeating Character Replacement","Medium",""],[567,"permutation-in-string","Permutation in String","Medium",""]]
+};
 const resources = RES.map(([name, url, kind, note, ids]) => ({ name, url, kind, note, ids }));
 
 const topics = T.map(([id, sec, title, level, stage, lane, check, subs]) => ({ id, sec, title, level, stage, lane, check, subs }));
 const stageLabel = s => s === "Daily" ? "Every day" : s === "Optional" ? "Optional" : "Stage " + s + " · " + STAGES.find(x => x.n === s).name;
 const byId = new Map(topics.map(t => [t.id, t]));
 const KEY = "aiEngineerRoadmap.v1";
-let state = { status: {}, subs: {} };
-try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); state.status = s.status || {}; state.subs = s.subs || {}; } } catch (e) {}
+let state = { status: {}, subs: {}, lc: {} };
+try { const raw = localStorage.getItem(KEY); if (raw) { const s = JSON.parse(raw); state.status = s.status || {}; state.subs = s.subs || {}; state.lc = s.lc || {}; } } catch (e) {}
 function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
 function fmt(el, text) {
@@ -849,7 +870,7 @@ resetBtn.addEventListener("click", () => {
     armTimer = setTimeout(() => { resetBtn.classList.remove("armed"); resetBtn.textContent = "Reset progress"; }, 4000);
     return;
   }
-  clearTimeout(armTimer); state = { status: {}, subs: {} }; save(); applyState();
+  clearTimeout(armTimer); state = { status: {}, subs: {}, lc: {} }; save(); applyState();
   resetBtn.classList.remove("armed"); resetBtn.textContent = "Reset progress";
 });
 
@@ -901,6 +922,7 @@ function openTopic(id) {
   mine.forEach(r => { const li = h("li"); li.appendChild(h("span", "kind " + r.kind, KINDS[r.kind])); li.appendChild(resLink(r)); li.appendChild(h("p", null, r.note)); dres.appendChild(li); });
   chk.style.borderLeftColor = "var(--" + t.level + ")";
   renderDrawerCards(id);
+  renderLC(id);
   const pw = document.getElementById("d-pairs"), pairs = PAIRS[id] || [];
   pw.textContent = ""; document.getElementById("d-pairs-wrap").hidden = !pairs.length;
   pairs.forEach(pid => { const pb = h("button", null, pid + ". " + byId.get(pid).title); pb.type = "button"; pb.addEventListener("click", () => openTopic(pid)); pw.appendChild(pb); });
@@ -912,6 +934,29 @@ function openTopic(id) {
   drawer.scrollTop = 0;
   drawer.classList.add("open"); scrim.classList.add("open");
   document.getElementById("d-close").focus({ preventScroll: true });
+}
+function renderLC(id) {
+  const list = LC[id] || [], ul = document.getElementById("d-lc");
+  document.getElementById("d-lc-wrap").hidden = !list.length;
+  ul.textContent = "";
+  const count = () => { document.getElementById("d-lccount").textContent = list.filter(p => state.lc[p[0]]).length + " of " + list.length + " solved"; };
+  list.forEach(([num, slug, title, diff, note]) => {
+    const li = h("li"), lab = h("label"), cb = h("input"), sp = h("span", "lc-row");
+    cb.type = "checkbox"; cb.id = "lc-" + num; lab.htmlFor = cb.id;
+    cb.checked = !!state.lc[num];
+    cb.addEventListener("change", () => {
+      if (cb.checked) state.lc[num] = true; else delete state.lc[num];
+      if (cb.checked && !state.status[id]) state.status[id] = "progress";
+      save(); applyState(); renderStatus(); count();
+    });
+    const a = h("a", null, num + ". " + title);
+    a.href = "https://leetcode.com/problems/" + slug + "/"; a.target = "_blank"; a.rel = "noopener";
+    sp.appendChild(a);
+    sp.appendChild(h("span", "diff " + diff, diff));
+    if (note) sp.appendChild(fmt(h("small"), note));
+    lab.appendChild(cb); lab.appendChild(sp); li.appendChild(lab); ul.appendChild(li);
+  });
+  count();
 }
 function closeDrawer() {
   drawer.classList.remove("open"); scrim.classList.remove("open"); current = null;
@@ -926,7 +971,7 @@ document.addEventListener("keydown", e => {
   if (!drawer.classList.contains("open") || !fc.hidden || !pr.hidden) return;
   if (e.key === "Escape") closeDrawer();
   if (e.key === "Tab") {
-    const f = [...drawer.querySelectorAll("button:not(:disabled), input")].filter(x => x.offsetParent !== null);
+    const f = [...drawer.querySelectorAll("button:not(:disabled), input, a[href]")].filter(x => x.offsetParent !== null);
     if (!f.length) return;
     if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
     else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
@@ -937,7 +982,7 @@ renderRes();
 /* Backup and move progress */
 const backup = document.getElementById("backup"), backupText = document.getElementById("backup-text"), backupMsg = document.getElementById("backup-msg");
 document.getElementById("backup-open").addEventListener("click", () => {
-  backupText.value = JSON.stringify({ app: "ai-engineer-roadmap", status: state.status, subs: state.subs });
+  backupText.value = JSON.stringify({ app: "ai-engineer-roadmap", status: state.status, subs: state.subs, lc: state.lc });
   backupMsg.textContent = ""; backup.hidden = false; backupText.focus(); backupText.select();
 });
 document.getElementById("backup-close").addEventListener("click", () => { backup.hidden = true; });
@@ -953,7 +998,9 @@ document.getElementById("backup-load").addEventListener("click", () => {
     const ok = v => v === "done" || v === "progress";
     state.status = Object.fromEntries(Object.entries(d.status).filter(([k, v]) => byId.has(Number(k)) && ok(v)));
     state.subs = Object.fromEntries(Object.entries(d.subs).filter(([k, v]) => /^\d+:\d+$/.test(k) && v === true));
+    state.lc = d.lc && typeof d.lc === "object" ? Object.fromEntries(Object.entries(d.lc).filter(([k, v]) => /^\d+$/.test(k) && v === true)) : {};
     save(); applyState();
+    if (current) openTopic(current);
     backupMsg.style.color = "var(--done)"; backupMsg.textContent = "Loaded: " + Object.values(state.status).filter(v => v === "done").length + " topics done.";
   } catch (e) { backupMsg.style.color = "var(--code)"; backupMsg.textContent = "That text is not a progress backup from this roadmap."; }
 });

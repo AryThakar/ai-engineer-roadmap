@@ -14,8 +14,8 @@ const html = fs.readFileSync(htmlPath, "utf8");
 const start = html.indexOf("const SECTIONS");
 const end = html.indexOf("const resources = RES.map");
 if (start < 0 || end < 0) throw new Error("Could not find the data block in index.html");
-const { SECTIONS, LEVELS, T, LANES, STAGES, KINDS, RES } =
-  new Function(html.slice(start, end) + "\nreturn { SECTIONS, LEVELS, T, LANES, STAGES, KINDS, RES };")();
+const { SECTIONS, LEVELS, T, LANES, STAGES, KINDS, RES, LC } =
+  new Function(html.slice(start, end) + "\nreturn { SECTIONS, LEVELS, T, LANES, STAGES, KINDS, RES, LC: typeof LC === \"undefined\" ? {} : LC };")();
 
 let CARDS = {}, MCQS = {};
 try { const d = JSON.parse(fs.readFileSync(path.join(root, "flashcards.json"), "utf8")); CARDS = d.topics || {}; MCQS = d.mcq || {}; } catch (e) {}
@@ -41,7 +41,8 @@ out.push("");
 out.push(`Totals: ${topics.length} topics in ${SECTIONS.length} sections, ${STAGES.length} stages, ${RES.length} resources. ` +
   `Levels: ${count("code")} Coding, ${count("concept")} Concept, ${count("mcq")} MCQ. ` +
   `Flashcards: ${totalCards}, MCQs: ${totalMcqs}${cardTopics.length ? (cardTopics.length === 1 ? " (topic " : " (topics ") + cardTopics.join(", ") + ")" : ""}. ` +
-  `Coding tasks: ${totalTasks}${taskTopics.length ? (taskTopics.length === 1 ? " (topic " : " (topics ") + taskTopics.join(", ") + ")" : ""}.`);
+  `Coding tasks: ${totalTasks}${taskTopics.length ? (taskTopics.length === 1 ? " (topic " : " (topics ") + taskTopics.join(", ") + ")" : ""}. ` +
+  `LeetCode problems: ${Object.values(LC).reduce((n, l) => n + l.length, 0)}${Object.keys(LC).length ? " (topics " + Object.keys(LC).sort((a, b) => a - b).join(", ") + ")" : ""}.`);
 out.push("");
 out.push("### Levels");
 for (const v of Object.values(LEVELS)) out.push(`- **${v.label}**: ${v.short}`);
@@ -73,6 +74,7 @@ for (const [sec, sname] of SECTIONS) {
     out.push(`- **${t.id}. ${t.title}** [${LEVELS[t.level].label}, ${where}${cards}]`);
     out.push(`  - Check: ${t.check}`);
     out.push(`  - Subtopics: ${t.subs.map((s, i) => `(${i}) ${s}`).join("; ")}`);
+    if ((LC[t.id] || []).length) out.push(`  - LeetCode (backup key = number): ${LC[t.id].map(([n, , title, d]) => `${n} ${title} (${d})`).join("; ")}`);
   }
   out.push("");
 }

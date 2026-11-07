@@ -18,9 +18,13 @@ Tap **Flashcards & MCQs** to revise everything taught so far, or **Cards** / **M
 - **Flashcards**: the questions interviewers ask out loud. Tap to flip, then **Got it** or **Again**.
 - **MCQ**: predict the output, find the error, concept checks. Options are shuffled each time; you get a score and can retry the ones you missed.
 
+## LeetCode problems
+
+Topics 4, 17 and 18 have a **LeetCode problems** box: free problems in pattern order, Easy first, with direct links. Solve them on LeetCode and tick each one you solved on your own. The ticks are saved in your progress backup.
+
 ## Code practice
 
-Tap **Code practice**, or **Code** inside a topic, to write Python and check it right in the app. Python runs on your device; the first time it downloads about 13 MB, and after that it works offline.
+For Python skills LeetCode doesn't test (decorators, generators, files, classes), tasks will appear here as those topics are reached. Tap **Code practice**, or **Code** inside a topic, to write Python and check it right in the app. Python runs on your device; the first time it downloads about 13 MB, and after that it works offline.
 
 - Each task shows examples and the target, like **Time O(n) · Space O(1)**.
 - **Run** shows what your code prints. **Check** runs the tests, then times your function on a big input. If it's too slow (probably O(n²)), it tells you so.
