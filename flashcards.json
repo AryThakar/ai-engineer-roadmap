@@ -1,6 +1,6 @@
 {
  "version": 2,
- "updated": "2026-11-06",
+ "updated": "2026-11-07",
  "topics": {
   "1": [
    {
@@ -508,6 +508,18 @@
     ],
     "answer": 1,
     "why": "There is only one None object, so check identity with `is`. A class can change what `==` means and give a wrong answer."
+   },
+   {
+    "kind": "concept",
+    "q": "Why do people run `python -m pip install requests` instead of just `pip install requests`?",
+    "options": [
+     "It installs faster",
+     "It installs into the exact Python you just ran, not some other Python on the computer",
+     "It installs the package for all users",
+     "It is the only way that works on Linux"
+    ],
+    "answer": 1,
+    "why": "`-m` runs a module as a script using that interpreter. With several Pythons installed, plain `pip` may belong to a different one."
    }
   ],
   "2": [
@@ -917,16 +929,18 @@
     "why": "bool is a subtype of int: `type()` wants an exact match, `isinstance()` accepts subtypes."
    },
    {
-    "kind": "concept",
-    "q": "When should you use `is` instead of `==`?",
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "x = [1]\ny = x\nprint(x is y, x == [1], x is [1])",
+    "out": "True True False",
     "options": [
-     "To compare numbers",
-     "To compare strings",
-     "To check for `None`",
-     "To compare lists"
+     "`True True True`",
+     "`True True False`",
+     "`True False False`",
+     "`False True False`"
     ],
-    "answer": 2,
-    "why": "`is` checks identity. Use it for None (one single object). For values, always use `==`: small-number reuse makes `is` unreliable."
+    "answer": 1,
+    "why": "y is a second label on the same list, so `x is y`. `[1]` builds a brand-new list: equal in value (==) but a different object (is)."
    },
    {
     "kind": "error",
@@ -1065,6 +1079,34 @@
     ],
     "answer": 2,
     "why": "Floats carry tiny storage errors, so check that they're close enough instead of exactly equal."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(5 ^ 3, 8 >> 2)",
+    "out": "6 2",
+    "options": [
+     "`125 2`",
+     "`6 2`",
+     "`6 16`",
+     "`2 4`"
+    ],
+    "answer": 1,
+    "why": "`^` is XOR, not power: 101 ^ 011 = 110 = 6. `>>` shifts right, halving each step: 8 → 4 → 2. Power is `**`."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(7.0 // 2)",
+    "out": "3.0",
+    "options": [
+     "`3`",
+     "`3.0`",
+     "`3.5`",
+     "`4.0`"
+    ],
+    "answer": 1,
+    "why": "`//` floors the result, but if either number is a float the answer stays a float: 3.0, not 3."
    }
   ],
   "3": [
@@ -1185,19 +1227,19 @@
     "why": "`[-3:]` means from the third-last character to the end."
    },
    {
-    "kind": "error",
-    "q": "What happens?",
-    "code": "t = \"hello\"\nt[0] = \"J\"",
-    "out": "TypeError: 'str' object does not support item assignment",
+    "kind": "output",
+    "q": "What is printed?",
+    "trap": true,
+    "code": "s = \"hi\"\nt = s\ns += \"!\"\nprint(t, s)",
+    "out": "hi hi!",
     "options": [
-     "`Jello`",
-     "`TypeError`",
-     "`ValueError`",
-     "`hello`"
+     "`hi! hi!`",
+     "`hi hi!`",
+     "`hi hi`",
+     "An error"
     ],
     "answer": 1,
-    "why": "Strings can't be changed in place. Build a new one: `\"J\" + t[1:]`.",
-    "trap": true
+    "why": "Strings can't change, so `s += \"!\"` builds a new string and moves the label s to it. t still points to the old \"hi\". (With a list, `+=` would change it in place and both would show it.)"
    },
    {
     "kind": "output",
@@ -1595,12 +1637,46 @@
     ],
     "answer": 1,
     "why": "`in` returns True/False directly. `find` gives -1 or a position (0 is falsy), and `index` raises an error when missing."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "s = \"\"\"ab\ncd\"\"\"\nprint(len(s))",
+    "out": "5",
+    "options": [
+     "`4`",
+     "`5`",
+     "`6`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "A triple-quoted string keeps the line break as a real character: a, b, newline, c, d."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(ord(\"a\"), chr(66))",
+    "out": "97 B",
+    "options": [
+     "`a 66`",
+     "`97 B`",
+     "`97 b`",
+     "`1 B`"
+    ],
+    "answer": 1,
+    "why": "`ord` gives a character's number and `chr` turns a number back into a character. 'a' is 97 and 'A' is 65, so 66 is 'B'. Handy for letter-counting problems."
    }
   ]
  },
  "notes": {
   "1": "Topic 1, rebuilt 6 Nov 2026: flashcards = questions interviewers ask out loud (checked against InterviewBit, GeeksforGeeks and PYnative lists); MCQs = predict the output, find the error, concept checks.",
   "2": "Topic 2, 6 Nov 2026: flashcards = built-in types, mutable vs immutable, / vs //, == vs is, type vs isinstance, conversion, float precision (asked in InterviewBit, GeeksforGeeks and PYnative lists); MCQs = traps on operators, truthiness, comparison, precedence and floats.",
-  "3": "Topic 3, 6 Nov 2026: flashcards = slicing and negative indexes, reversing, immutability, split/join, formatting, join vs +=, find vs index, str vs bytes (InterviewBit, GeeksforGeeks and PYnative Q26-38); MCQs = slicing traps, methods, f-string formats, escapes, raw strings, bytes."
- }
+  "3": "Topic 3, 6 Nov 2026: flashcards = slicing and negative indexes, reversing, immutability, split/join, formatting, join vs +=, find vs index, str vs bytes (InterviewBit, GeeksforGeeks and PYnative Q26-38); MCQs = slicing traps, methods, f-string formats, escapes, raw strings, bytes.",
+  "frozen": "Topics 1-3 are final (reviewed 7 Nov 2026): change them only to fix a real mistake. Revise with them; new questions go to later topics."
+ },
+ "frozen": [
+  "1",
+  "2",
+  "3"
+ ]
 }

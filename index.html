@@ -1012,7 +1012,7 @@ const fc = document.getElementById("fc"), fcCard = document.getElementById("fc-c
 const fcCount = document.getElementById("fc-count"), fcFlip = document.getElementById("fc-flip");
 const fcActions = document.getElementById("fc-actions"), mcqActions = document.getElementById("mcq-actions"), mcqNext = document.getElementById("mcq-next");
 const KIND = { output: "Predict the output", error: "Find the error", concept: "Concept check" };
-const DECK = { cards: null, mcq: null };
+const DECK = { cards: null, mcq: null, frozen: [] };
 const PRACTICE = { topics: null, list: [], byTask: new Map() };
 const tasksFor = id => (PRACTICE.topics && PRACTICE.topics[String(id)]) || [];
 let fcMode = "cards", fcQueue = [], fcKnown = 0, fcFlipped = false, fcLastFocus = null;
@@ -1029,7 +1029,7 @@ function renderDrawerCards(id) {
   if (nc) parts.push(plural(nc, "flashcard", "flashcards"));
   if (nm) parts.push(plural(nm, "MCQ", "MCQs"));
   if (np) parts.push(plural(np, "coding task", "coding tasks"));
-  document.getElementById("d-fc-text").textContent = parts.join(" · ") + " for this topic";
+  document.getElementById("d-fc-text").textContent = parts.join(" · ") + " for this topic" + (DECK.frozen.includes(String(id)) ? " · final set ✓" : "");
   document.getElementById("d-fc-btn").hidden = !nc;
   document.getElementById("d-mcq-btn").hidden = !nm;
   document.getElementById("d-pr-btn").hidden = !np;
@@ -1037,7 +1037,7 @@ function renderDrawerCards(id) {
 fetch("flashcards.json", { cache: "no-cache" })
   .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
   .then(d => {
-    DECK.cards = (d && d.topics) || {}; DECK.mcq = (d && d.mcq) || {};
+    DECK.cards = (d && d.topics) || {}; DECK.mcq = (d && d.mcq) || {}; DECK.frozen = (d && Array.isArray(d.frozen)) ? d.frozen.map(String) : [];
     const nc = totalOf("cards"), nm = totalOf("mcq");
     if (!nc && !nm) return;
     const open = document.getElementById("fc-open");

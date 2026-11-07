@@ -45,6 +45,28 @@ These come from his direct feedback during the chat. Follow them.
   - **Flashcards are only for questions an interviewer asks you to explain out loud.** Keep one only if it appears in real question lists (InterviewBit, GeeksforGeeks, PYnative), or if it's a common question for AI roles.
   - **No trivia flashcards** (he rejected these on 6 Nov): PEP numbers, version history, Python 2 vs 3, lists of other implementations.
   - **MCQs** are for what online tests ask: predict the output, find the error, pick the valid option. Syntax rules and trap questions go here.
+- **What he prepares, and to what level** (agreed 7 Nov; his own summary, corrected):
+  - **Core, all levels:** Python, SQL, DSA (Solve + Explain), REST APIs, data/ML tools (NumPy, pandas, matplotlib, sklearn) plus ML theory, and OOP (concept, MCQ and writing small classes).
+  - **Concept + MCQ:** OS, networks, DBMS, system design, security (for us, API auth and prompt injection).
+  - **Project + Explain:** GenAI, Docker, cloud deployment.
+  - **Daily habits:** aptitude, Git, Linux.
+  - The four ways skills are tested:
+    - **Build:** a take-home assignment or project round
+    - **Solve:** live or online coding, timed
+    - **Explain:** the technical interview
+    - **Recognise:** MCQ tests
+- **DSA is equal-first with Python** (corrected 7 Nov).
+  - Section 4's "0 of 13 AI listings ask DSA" counts skill tags, not interview rounds.
+  - 2025–26 interview reports (Navi, SarvM.ai, Eightfold, Cognizant GenC, Infosys DSE) show DSA rounds, often 2 LeetCode Mediums.
+  - Targets: at least about 110 problems, and all the free NeetCode 150 problems by Stage 6.
+  - Level: 2 Mediums in about an hour, explaining out loud.
+  - The 2 DSA hours a day are never skipped.
+- **Fast Python pass** (his request, 7 Nov):
+  - Topics 4–15 are taught quickly, at explain and syntax (MCQ) level, then revised daily with cards and MCQs.
+  - DSA and SQL run alongside it from now on, with practical Python tasks as each topic comes.
+  - After the pass: REST APIs + NumPy/pandas + maths basics, then ML, then GenAI.
+  - Keep it to 3–4 tracks at once.
+- **Frozen decks:** Topics 1–3 are final (`"frozen"` in `flashcards.json`, shown as "final set ✓"). Change them only to fix a real mistake.
 - **Python vs DSA split** (agreed 7 Nov). Algorithm-style problems (strings, arrays, counting, two pointers) are DSA. They go in the app as LeetCode lists on the DSA topics (and Topic 4 warm-ups), not as in-app tasks.
   - **MCQ and concept only:** topics 1–5, 11 and 12.
   - **In-app practice tasks** (section 6), only for Python skills LeetCode doesn't test:
@@ -53,6 +75,9 @@ These come from his direct feedback during the chat. Follow them.
     - 8: a custom exception
     - 9: reading and writing JSON/CSV
     - 10: class design
+    - Also proposed on 7 Nov (confirm with him before building):
+      - a Topic 4 basics pack of 8 classic programs for mass-recruiter tests: prime, GCD, Armstrong number, reverse a number, digit sum, factorial, star pattern, leap year
+      - 5 Topic 5 data tasks: grouping and counting lists of dicts
     - Each task gets a time and space target and a speed check. Run `tools/check-practice.py`.
   - **On his laptop:** 13 (`asyncio.gather` with a Semaphore), 14 (a pydantic model) and 15 (pytest). The app's Python has only the standard library.
 - **Python unlocks DSA**, so pair them:
@@ -122,15 +147,29 @@ Done, in order:
 
 16. **Topics 1–3 count as done** at learning and MCQ level (his call, 7 Nov). He marks them done in the app himself.
 
+17. **Market check and corrections (7 Nov).** He found it odd that videos say DSA, CS fundamentals and system design are needed. Real 2025–26 interview reports agreed with the videos, so DSA was raised to equal-first (section 2). Nothing was missing from the roadmap; only the priorities changed. OOP was moved into the core: interviewers ask it as concept, MCQ and "write a small class".
+
+18. **Topics 1–3 decks reviewed and frozen (7 Nov).**
+    - 2 MCQs that repeated another topic were replaced: "is None" and string immutability.
+    - 5 MCQs were added for gaps: `python -m pip`, `^` and `>>`, `7.0 // 2`, triple-quoted strings, `ord`/`chr`.
+    - Now 25 flashcards and 106 MCQs, all checked.
+
+19. **His projects (7 Nov).**
+    - He says he built zen and Zen-harness with AI help.
+    - Instead of a new Build-lane project, he'll add features he writes himself to Zen-harness, chosen to cover what AI jobs ask: a FastAPI endpoint, RAG with a vector database, an eval set, Docker, deployment, CI.
+    - At Stage 3, read its code together first, see what it already has, then pick the features. Don't guess what it contains.
+    - At topic 70, go through both projects until he can explain and change every part.
+
 Next:
-- **Topic 4: Control flow and loops** (now MCQ level): lesson, flashcards and MCQs.
-  - Alongside it: Topic 16 (Big-O, concept) and the Topic 4 LeetCode warm-ups.
-  - Then Topic 5 with Topic 17, then Topic 6 with Topic 18.
+- **Fast Python pass, starting with Topic 4** (control flow and loops): a short lesson, then flashcards and MCQs. Then Topics 5, 6, 7… in the same way.
+- **Alongside it, starting now:**
+  - DSA: Topic 16 (Big-O), the Topic 4 LeetCode warm-ups, then the 17 and 18 lists
+  - SQL: Topic 56, LeetCode SQL 50 in order (Select, Basic Joins, Basic Aggregate Functions, Sorting and Grouping = 29 problems for Stage 1)
 - **Review any LeetCode code he pastes** (section 2).
 - If he sends a Topic 2 or Topic 3 summary, check it point by point.
 - He revises Topics 1–3 with the flashcards and MCQs.
 - **GitHub Pages publishing failed on 5–6 Nov.** The deploy step timed out at "updating_pages", and a stuck queued re-run of cbdc44c couldn't be cancelled ("has not yet queued"). Each push to gh-pages starts a new deploy. If the live `flashcards.json` lacks the newest topics, check the runs with `gh api repos/AryThakar/ai-engineer-roadmap/actions/runs` and re-run or push again. Check the live file with a cache-busting query (`?check=...`), because the fetch tool caches URLs for 15 minutes. His real progress is in the app's backup (section 6).
-- Project work (zen, Zen-harness) waits until topic 70. Don't bring it up before then. When we get there, start from the zen notes in section 5.
+- Project work (zen, Zen-harness) waits until the Build lane in Stage 3 (adding features to Zen-harness) and topic 70 (explaining both). Don't bring it up before then. For topic 70, start from the zen notes in section 5.
 
 ## 4. Internshala research (4 Nov 2026)
 
@@ -291,7 +330,7 @@ Next:
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 25, MCQs: 101 (topics 1, 2, 3). Coding tasks: 0. LeetCode problems: 29 (topics 4, 17, 18).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 25, MCQs: 106 (topics 1, 2, 3). Coding tasks: 0. LeetCode problems: 29 (topics 4, 17, 18).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -354,13 +393,13 @@ Move to the next stage only when its "Move on when" check is true. There is no f
 Format: **id. title** [level, where]. Check = what he must be able to do. Subtopic numbers start at 0 and match the progress backup keys.
 
 #### A. Python
-- **1. Basics and setup** [MCQ, stage 1, Core lane, 10 flashcards, 25 MCQs]
+- **1. Basics and setup** [MCQ, stage 1, Core lane, 10 flashcards, 26 MCQs]
   - Check: Explain how Python runs your code and answer basic syntax questions.
   - Subtopics: (0) What Python is: interpreted, dynamically typed, high-level; (1) Installing Python; versions 3.14 and 3.15; (2) REPL vs running a `.py` script; `python -m module`; (3) Indentation defines blocks; (4) Comments and docstrings; (5) Variables and naming rules (PEP 8 style); (6) `print()` and `input()`; (7) Keywords and `None`
-- **2. Data types and operators** [MCQ, stage 1, Core lane, 7 flashcards, 39 MCQs]
+- **2. Data types and operators** [MCQ, stage 1, Core lane, 7 flashcards, 41 MCQs]
   - Check: Predict results like `-7 // 2`, `0.1 + 0.2`, `'a' or 'b'` and `1 < x < 5`.
   - Subtopics: (0) `int`, `float`, `complex`, `bool`, `str`, `None`; (1) `type()` vs `isinstance()`; (2) Type conversion: `int()`, `float()`, `str()`, `bool()`; (3) Truthy and falsy values; (4) Arithmetic: `/`, `//`, `%`, `**`; floor division with negatives; (5) Comparison and chained comparison; (6) `and` / `or` / `not`: short-circuiting and returning operands; (7) Bitwise operators: `&`, `|`, `^`, `~`, `<<`, `>>`; (8) Identity (`is`) vs equality (`==`); membership (`in`); (9) Operator precedence; (10) Float precision: why `0.1 + 0.2 != 0.3`
-- **3. Strings** [MCQ, stage 1, Core lane, 8 flashcards, 37 MCQs]
+- **3. Strings** [MCQ, stage 1, Core lane, 8 flashcards, 39 MCQs]
   - Check: Predict string results (slicing, `find` vs `index`, f-strings), and explain why strings are immutable and why `join` beats `+=`.
   - Subtopics: (0) Indexing and negative indexing; (1) Slicing with a step; `s[::-1]`; (2) Strings are immutable; (3) Methods: `split`, `join`, `strip`, `replace`, `count`; (4) `find` (returns -1) vs `index` (raises an error); (5) `startswith`, `endswith`, `upper`, `lower`, `isdigit`, `isalpha`; (6) f-strings and format specs: `{x:.2f}`, `{x:>10}`; (7) Escape sequences and raw strings `r'...'`; (8) Multiline strings; (9) Unicode, `encode` / `decode`, `bytes`; (10) Build strings with `''.join(parts)`, not `+=` in a loop
 - **4. Control flow and loops** [MCQ, stage 1, Core lane]
