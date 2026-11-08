@@ -172,8 +172,13 @@ Done, in order:
     - At Stage 3, read its code together first, see what it already has, then pick the features. Don't guess what it contains.
     - At topic 70, go through both projects until he can explain and change every part.
 
+21. **Taught Topic 4 (Control flow and loops)** on 8 Nov, the first fast-pass lesson.
+    - The story: the cook "choosing" (if/elif, ternary, match) and "repeating" (for as a conveyor belt, range, while, break/continue/pass, loop else, enumerate/zip).
+    - Traps covered: changing `i`, removing items while looping, nested loops multiply.
+    - He then got 7 flashcards and 36 MCQs.
+
 Next:
-- **Stage 1 fast pass, starting with Topic 4** (control flow and loops): a short lesson, then flashcards and MCQs. Then Topics 5, 6, 7, 8, 9 in the same way. He revises every day.
+- **Stage 1 fast pass, continuing with Topic 5** (data structures): a short lesson, then flashcards and MCQs. Then Topics 6, 7, 8, 9 in the same way. He revises every day.
 - **Then Stage 2:**
   - Start by building the basics pack and data tasks (with his OK).
   - DSA from Topic 16's warm-ups.
@@ -343,7 +348,7 @@ Next:
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 25, MCQs: 106 (topics 1, 2, 3). Coding tasks: 0. LeetCode problems: 29 (topics 16, 17, 18).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 32, MCQs: 142 (topics 1, 2, 3, 4). Coding tasks: 0. LeetCode problems: 29 (topics 16, 17, 18).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -415,7 +420,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
 - **3. Strings** [MCQ, stage 1, Core lane, 8 flashcards, 39 MCQs]
   - Check: Predict string results (slicing, `find` vs `index`, f-strings), and explain why strings are immutable and why `join` beats `+=`.
   - Subtopics: (0) Indexing and negative indexing; (1) Slicing with a step; `s[::-1]`; (2) Strings are immutable; (3) Methods: `split`, `join`, `strip`, `replace`, `count`; (4) `find` (returns -1) vs `index` (raises an error); (5) `startswith`, `endswith`, `upper`, `lower`, `isdigit`, `isalpha`; (6) f-strings and format specs: `{x:.2f}`, `{x:>10}`; (7) Escape sequences and raw strings `r'...'`; (8) Multiline strings; (9) Unicode, `encode` / `decode`, `bytes`; (10) Build strings with `''.join(parts)`, not `+=` in a loop
-- **4. Control flow and loops** [MCQ, stage 1, Core lane]
+- **4. Control flow and loops** [MCQ, stage 1, Core lane, 7 flashcards, 36 MCQs]
   - Check: Predict what loops print, use `range`, `enumerate` and `zip`, and say when a loop's `else` runs.
   - Subtopics: (0) `if` / `elif` / `else`; (1) Conditional expression: `a if cond else b`; (2) `match` / `case` (3.10+); (3) `for` over any iterable; (4) `while` loops; (5) `range(start, stop, step)`; (6) `break`, `continue`, `pass`; (7) `else` on `for` and `while`; (8) `enumerate` and `zip`; (9) Nested loops and their cost
 - **5. Data structures** [Concept, stage 1, Core lane]

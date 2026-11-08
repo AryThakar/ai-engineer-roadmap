@@ -1,6 +1,6 @@
 {
  "version": 2,
- "updated": "2026-11-07",
+ "updated": "2026-11-08",
  "topics": {
   "1": [
    {
@@ -156,6 +156,53 @@
     "code": "print(len(\"é\"), len(\"é\".encode()), \"é\".encode())",
     "out": "1 2 b'\\xc3\\xa9'",
     "hook": "encode packs text for shipping; decode unpacks it."
+   }
+  ],
+  "4": [
+   {
+    "q": "What's the difference between `break`, `continue` and `pass`?",
+    "a": "`break` stops the whole loop right away. `continue` skips the rest of this round and moves to the next item. `pass` does nothing at all: it's a placeholder where Python needs a statement, like an empty `if` or a function you'll write later.",
+    "hook": "break = stop the belt; continue = skip this item; pass = do nothing.",
+    "code": "for n in [1, 2, 3, 4, 5]:\n    if n == 2:\n        continue\n    if n == 4:\n        break\n    print(n)",
+    "out": "1\n3"
+   },
+   {
+    "q": "When does the `else` block of a loop run?",
+    "a": "Only when the loop finishes normally, without hitting `break`. If `break` runs, the `else` is skipped. It works on both `for` and `while`. It's handy for searches: the `else` is the 'not found' case, so you don't need a flag variable.",
+    "hook": "No break → else runs.",
+    "code": "for n in [3, 7, 9]:\n    if n % 2 == 0:\n        print(\"found\", n)\n        break\nelse:\n    print(\"no even number\")",
+    "out": "no even number"
+   },
+   {
+    "q": "What's the difference between a `for` loop and a `while` loop?",
+    "a": "`for` walks over a collection or a range one item at a time and stops by itself when the items run out. `while` repeats as long as a condition is true: use it when you don't know how many rounds you need, like retries or waiting for something. If the condition never becomes false, a `while` loop runs forever.",
+    "hook": "for = each item; while = until a condition changes."
+   },
+   {
+    "q": "How does `range()` work?",
+    "a": "`range(start, stop, step)` gives numbers from start up to, but not including, stop, jumping by step. `range(5)` is 0 to 4, and a negative step counts down. It doesn't build a list in memory; it makes each number when it's needed, so even `range(10**9)` is cheap.",
+    "hook": "range stops before stop.",
+    "code": "print(list(range(2, 8, 2)), list(range(10, 0, -3)))",
+    "out": "[2, 4, 6] [10, 7, 4, 1]"
+   },
+   {
+    "q": "What do `enumerate()` and `zip()` do?",
+    "a": "`enumerate(items)` gives (position, item) pairs, so you get the index without `range(len(...))`; `start=1` counts from 1. `zip(a, b)` walks two or more collections side by side and gives tuples. It stops at the shortest one without any warning; add `strict=True` to get a ValueError when the lengths differ.",
+    "code": "for i, f in enumerate([\"apple\", \"mango\"], start=1):\n    print(i, f)\nprint(list(zip([\"Ary\", \"Riya\", \"Sam\"], [90, 85])))",
+    "out": "1 apple\n2 mango\n[('Ary', 90), ('Riya', 85)]"
+   },
+   {
+    "q": "What is the ternary (conditional) operator in Python?",
+    "a": "A one-line if/else that gives back a value: `value_if_true if condition else value_if_false`. For example, `kind = \"even\" if n % 2 == 0 else \"odd\"`. Use it for simple choices; for anything longer, a normal if/else is easier to read.",
+    "hook": "value if test else other.",
+    "code": "n = 7\nprint(\"even\" if n % 2 == 0 else \"odd\")",
+    "out": "odd"
+   },
+   {
+    "q": "Does Python have a switch statement?",
+    "a": "Yes, since Python 3.10: `match`/`case`. Python compares the value with each case from the top and runs only the first one that matches. There's no fall-through like C's switch. `|` means 'or', and `case _:` is the default. It can also match shapes, like a list of two items. Before 3.10, people used if/elif or a dict.",
+    "code": "def reply(cmd):\n    match cmd:\n        case \"start\":\n            return \"starting\"\n        case \"stop\" | \"quit\":\n            return \"bye\"\n        case _:\n            return \"unknown\"\nprint(reply(\"quit\"), reply(\"dance\"))",
+    "out": "bye unknown"
    }
   ]
  },
@@ -1666,13 +1713,522 @@
     "answer": 1,
     "why": "`ord` gives a character's number and `chr` turns a number back into a character. 'a' is 97 and 'A' is 65, so 66 is 'B'. Handy for letter-counting problems."
    }
+  ],
+  "4": [
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "marks = 85\nif marks >= 70:\n    print(\"C\")\nelif marks >= 80:\n    print(\"B\")\nelse:\n    print(\"F\")",
+    "out": "C",
+    "options": [
+     "`B`",
+     "`C`",
+     "`C` then `B`",
+     "`F`"
+    ],
+    "answer": 1,
+    "why": "Python checks from the top and runs the first true branch only. 85 >= 70 is true, so it prints C and never checks the rest. Put the strictest test first.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "x = 15\nif x > 10:\n    print(\"big\")\nif x > 5:\n    print(\"medium\")",
+    "out": "big\nmedium",
+    "options": [
+     "Only `big`",
+     "`big`, then `medium`",
+     "Only `medium`",
+     "Nothing"
+    ],
+    "answer": 1,
+    "why": "These are two separate `if` statements, not if/elif, so both are checked and both are true."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "n = 0\nprint(\"pos\" if n > 0 else \"zero\" if n == 0 else \"neg\")",
+    "out": "zero",
+    "options": [
+     "`pos`",
+     "`zero`",
+     "`neg`",
+     "`SyntaxError`"
+    ],
+    "answer": 1,
+    "why": "Conditional expressions can be chained: n > 0 is False, so Python moves on to `\"zero\" if n == 0 else \"neg\"`, and n == 0 is True."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "x = 5 if True",
+    "out": "SyntaxError: expected 'else' after 'if' expression",
+    "options": [
+     "`5`",
+     "`None`",
+     "`SyntaxError`",
+     "`ValueError`"
+    ],
+    "answer": 2,
+    "why": "A conditional expression must have an `else` part: it always has to produce a value."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "if [0]:\n    print(\"yes\")\nelse:\n    print(\"no\")",
+    "out": "yes",
+    "options": [
+     "`yes`",
+     "`no`",
+     "`0`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "A list with something inside is truthy, even if that something is 0."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "cmd = \"quit\"\nmatch cmd:\n    case \"start\":\n        print(\"starting\")\n    case \"stop\" | \"quit\":\n        print(\"bye\")\n    case _:\n        print(\"unknown\")",
+    "out": "bye",
+    "options": [
+     "`starting`",
+     "`bye`",
+     "`bye`, then `unknown`",
+     "`unknown`"
+    ],
+    "answer": 1,
+    "why": "`|` means 'or', so \"quit\" matches the second case. Only one case runs: there's no fall-through."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "x = \"a\"\nmatch x:\n    case \"a\":\n        print(1)\n    case \"a\":\n        print(2)",
+    "out": "1",
+    "options": [
+     "`1`",
+     "`2`",
+     "`1`, then `2`",
+     "`SyntaxError`"
+    ],
+    "answer": 0,
+    "why": "match runs the first case that matches and stops there."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "match 7:\n    case 1:\n        print(\"one\")\n    case 2:\n        print(\"two\")\nprint(\"end\")",
+    "out": "end",
+    "options": [
+     "`end`",
+     "`one`, then `end`",
+     "A `MatchError`",
+     "Nothing"
+    ],
+    "answer": 0,
+    "why": "If no case matches and there's no `case _:`, match simply does nothing. There is no error."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(list(range(5)))",
+    "out": "[0, 1, 2, 3, 4]",
+    "options": [
+     "`[1, 2, 3, 4, 5]`",
+     "`[0, 1, 2, 3, 4]`",
+     "`[0, 1, 2, 3, 4, 5]`",
+     "`5`"
+    ],
+    "answer": 1,
+    "why": "range(5) starts at 0 and stops before 5."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(list(range(2, 10, 3)))",
+    "out": "[2, 5, 8]",
+    "options": [
+     "`[2, 5, 8]`",
+     "`[2, 5, 8, 11]`",
+     "`[3, 6, 9]`",
+     "`[2, 4, 6, 8]`"
+    ],
+    "answer": 0,
+    "why": "Start at 2 and jump by 3: 2, 5, 8. The next would be 11, which is past the stop."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(list(range(10, 0, -3)))",
+    "out": "[10, 7, 4, 1]",
+    "options": [
+     "`[10, 7, 4, 1]`",
+     "`[10, 7, 4, 1, 0]`",
+     "`[]`",
+     "`[9, 6, 3, 0]`"
+    ],
+    "answer": 0,
+    "why": "A negative step counts down, and the stop (0) is never included."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(list(range(5, 1)))",
+    "out": "[]",
+    "options": [
+     "`[5, 4, 3, 2]`",
+     "`[]`",
+     "`[1, 2, 3, 4, 5]`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "With the default step of +1 you can't go from 5 up to 1, so range is empty. Use `range(5, 1, -1)` to count down.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(len(range(0, 10, 2)))",
+    "out": "5",
+    "options": [
+     "`5`",
+     "`10`",
+     "`6`",
+     "`4`"
+    ],
+    "answer": 0,
+    "why": "The numbers are 0, 2, 4, 6, 8: five of them."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "for i in range(2.5):\n    print(i)",
+    "out": "TypeError: 'float' object cannot be interpreted as an integer",
+    "options": [
+     "`0 1`",
+     "`0 1 2`",
+     "`TypeError`",
+     "`ValueError`"
+    ],
+    "answer": 2,
+    "why": "range only takes whole numbers. Use `int()` or `math.ceil()` first if you have a float."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "for key in {\"x\": 1, \"y\": 2}:\n    print(key)",
+    "out": "x\ny",
+    "options": [
+     "`x`, then `y`",
+     "`1`, then `2`",
+     "`('x', 1)`, then `('y', 2)`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "Looping over a dict gives its keys. Use `.values()` for values and `.items()` for pairs."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "for ch in \"hi\":\n    print(ch * 2)",
+    "out": "hh\nii",
+    "options": [
+     "`hh`, then `ii`",
+     "`hihi`",
+     "`h`, then `i`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "A for loop over a string gives one character at a time."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "n = 0\nwhile n < 3:\n    n += 1\nprint(n)",
+    "out": "3",
+    "options": [
+     "`2`",
+     "`3`",
+     "`4`",
+     "`0`"
+    ],
+    "answer": 1,
+    "why": "The loop runs while n < 3: n becomes 1, 2, 3. At 3 the test is false, so the loop ends and prints 3."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "n = 0\nwhile True:\n    n += 1\n    if n == 3:\n        break\nprint(n)",
+    "out": "3",
+    "options": [
+     "`3`",
+     "`2`",
+     "It never stops",
+     "`4`"
+    ],
+    "answer": 0,
+    "why": "`while True` repeats forever until a `break`. That's a common pattern for loops that end in the middle."
+   },
+   {
+    "kind": "concept",
+    "q": "What does this do? `i = 0` then `while i < 3: print(i)`",
+    "options": [
+     "Prints 0, 1, 2",
+     "Prints 0 forever",
+     "SyntaxError",
+     "Prints nothing"
+    ],
+    "answer": 1,
+    "why": "i never changes, so `i < 3` stays true forever: an infinite loop. Something inside a while loop must move it towards the end."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "for n in [1, 2, 3, 4, 5]:\n    if n == 2:\n        continue\n    if n == 4:\n        break\n    print(n)",
+    "out": "1\n3",
+    "options": [
+     "`1`, then `3`",
+     "`1`, `3`, `5`",
+     "`1`",
+     "`1`, `3`, `4`"
+    ],
+    "answer": 0,
+    "why": "2 is skipped by continue, and the loop stops completely at 4 because of break."
+   },
+   {
+    "kind": "concept",
+    "q": "Which keyword is a placeholder that does nothing, for a block you'll fill in later?",
+    "options": [
+     "`continue`",
+     "`break`",
+     "`pass`",
+     "`None`"
+    ],
+    "answer": 2,
+    "why": "Python doesn't allow an empty block, so `pass` stands in for code you haven't written yet."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "for n in [1, 2, 3]:\n    if n == 2:\n        break\nelse:\n    print(\"done\")\nprint(\"end\")",
+    "out": "end",
+    "options": [
+     "`done`, then `end`",
+     "`end`",
+     "`done`",
+     "Nothing"
+    ],
+    "answer": 1,
+    "why": "The loop hit `break`, so its `else` is skipped. Only the line after the loop runs.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "for n in [1, 2, 3]:\n    pass\nelse:\n    print(\"done\")",
+    "out": "done",
+    "options": [
+     "`done`",
+     "Nothing",
+     "`1 2 3 done`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "No break happened, so the loop's `else` runs."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "for x in []:\n    print(x)\nelse:\n    print(\"empty\")",
+    "out": "empty",
+    "options": [
+     "Nothing",
+     "`empty`",
+     "`[]`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "The loop ran zero times, but it still finished without a break, so `else` runs.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "i = 0\nwhile i < 2:\n    i += 1\nelse:\n    print(\"finished\", i)",
+    "out": "finished 2",
+    "options": [
+     "`finished 2`",
+     "`finished 1`",
+     "Nothing",
+     "`finished 3`"
+    ],
+    "answer": 0,
+    "why": "`while` can have an `else` too: it runs when the condition becomes false without a break."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "for i in range(2):\n    for j in range(3):\n        if j == 1:\n            break\n        print(i, j)",
+    "out": "0 0\n1 0",
+    "options": [
+     "`0 0`, then `1 0`",
+     "Only `0 0`",
+     "`0 0`, `0 1`, `1 0`, `1 1`",
+     "Nothing"
+    ],
+    "answer": 0,
+    "why": "`break` only leaves the innermost loop. The outer loop carries on with i = 1.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "count = 0\nfor i in range(3):\n    for j in range(4):\n        count += 1\nprint(count)",
+    "out": "12",
+    "options": [
+     "`7`",
+     "`12`",
+     "`3`",
+     "`4`"
+    ],
+    "answer": 1,
+    "why": "Nested loops multiply: 3 × 4 = 12 rounds."
+   },
+   {
+    "kind": "concept",
+    "q": "Two nested loops each go over a list of n items. How does the work grow?",
+    "options": [
+     "O(n)",
+     "O(n²)",
+     "O(2n)",
+     "O(log n)"
+    ],
+    "answer": 1,
+    "why": "n rounds outside × n rounds inside = n × n. Doubling the list makes it 4 times slower."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(list(enumerate(\"ab\")))",
+    "out": "[(0, 'a'), (1, 'b')]",
+    "options": [
+     "`[(0, 'a'), (1, 'b')]`",
+     "`[(1, 'a'), (2, 'b')]`",
+     "`['a', 'b']`",
+     "`[0, 1]`"
+    ],
+    "answer": 0,
+    "why": "enumerate gives (position, item) pairs, starting at 0 unless you pass `start=`."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "for i, f in enumerate([\"apple\", \"mango\"], start=1):\n    print(i, f)",
+    "out": "1 apple\n2 mango",
+    "options": [
+     "`1 apple`, then `2 mango`",
+     "`0 apple`, then `1 mango`",
+     "`(1, 'apple')`, then `(2, 'mango')`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "`start=1` makes the count begin at 1, and `i, f` unpacks each pair."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(list(zip([1, 2, 3], \"ab\")))",
+    "out": "[(1, 'a'), (2, 'b')]",
+    "options": [
+     "`[(1, 'a'), (2, 'b')]`",
+     "`[(1, 'a'), (2, 'b'), (3, None)]`",
+     "`ValueError`",
+     "`[1, 'a', 2, 'b']`"
+    ],
+    "answer": 0,
+    "why": "zip stops at the shortest input, silently. The 3 is dropped.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print(list(zip([1, 2, 3], \"ab\", strict=True)))",
+    "out": "ValueError: zip() argument 2 is shorter than argument 1",
+    "options": [
+     "`[(1, 'a'), (2, 'b')]`",
+     "`ValueError`",
+     "`TypeError`",
+     "`IndexError`"
+    ],
+    "answer": 1,
+    "why": "`strict=True` makes zip raise an error when the inputs have different lengths, instead of quietly dropping items."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(dict(zip([\"a\", \"b\"], [1, 2])))",
+    "out": "{'a': 1, 'b': 2}",
+    "options": [
+     "`{'a': 1, 'b': 2}`",
+     "`[('a', 1), ('b', 2)]`",
+     "`{'a': 'b', 1: 2}`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "zip pairs the keys with the values, and `dict()` turns those pairs into a dictionary. A common one-liner."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "for i in range(3):\n    i = 10\n    print(i)",
+    "out": "10\n10\n10",
+    "options": [
+     "`10`, `10`, `10`",
+     "`0`, `1`, `2`",
+     "Only `10`, then the loop stops",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "Changing i inside the loop doesn't change the loop: each round, range hands out the next number and i is overwritten again.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "for j in range(3):\n    pass\nprint(j)",
+    "out": "2",
+    "options": [
+     "`2`",
+     "`3`",
+     "`NameError`",
+     "`0`"
+    ],
+    "answer": 0,
+    "why": "The loop variable stays alive after the loop and keeps its last value."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "nums = [1, 2, 2, 3]\nfor n in nums:\n    if n == 2:\n        nums.remove(n)\nprint(nums)",
+    "out": "[1, 2, 3]",
+    "options": [
+     "`[1, 3]`",
+     "`[1, 2, 3]`",
+     "`[1, 2, 2, 3]`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "Removing items while looping shifts the list, so the loop skips the next item and one 2 survives. Build a new list instead: `[n for n in nums if n != 2]`.",
+    "trap": true
+   }
   ]
  },
  "notes": {
   "1": "Topic 1, rebuilt 6 Nov 2026: flashcards = questions interviewers ask out loud (checked against InterviewBit, GeeksforGeeks and PYnative lists); MCQs = predict the output, find the error, concept checks.",
   "2": "Topic 2, 6 Nov 2026: flashcards = built-in types, mutable vs immutable, / vs //, == vs is, type vs isinstance, conversion, float precision (asked in InterviewBit, GeeksforGeeks and PYnative lists); MCQs = traps on operators, truthiness, comparison, precedence and floats.",
   "3": "Topic 3, 6 Nov 2026: flashcards = slicing and negative indexes, reversing, immutability, split/join, formatting, join vs +=, find vs index, str vs bytes (InterviewBit, GeeksforGeeks and PYnative Q26-38); MCQs = slicing traps, methods, f-string formats, escapes, raw strings, bytes.",
-  "frozen": "Topics 1-3 are final (reviewed 7 Nov 2026): change them only to fix a real mistake. Revise with them; new questions go to later topics."
+  "frozen": "Topics 1-3 are final (reviewed 7 Nov 2026): change them only to fix a real mistake. Revise with them; new questions go to later topics.",
+  "4": "Topic 4, 8 Nov 2026 (fast pass): flashcards = break/continue/pass, loop else, for vs while, range, enumerate/zip, ternary, match/case; MCQs = branch order, range edges, loop else, nested break, zip, loop-variable and list-remove traps."
  },
  "frozen": [
   "1",
