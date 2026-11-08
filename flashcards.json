@@ -212,6 +212,90 @@
     "out": "[4, 8]\n[]",
     "trap": true
    }
+  ],
+  "5": [
+   {
+    "q": "What's the difference between a list and a tuple?",
+    "a": "Both are ordered sequences you can index and loop over. A list can change (add, remove, replace items); a tuple can't be changed after it's made. Because it can't change, a tuple is hashable, so it can be a dict key or a set item, and it's slightly smaller and faster. Use tuples for fixed records and for returning several values, and lists for collections that grow or change.",
+    "hook": "List = numbered shelf; tuple = sealed lunchbox.",
+    "code": "t = (1, 2)\nprint({t: \"ok\"})\nt[0] = 9",
+    "out": "{(1, 2): 'ok'}\nTypeError: 'tuple' object does not support item assignment"
+   },
+   {
+    "q": "When would you use a list, a set or a dict?",
+    "a": "A list when order matters and duplicates are allowed: searching it is O(n). A set when you need unique items or fast 'is it in?' checks: O(1) on average. A dict when you look things up by a key, like a name or ID: O(1) by key. Sets and dicts are hash tables; a list is a row of items you walk through.",
+    "hook": "A list walks the shelf; a set or dict jumps to the address."
+   },
+   {
+    "q": "What's the difference between `append()` and `extend()`?",
+    "a": "`append(x)` adds one item at the end, even if x is a whole list (it goes in as one item). `extend(items)` adds each item of a collection one by one; `+=` does the same. `extend` with a string adds each letter.",
+    "hook": "append adds one box; extend pours the items in.",
+    "code": "a = [1, 2]\na.append([3, 4])\nb = [1, 2]\nb.extend([3, 4])\nprint(a, b)",
+    "out": "[1, 2, [3, 4]] [1, 2, 3, 4]"
+   },
+   {
+    "q": "What's the difference between `sort()` and `sorted()`?",
+    "a": "`list.sort()` sorts the list in place and returns None, so `nums = nums.sort()` loses your list. `sorted(x)` returns a new sorted list from any collection and leaves the original alone. Both take `key=` (a function to sort by) and `reverse=True`. Python's sort is stable (equal items keep their order) and costs O(n log n).",
+    "hook": "sort() changes and returns None; sorted() gives a new list.",
+    "code": "nums = [3, 1, 2]\nprint(nums.sort(), nums)\nprint(sorted([\"banana\", \"kiwi\", \"apple\"], key=len))",
+    "out": "None [1, 2, 3]\n['kiwi', 'apple', 'banana']"
+   },
+   {
+    "q": "How does a dictionary work, and why is lookup so fast?",
+    "a": "A dict is a hash table. Python calculates a hash (a number) from the key and uses it to jump straight to where the value is stored, so lookup, insert and delete are O(1) on average; it never searches through everything. That's why keys must be hashable (they can't change): strings, numbers and tuples work, lists and dicts don't. Since Python 3.7, dicts also keep insertion order.",
+    "hook": "A dict jumps straight to the label; keys must never change.",
+    "code": "d = {(1, 2): \"tuple key\"}\nprint(d[(1, 2)])\nd[[1, 2]] = \"list key\"",
+    "out": "tuple key\nTypeError: cannot use 'list' as a dict key (unhashable type: 'list')"
+   },
+   {
+    "q": "Why is `x in set` much faster than `x in list`?",
+    "a": "A list is checked item by item until a match is found, so it's O(n). A set uses a hash to jump straight to where x would be, so it's O(1) on average. On 100,000 items, 1000 searches took about 0.6 s in a list and 0.00005 s in a set. Turning a list into a set before searching in a loop is a common speed fix."
+   },
+   {
+    "q": "What's the difference between `pop()`, `remove()` and `del` on a list?",
+    "a": "`pop(i)` removes by position (the last one by default) and gives the item back. `remove(x)` removes the first item equal to x and returns None; it raises ValueError if x isn't there. `del a[i]` or `del a[i:j]` removes by position or slice and returns nothing, because it's a statement. Removing from the end is O(1); from the front or middle it's O(n), because items shift.",
+    "code": "nums = [10, 20, 30, 40]\nprint(nums.pop(), nums.remove(10), nums)\ndel nums[0]\nprint(nums)",
+    "out": "40 None [20, 30]\n[30]"
+   },
+   {
+    "q": "What is a list comprehension? Are there dict and set comprehensions too?",
+    "a": "A one-line way to build a collection: `[what for item in where if test]`. It's shorter and usually faster than a loop with `append`. Dict comprehensions use `{k: v for ...}` and set comprehensions `{x for ...}`. Round brackets don't make a tuple; they make a generator. An `if` at the end filters; an `if … else` before the `for` transforms.",
+    "hook": "[what for item in where if test].",
+    "code": "print([n * n for n in range(5) if n % 2 == 0])\nprint({w: len(w) for w in [\"hi\", \"hello\"]})",
+    "out": "[0, 4, 16]\n{'hi': 2, 'hello': 5}"
+   },
+   {
+    "q": "What are `Counter` and `defaultdict` in the `collections` module?",
+    "a": "`Counter` counts items in one line, gives 0 for missing keys instead of KeyError, and has `most_common(k)`. Two Counters are equal when the counts match, which is a quick anagram check. `defaultdict(factory)` creates a default value the first time you use a missing key: `defaultdict(list)` for grouping, `defaultdict(int)` for counting. No `get` or `setdefault` needed.",
+    "code": "from collections import Counter, defaultdict\nprint(Counter(\"banana\").most_common(1))\ng = defaultdict(list)\ng[\"a\"].append(\"apple\")\nprint(dict(g))",
+    "out": "[('a', 3)]\n{'a': ['apple']}"
+   },
+   {
+    "q": "Why use `deque` instead of a list for a queue?",
+    "a": "A queue takes items from the front. `list.pop(0)` shifts every other item left, which is O(n). `collections.deque` is built for both ends: `append`, `appendleft`, `pop` and `popleft` are all O(1). Measured: emptying 100,000 items from the front took about 0.75 s with a list and 0.004 s with a deque. `deque(maxlen=n)` also keeps only the last n items.",
+    "hook": "deque for the front, list for the end."
+   },
+   {
+    "q": "How do you remove duplicates from a list? What if the order matters?",
+    "a": "`list(set(items))` removes duplicates but loses the order. To keep the first-seen order, use `list(dict.fromkeys(items))`: dict keys are unique and remember insertion order. Both are O(n). Set items and dict keys must be hashable.",
+    "code": "nums = [3, 1, 3, 2, 1]\nprint(sorted(set(nums)), list(dict.fromkeys(nums)))",
+    "out": "[1, 2, 3] [3, 1, 2]"
+   },
+   {
+    "q": "Why does `[[0] * 3] * 3` behave strangely? How do you make a 2D list?",
+    "a": "`* 3` copies the reference (the label), not the inner list, so all three rows are the same list: change one and they all change. Build a grid with a comprehension, which creates a new inner list each time: `[[0] * 3 for _ in range(3)]`. The same trap happens with `dict.fromkeys(keys, [])`.",
+    "hook": "* copies labels, not boxes.",
+    "code": "grid = [[0] * 3] * 3\ngrid[0][0] = 1\nprint(grid)\ngood = [[0] * 3 for _ in range(3)]\ngood[0][0] = 1\nprint(good)",
+    "out": "[[1, 0, 0], [1, 0, 0], [1, 0, 0]]\n[[1, 0, 0], [0, 0, 0], [0, 0, 0]]",
+    "trap": true
+   },
+   {
+    "q": "How do you get the k largest items, or build a priority queue, in Python?",
+    "a": "Use `heapq`. A heap always keeps the smallest item at index 0; `heappush` and `heappop` cost O(log n), and `heapify` turns a list into a heap in O(n). Only the top is guaranteed; the rest of the list isn't sorted. For the k largest or smallest, use `heapq.nlargest(k, items)` or `nsmallest`. Python only has a min-heap, so push negative numbers for a max-heap.",
+    "hook": "A heap only guarantees the top.",
+    "code": "import heapq\nnums = [5, 1, 8, 3]\nheapq.heapify(nums)\nprint(nums[0], nums)\nprint(heapq.nlargest(2, [5, 1, 8, 3]))",
+    "out": "1 [1, 3, 8, 5]\n[8, 5]"
+   }
   ]
  },
  "mcq": {
@@ -2466,6 +2550,900 @@
     "answer": 0,
     "why": "`nums[:]` is a copy, so the loop walks the copy safely while you change the original. Both 2s are removed."
    }
+  ],
+  "5": [
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = [1, 2]\na.append([3, 4])\nprint(a)",
+    "out": "[1, 2, [3, 4]]",
+    "options": [
+     "`[1, 2, 3, 4]`",
+     "`[1, 2, [3, 4]]`",
+     "`[[1, 2], [3, 4]]`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "append adds its argument as one item, even if it's a list."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = [1, 2]\na.append([3, 4])\nprint(len(a))",
+    "out": "3",
+    "options": [
+     "`4`",
+     "`3`",
+     "`2`",
+     "`1`"
+    ],
+    "answer": 1,
+    "why": "The inner list counts as one item: 1, 2 and [3, 4].",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = [1]\na.extend(\"hi\")\nprint(a)",
+    "out": "[1, 'h', 'i']",
+    "options": [
+     "`[1, 'hi']`",
+     "`[1, 'h', 'i']`",
+     "`TypeError`",
+     "`[1, 'i', 'h']`"
+    ],
+    "answer": 1,
+    "why": "extend adds each item of a collection, and a string is a collection of letters.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = [1, 2]\na.insert(100, 9)\nprint(a)",
+    "out": "[1, 2, 9]",
+    "options": [
+     "`IndexError`",
+     "`[1, 2, 9]`",
+     "`[9, 1, 2]`",
+     "`[1, 2]`"
+    ],
+    "answer": 1,
+    "why": "insert with a position past the end just adds at the end; it doesn't raise an error.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print([1, 2] * 2)",
+    "out": "[1, 2, 1, 2]",
+    "options": [
+     "`[2, 4]`",
+     "`[1, 2, 1, 2]`",
+     "`[[1, 2], [1, 2]]`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "`*` on a list repeats it; it doesn't multiply the numbers."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "nums = [10, 20, 30]\nprint(nums.pop(), nums)",
+    "out": "30 [10, 20]",
+    "options": [
+     "`30 [10, 20]`",
+     "`10 [20, 30]`",
+     "`None [10, 20]`",
+     "`30 [10, 20, 30]`"
+    ],
+    "answer": 0,
+    "why": "pop() with no position removes the last item and gives it back."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print([1, 2, 3].remove(2))",
+    "out": "None",
+    "options": [
+     "`[1, 3]`",
+     "`2`",
+     "`None`",
+     "`1`"
+    ],
+    "answer": 2,
+    "why": "remove changes the list in place and returns None, like most methods that change a list.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "empty = []\nempty.pop()",
+    "out": "IndexError: pop from empty list",
+    "options": [
+     "`None`",
+     "`IndexError`",
+     "`ValueError`",
+     "`KeyError`"
+    ],
+    "answer": 1,
+    "why": "There's nothing to pop. remove of a missing value is a ValueError; pop from an empty list is an IndexError."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "nums = [10, 20, 30, 40]\ndel nums[1:3]\nprint(nums)",
+    "out": "[10, 40]",
+    "options": [
+     "`[10, 40]`",
+     "`[10, 30, 40]`",
+     "`[20, 30]`",
+     "`[10]`"
+    ],
+    "answer": 0,
+    "why": "del with a slice removes positions 1 and 2 (the stop isn't included)."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)",
+    "out": "[1, 2, 3, 4]",
+    "options": [
+     "`[1, 2, 3]`",
+     "`[1, 2, 3, 4]`",
+     "`[4]`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "`b = a` is a second label on the same list, not a copy."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = [1, 2, 3]\nb = a.copy()\nb.append(4)\nprint(a)",
+    "out": "[1, 2, 3]",
+    "options": [
+     "`[1, 2, 3]`",
+     "`[1, 2, 3, 4]`",
+     "`None`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "copy() makes a new list, so changing b doesn't touch a."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print([1, 2, 3].index(5))",
+    "out": "ValueError: list.index(x): x not in list",
+    "options": [
+     "`-1`",
+     "`None`",
+     "`ValueError`",
+     "`IndexError`"
+    ],
+    "answer": 2,
+    "why": "list.index raises ValueError when the value is missing. Lists have no find() that returns -1."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "nums = [3, 1, 2]\nnums = nums.sort()\nprint(nums)",
+    "out": "None",
+    "options": [
+     "`[1, 2, 3]`",
+     "`None`",
+     "`[3, 1, 2]`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "sort() sorts in place and returns None, and that None was saved back into nums. Use `nums.sort()` alone, or `nums = sorted(nums)`.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(sorted([\"banana\", \"kiwi\", \"apple\"], key=len))",
+    "out": "['kiwi', 'apple', 'banana']",
+    "options": [
+     "`['apple', 'banana', 'kiwi']`",
+     "`['kiwi', 'apple', 'banana']`",
+     "`['banana', 'apple', 'kiwi']`",
+     "`[4, 5, 6]`"
+    ],
+    "answer": 1,
+    "why": "key=len sorts by length: 4, 5, 6. The items themselves are returned, not their lengths."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(sorted([3, 1, 2], reverse=True))",
+    "out": "[3, 2, 1]",
+    "options": [
+     "`[1, 2, 3]`",
+     "`[3, 2, 1]`",
+     "`[2, 1, 3]`",
+     "`None`"
+    ],
+    "answer": 1,
+    "why": "reverse=True sorts from big to small."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "people = [(\"Ary\", 22), (\"Riya\", 20), (\"Sam\", 22)]\nprint(sorted(people, key=lambda p: p[1]))",
+    "out": "[('Riya', 20), ('Ary', 22), ('Sam', 22)]",
+    "options": [
+     "`[('Riya', 20), ('Ary', 22), ('Sam', 22)]`",
+     "`[('Riya', 20), ('Sam', 22), ('Ary', 22)]`",
+     "`[('Ary', 22), ('Riya', 20), ('Sam', 22)]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "Sorted by age. Ary and Sam are both 22 and keep their original order, because Python's sort is stable."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "nums = [3, \"a\", 1]\nnums.sort()",
+    "out": "TypeError: '<' not supported between instances of 'str' and 'int'",
+    "options": [
+     "`[1, 3, 'a']`",
+     "`TypeError`",
+     "`ValueError`",
+     "`['a', 1, 3]`"
+    ],
+    "answer": 1,
+    "why": "Sorting compares items with <, and text and numbers can't be compared in Python 3."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(type((1)), type((1,)))",
+    "out": "<class 'int'> <class 'tuple'>",
+    "options": [
+     "`<class 'tuple'> <class 'tuple'>`",
+     "`<class 'int'> <class 'tuple'>`",
+     "`<class 'int'> <class 'int'>`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "The comma makes the tuple. `(1)` is just 1 in brackets.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "t = 1, 2\nprint(type(t))",
+    "out": "<class 'tuple'>",
+    "options": [
+     "`<class 'tuple'>`",
+     "`<class 'list'>`",
+     "`<class 'int'>`",
+     "`SyntaxError`"
+    ],
+    "answer": 0,
+    "why": "Values separated by commas make a tuple, even without brackets."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "t = (1, 2, 3)\nt[0] = 9",
+    "out": "TypeError: 'tuple' object does not support item assignment",
+    "options": [
+     "`(9, 2, 3)`",
+     "`TypeError`",
+     "`IndexError`",
+     "`AttributeError`"
+    ],
+    "answer": 1,
+    "why": "Tuples can't be changed after they're made."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "first, *rest = [1, 2, 3, 4]\nprint(first, rest)",
+    "out": "1 [2, 3, 4]",
+    "options": [
+     "`1 [2, 3, 4]`",
+     "`1 (2, 3, 4)`",
+     "`[1] [2, 3, 4]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "`*rest` collects everything that's left, always as a list."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "*a, b = [1]\nprint(a, b)",
+    "out": "[] 1",
+    "options": [
+     "`[] 1`",
+     "`[1] None`",
+     "`ValueError`",
+     "`None 1`"
+    ],
+    "answer": 0,
+    "why": "b takes the last item, and *a collects what's left, which is nothing, so an empty list.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "a, b = [1, 2, 3]",
+    "out": "ValueError: too many values to unpack (expected 2, got 3)",
+    "options": [
+     "`a=1, b=2`",
+     "`ValueError`",
+     "`TypeError`",
+     "`IndexError`"
+    ],
+    "answer": 1,
+    "why": "Without `*`, the number of names must match the number of items."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "t = ([1, 2], 3)\nt[0].append(99)\nprint(t)",
+    "out": "([1, 2, 99], 3)",
+    "options": [
+     "`TypeError`",
+     "`([1, 2, 99], 3)`",
+     "`([1, 2], 3)`",
+     "`([1, 2], 3, 99)`"
+    ],
+    "answer": 1,
+    "why": "The tuple can't swap its items, but the list inside it is still a changeable list.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(len({3, 1, 3, 2}))",
+    "out": "3",
+    "options": [
+     "`4`",
+     "`3`",
+     "`2`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "A set keeps each item once, so the duplicate 3 is stored only once."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(type({}))",
+    "out": "<class 'dict'>",
+    "options": [
+     "`<class 'set'>`",
+     "`<class 'dict'>`",
+     "`<class 'list'>`",
+     "`<class 'tuple'>`"
+    ],
+    "answer": 1,
+    "why": "`{}` is an empty dict. Make an empty set with `set()`.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = {1, 2, 3}\nb = {2, 3, 4}\nprint(a & b, a - b)",
+    "out": "{2, 3} {1}",
+    "options": [
+     "`{2, 3} {1}`",
+     "`{1, 2, 3, 4} {1}`",
+     "`{2, 3} {4}`",
+     "`{1, 4} {1}`"
+    ],
+    "answer": 0,
+    "why": "& keeps what's in both; a - b keeps what's only in a."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = {1, 2, 3}\nb = {2, 3, 4}\nprint(a | b, a ^ b)",
+    "out": "{1, 2, 3, 4} {1, 4}",
+    "options": [
+     "`{1, 2, 3, 4} {1, 4}`",
+     "`{2, 3} {1, 4}`",
+     "`{1, 2, 3, 4} {2, 3}`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "| keeps what's in either; ^ keeps what's in exactly one."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "s = {1, 2}\ns.remove(10)",
+    "out": "KeyError: 10",
+    "options": [
+     "Nothing happens",
+     "`KeyError`",
+     "`ValueError`",
+     "`IndexError`"
+    ],
+    "answer": 1,
+    "why": "set.remove raises KeyError for a missing item. `discard` would do nothing instead."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "s = {1}\ns.discard(5)\ns.add(1)\nprint(s)",
+    "out": "{1}",
+    "options": [
+     "`{1}`",
+     "`{1, 1}`",
+     "`KeyError`",
+     "`{1, 5}`"
+    ],
+    "answer": 0,
+    "why": "discard is silent when the item is missing, and adding an item that's already there changes nothing."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "s = {[1, 2]}",
+    "out": "TypeError: cannot use 'list' as a set element (unhashable type: 'list')",
+    "options": [
+     "`{[1, 2]}`",
+     "`TypeError`",
+     "`ValueError`",
+     "`{1, 2}`"
+    ],
+    "answer": 1,
+    "why": "Set items must be hashable (unchangeable). A list can change, so it can't go in a set. Use a tuple instead."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(list(dict.fromkeys([3, 1, 3, 2, 1])))",
+    "out": "[3, 1, 2]",
+    "options": [
+     "`[1, 2, 3]`",
+     "`[3, 1, 2]`",
+     "`[3, 1, 3, 2, 1]`",
+     "`{3: None, 1: None, 2: None}`"
+    ],
+    "answer": 1,
+    "why": "dict.fromkeys keeps one key per value in first-seen order, so the duplicates go and the order stays."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "ages = {\"Ary\": 22}\nprint(ages.get(\"Sam\"), ages.get(\"Sam\", 0))",
+    "out": "None 0",
+    "options": [
+     "`None 0`",
+     "`KeyError`",
+     "`0 0`",
+     "`None None`"
+    ],
+    "answer": 0,
+    "why": "get gives None for a missing key, or the default you pass."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "ages = {\"Ary\": 22}\nprint(ages[\"Max\"])",
+    "out": "KeyError: 'Max'",
+    "options": [
+     "`None`",
+     "`KeyError`",
+     "`IndexError`",
+     "`0`"
+    ],
+    "answer": 1,
+    "why": "Square brackets on a missing key raise KeyError. Use .get() when the key might not be there."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(22 in {\"Ary\": 22})",
+    "out": "False",
+    "options": [
+     "`True`",
+     "`False`",
+     "`22`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "`in` on a dict checks the keys. 22 is a value, so the answer is False. Use `22 in d.values()`.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print({\"a\": 1, \"b\": 2} | {\"b\": 3})",
+    "out": "{'a': 1, 'b': 3}",
+    "options": [
+     "`{'a': 1, 'b': 3}`",
+     "`{'a': 1, 'b': 2}`",
+     "`{'a': 1, 'b': 2, 'b': 3}`",
+     "`TypeError`"
+    ],
+    "answer": 0,
+    "why": "When merging, a key in both dicts takes the value from the right side."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "d = {\"a\": 1}\nprint(d.setdefault(\"a\", 100), d)",
+    "out": "1 {'a': 1}",
+    "options": [
+     "`100 {'a': 100}`",
+     "`1 {'a': 1}`",
+     "`None {'a': 1}`",
+     "`1 {'a': 100}`"
+    ],
+    "answer": 1,
+    "why": "setdefault only sets a value when the key is missing. Here it exists, so it just gives back 1."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print({\"a\": 1, \"a\": 2})",
+    "out": "{'a': 2}",
+    "options": [
+     "`{'a': 1, 'a': 2}`",
+     "`{'a': 2}`",
+     "`{'a': 1}`",
+     "`SyntaxError`"
+    ],
+    "answer": 1,
+    "why": "Keys are unique: the later value replaces the earlier one."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print({1: \"a\", True: \"b\"})",
+    "out": "{1: 'b'}",
+    "options": [
+     "`{1: 'a', True: 'b'}`",
+     "`{1: 'b'}`",
+     "`{True: 'b'}`",
+     "`{1: 'a'}`"
+    ],
+    "answer": 1,
+    "why": "True == 1 and they have the same hash, so they're the same key. The first key (1) stays, and the value is replaced by 'b'.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "d = {}\nd[[1, 2]] = \"x\"",
+    "out": "TypeError: cannot use 'list' as a dict key (unhashable type: 'list')",
+    "options": [
+     "`{[1, 2]: 'x'}`",
+     "`TypeError`",
+     "`KeyError`",
+     "`ValueError`"
+    ],
+    "answer": 1,
+    "why": "Dict keys must be hashable. Use a tuple `(1, 2)` as the key instead."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "counts = {}\nfor ch in \"banana\":\n    counts[ch] = counts.get(ch, 0) + 1\nprint(counts)",
+    "out": "{'b': 1, 'a': 3, 'n': 2}",
+    "options": [
+     "`{'b': 1, 'a': 3, 'n': 2}`",
+     "`{'a': 3, 'b': 1, 'n': 2}`",
+     "`KeyError`",
+     "`{'banana': 1}`"
+    ],
+    "answer": 0,
+    "why": "The classic counting pattern. Keys appear in first-seen order: b, a, n."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "d = {\"b\": 1, \"a\": 2}\nprint(list(d))",
+    "out": "['b', 'a']",
+    "options": [
+     "`['a', 'b']`",
+     "`['b', 'a']`",
+     "`[1, 2]`",
+     "`[('b', 1), ('a', 2)]`"
+    ],
+    "answer": 1,
+    "why": "A dict keeps insertion order (it isn't sorted), and list(d) gives the keys."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "counts = {}\ncounts[\"x\"] += 1",
+    "out": "KeyError: 'x'",
+    "options": [
+     "`{'x': 1}`",
+     "`KeyError`",
+     "`TypeError`",
+     "`{'x': 0}`"
+    ],
+    "answer": 1,
+    "why": "`+= 1` first reads counts['x'], which doesn't exist yet. Use `counts.get('x', 0) + 1`, a defaultdict(int) or a Counter."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print([n * n for n in range(4)])",
+    "out": "[0, 1, 4, 9]",
+    "options": [
+     "`[0, 1, 4, 9]`",
+     "`[1, 4, 9, 16]`",
+     "`[0, 2, 4, 6]`",
+     "`(0, 1, 4, 9)`"
+    ],
+    "answer": 0,
+    "why": "range(4) is 0 to 3, each squared."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "matrix = [[1, 2], [3, 4]]\nprint([x for row in matrix for x in row])",
+    "out": "[1, 2, 3, 4]",
+    "options": [
+     "`[1, 2, 3, 4]`",
+     "`[[1, 2], [3, 4]]`",
+     "`[1, 3, 2, 4]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "Two fors read like nested loops in the same order: for each row, then each x in the row."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(type((n for n in range(3))))",
+    "out": "<class 'generator'>",
+    "options": [
+     "`<class 'tuple'>`",
+     "`<class 'generator'>`",
+     "`<class 'list'>`",
+     "`<class 'range'>`"
+    ],
+    "answer": 1,
+    "why": "Round brackets don't make a tuple comprehension; they make a generator (Topic 7). Use `tuple(...)` for a tuple.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "ages = {\"Ary\": 22, \"Riya\": 20}\nprint({age: name for name, age in ages.items()})",
+    "out": "{22: 'Ary', 20: 'Riya'}",
+    "options": [
+     "`{22: 'Ary', 20: 'Riya'}`",
+     "`{'Ary': 22, 'Riya': 20}`",
+     "`[(22, 'Ary'), (20, 'Riya')]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "A dict comprehension that swaps keys and values."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "from collections import Counter\nc = Counter(\"banana\")\nprint(c[\"a\"], c[\"z\"])",
+    "out": "3 0",
+    "options": [
+     "`3 0`",
+     "`3 KeyError`",
+     "`3 None`",
+     "`1 0`"
+    ],
+    "answer": 0,
+    "why": "A Counter gives 0 for an item it never saw, instead of raising KeyError."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "from collections import Counter\nprint(Counter(\"banana\").most_common(1))",
+    "out": "[('a', 3)]",
+    "options": [
+     "`[('a', 3)]`",
+     "`('a', 3)`",
+     "`a`",
+     "`[('b', 1)]`"
+    ],
+    "answer": 0,
+    "why": "most_common(k) gives a list of the top k (item, count) pairs."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "from collections import Counter\nprint(Counter(\"listen\") == Counter(\"silent\"))",
+    "out": "True",
+    "options": [
+     "`True`",
+     "`False`",
+     "`TypeError`",
+     "`None`"
+    ],
+    "answer": 0,
+    "why": "Same letters with the same counts, so the Counters are equal: the one-line anagram check."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "from collections import defaultdict\ncounts = defaultdict(int)\nfor ch in \"hello\":\n    counts[ch] += 1\nprint(dict(counts))",
+    "out": "{'h': 1, 'e': 1, 'l': 2, 'o': 1}",
+    "options": [
+     "`{'h': 1, 'e': 1, 'l': 2, 'o': 1}`",
+     "`KeyError`",
+     "`{'h': 0, 'e': 0, 'l': 0, 'o': 0}`",
+     "`{'hello': 1}`"
+    ],
+    "answer": 0,
+    "why": "A missing key is created with int(), which is 0, before += 1 runs."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "from collections import deque\nq = deque([1, 2, 3])\nq.appendleft(0)\nprint(q.popleft(), list(q))",
+    "out": "0 [1, 2, 3]",
+    "options": [
+     "`0 [1, 2, 3]`",
+     "`3 [0, 1, 2]`",
+     "`1 [0, 2, 3]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "appendleft adds at the front and popleft takes from the front, both in O(1)."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "from collections import deque\nrecent = deque(maxlen=2)\nfor x in [1, 2, 3]:\n    recent.append(x)\nprint(list(recent))",
+    "out": "[2, 3]",
+    "options": [
+     "`[1, 2]`",
+     "`[2, 3]`",
+     "`[1, 2, 3]`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "With maxlen=2, adding a third item pushes the oldest one out."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "from collections import namedtuple\nPoint = namedtuple(\"Point\", [\"x\", \"y\"])\np = Point(3, 4)\np.x = 5",
+    "out": "AttributeError: can't set attribute",
+    "options": [
+     "`Point(x=5, y=4)`",
+     "`AttributeError`",
+     "`TypeError`",
+     "`KeyError`"
+    ],
+    "answer": 1,
+    "why": "A namedtuple is still a tuple, so its fields can't be changed. Use `p._replace(x=5)` to get a new one."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "import heapq\nnums = [5, 1, 8, 3]\nheapq.heapify(nums)\nprint(nums)",
+    "out": "[1, 3, 8, 5]",
+    "options": [
+     "`[1, 3, 5, 8]`",
+     "`[1, 3, 8, 5]`",
+     "`[8, 5, 3, 1]`",
+     "`None`"
+    ],
+    "answer": 1,
+    "why": "A heap only guarantees the smallest item at index 0. The rest isn't sorted.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "import heapq\nh = []\nfor n in [5, 1, 8]:\n    heapq.heappush(h, -n)\nprint(-heapq.heappop(h))",
+    "out": "8",
+    "options": [
+     "`1`",
+     "`8`",
+     "`-8`",
+     "`5`"
+    ],
+    "answer": 1,
+    "why": "Python's heap is a min-heap. Pushing negatives makes the biggest number come out first: the max-heap trick."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "import bisect\nscores = [10, 20, 30, 40]\nprint(bisect.bisect_left(scores, 30), bisect.bisect_right(scores, 30))",
+    "out": "2 3",
+    "options": [
+     "`2 3`",
+     "`3 3`",
+     "`2 2`",
+     "`3 4`"
+    ],
+    "answer": 0,
+    "why": "30 is at position 2. bisect_left gives the spot before it (2), bisect_right the spot after it (3)."
+   },
+   {
+    "kind": "concept",
+    "q": "Which of these is O(1) on average?",
+    "options": [
+     "`x in some_list`",
+     "`x in some_set`",
+     "`some_list.remove(x)`",
+     "`some_list.pop(0)`"
+    ],
+    "answer": 1,
+    "why": "A set jumps to x by its hash. The other three walk or shift the list, which is O(n)."
+   },
+   {
+    "kind": "concept",
+    "q": "What's the best structure for a first-in, first-out queue?",
+    "options": [
+     "A list, with `pop(0)`",
+     "`collections.deque`, with `popleft()`",
+     "A set",
+     "A tuple"
+    ],
+    "answer": 1,
+    "why": "deque.popleft() is O(1). list.pop(0) shifts every other item, which is O(n)."
+   },
+   {
+    "kind": "concept",
+    "q": "Which of these can be a dict key?",
+    "options": [
+     "`[1, 2]`",
+     "`(1, 2)`",
+     "`{1, 2}`",
+     "`{'a': 1}`"
+    ],
+    "answer": 1,
+    "why": "Keys must be hashable (unchangeable). A tuple of numbers is; lists, sets and dicts aren't."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "grid = [[0] * 3] * 3\ngrid[0][0] = 1\nprint(grid)",
+    "out": "[[1, 0, 0], [1, 0, 0], [1, 0, 0]]",
+    "options": [
+     "`[[1, 0, 0], [0, 0, 0], [0, 0, 0]]`",
+     "`[[1, 0, 0], [1, 0, 0], [1, 0, 0]]`",
+     "`[[1, 1, 1], [0, 0, 0], [0, 0, 0]]`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "All three rows are the same inner list, so changing one changes all of them. Use `[[0] * 3 for _ in range(3)]`.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "d = dict.fromkeys([\"a\", \"b\"], [])\nd[\"a\"].append(1)\nprint(d)",
+    "out": "{'a': [1], 'b': [1]}",
+    "options": [
+     "`{'a': [1], 'b': []}`",
+     "`{'a': [1], 'b': [1]}`",
+     "`{'a': 1, 'b': []}`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "Both keys share one list. Use `{k: [] for k in [\"a\", \"b\"]}` to give each key its own list.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "a = [[]] * 2\na[0].append(1)\nprint(a)",
+    "out": "[[1], [1]]",
+    "options": [
+     "`[[1], []]`",
+     "`[[1], [1]]`",
+     "`[[1]]`",
+     "`[1, []]`"
+    ],
+    "answer": 1,
+    "why": "`* 2` copies the label, not the inner list, so both positions are the same list.",
+    "trap": true
+   }
   ]
  },
  "notes": {
@@ -2473,7 +3451,8 @@
   "2": "Topic 2, 6 Nov 2026: flashcards = built-in types, mutable vs immutable, / vs //, == vs is, type vs isinstance, conversion, float precision (asked in InterviewBit, GeeksforGeeks and PYnative lists); MCQs = traps on operators, truthiness, comparison, precedence and floats.",
   "3": "Topic 3, 6 Nov 2026: flashcards = slicing and negative indexes, reversing, immutability, split/join, formatting, join vs +=, find vs index, str vs bytes (InterviewBit, GeeksforGeeks and PYnative Q26-38); MCQs = slicing traps, methods, f-string formats, escapes, raw strings, bytes.",
   "frozen": "Topics 1-3 are final (reviewed 7 Nov 2026): change them only to fix a real mistake. Revise with them; new questions go to later topics.",
-  "4": "Topic 4, 8 Nov 2026 (fast pass): flashcards = break/continue/pass, loop else, for vs while, range, enumerate/zip, ternary, match/case; MCQs = branch order, range edges, loop else, nested break, zip, loop-variable and list-remove traps."
+  "4": "Topic 4, 8 Nov 2026 (fast pass): flashcards = break/continue/pass, loop else, for vs while, range, enumerate/zip, ternary, match/case; MCQs = branch order, range edges, loop else, nested break, zip, loop-variable and list-remove traps.",
+  "5": "Topic 5, 8 Nov 2026 (full lesson in lessons/5.md): flashcards = list vs tuple, list/set/dict choice, append vs extend, sort vs sorted, how dicts work, set speed, pop/remove/del, comprehensions, Counter/defaultdict, deque, removing duplicates, the [[0]*3]*3 trap, heapq; MCQs = predict the output and find the error for every structure, plus Big-O picks."
  },
  "frozen": [
   "1",

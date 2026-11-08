@@ -191,8 +191,14 @@ Done, in order:
     - The app now has a **Lesson** reader (section 6). The complete Topic 4 lesson is in `lessons/4.md`, with 36 code examples checked.
     - Topics 1–3 were taught before notes existed, so they have no lesson file yet. Offer to write them from the same stories.
 
+23. **Taught Topic 5 (Data structures)** on 8 Nov, in the complete format from the start.
+    - The story: four kinds of storage (list = numbered shelf, tuple = sealed lunchbox, set = bag of unique tokens, dict = labelled spice rack), then the `collections` toolbox, `heapq`/`bisect`, Big-O and the shared-list traps.
+    - Measured: 1000 searches in 100,000 items took about 0.6 s in a list and 0.00005 s in a set; emptying 100,000 items from the front took 0.75 s with `list.pop(0)` and 0.004 s with `deque.popleft()`.
+    - Python 3.15 wording to remember: `list.index` says "list.index(x): x not in list", and unhashable keys say "cannot use 'list' as a dict key (unhashable type: 'list')".
+    - He got 13 flashcards and 63 MCQs. The lesson is in `lessons/5.md`, with 34 code examples checked.
+
 Next:
-- **Stage 1 fast pass, continuing with Topic 5** (data structures): a complete lesson (every subtopic with runnable examples), then flashcards, MCQs and the lesson file. Then Topics 6, 7, 8, 9 in the same way. He revises every day.
+- **Stage 1 fast pass, continuing with Topic 6** (functions): a complete lesson (every subtopic with runnable examples), then flashcards, MCQs and the lesson file. Then Topics 7, 8, 9 in the same way. He revises every day.
 - **Then Stage 2:**
   - Start by building the basics pack and data tasks (with his OK).
   - DSA from Topic 16's warm-ups.
@@ -378,7 +384,7 @@ Next:
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 33, MCQs: 159 (topics 1, 2, 3, 4). Coding tasks: 0. Lesson notes: 1 (topic 4). LeetCode problems: 29 (topics 16, 17, 18).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 46, MCQs: 222 (topics 1, 2, 3, 4, 5). Coding tasks: 0. Lesson notes: 2 (topics 4, 5). LeetCode problems: 29 (topics 16, 17, 18).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -453,7 +459,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
 - **4. Control flow and loops** [MCQ, stage 1, Core lane, lesson notes, 8 flashcards, 53 MCQs]
   - Check: Predict what loops print, use `range`, `enumerate` and `zip`, and say when a loop's `else` runs.
   - Subtopics: (0) `if` / `elif` / `else`; (1) Conditional expression: `a if cond else b`; (2) `match` / `case` (3.10+); (3) `for` over any iterable; (4) `while` loops; (5) `range(start, stop, step)`; (6) `break`, `continue`, `pass`; (7) `else` on `for` and `while`; (8) `enumerate` and `zip`; (9) Nested loops and their cost
-- **5. Data structures** [Concept, stage 1, Core lane]
+- **5. Data structures** [Concept, stage 1, Core lane, lesson notes, 13 flashcards, 63 MCQs]
   - Check: Pick the right structure for a job, state the Big-O of its operations (`x in list` vs `x in set`), and spot traps like `[[0]*3]*3`.
   - Subtopics: (0) list: `append` vs `extend`, `insert`, `pop`, `remove`; (1) `sort()` vs `sorted()`; sorting with `key=`; (2) tuple: `(1,)`, unpacking, `first, *rest = items`; (3) set: `&`, `|`, `-`, `^`; `add`, `discard` vs `remove`; (4) dict: `get`, `setdefault`, `items`, `update`, merge with `|`; (5) dict keeps insertion order; keys must be hashable; (6) List, dict and set comprehensions; (7) `collections`: `Counter`, `defaultdict`, `deque`, `namedtuple`; (8) `heapq` and `bisect`; (9) Big-O of each operation (`x in list` vs `x in set`); (10) Trap: `[[0]*3]*3` shares one inner list
 - **6. Functions** [Coding, stage 1, Core lane]
