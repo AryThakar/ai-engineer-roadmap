@@ -259,6 +259,30 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
 .mcq-result.ok { color: var(--done); }
 .mcq-result.bad { color: var(--code); }
 
+/* Lesson notes: a reader for lessons/<topic>.md (a small Markdown subset, see mdRender). */
+.ls .fc-bar { max-width: 780px; }
+.ls .pr-title { flex: 1 1 auto; }
+.ls-body { width: 100%; max-width: 780px; margin: 0 auto; flex: 1; min-height: 0; overflow-y: auto; background: #fff; border: 2.5px solid var(--ink); border-radius: 12px; padding: 18px 24px 28px; }
+.ls-body:focus-visible { outline: 3px solid var(--section); outline-offset: 2px; }
+.ls-body h2 { margin: 0 0 10px; font: 800 28px/1.15 var(--font-display); }
+.ls-body h3 { margin: 30px 0 10px; padding-top: 12px; border-top: 2.5px solid var(--ink); font: 800 23px/1.2 var(--font-display); }
+.ls-body h4 { margin: 24px 0 8px; font: 700 18.5px/1.3 var(--font-display); }
+.ls-body h5 { margin: 18px 0 6px; font: 700 16px/1.3 var(--font-body); }
+.ls-body p, .ls-body li { font-size: 15.5px; line-height: 1.62; }
+.ls-body p { margin: 8px 0; }
+.ls-body ul, .ls-body ol { margin: 8px 0; padding-left: 1.4em; }
+.ls-body li { margin: 3px 0; }
+.ls-body code { font: 500 0.9em var(--font-mono); background: #f1eee4; padding: 1px 5px; border-radius: 4px; }
+.ls-body pre { margin: 10px 0 4px; padding: 10px 12px; background: var(--ink); color: #f4f1e8; border-radius: 6px; font: 500 13.5px/1.5 var(--font-mono); overflow-x: auto; white-space: pre; }
+.ls-body pre.out { margin-top: 0; background: #eef6f0; color: var(--ink); border: 1.5px solid var(--done); }
+.ls-body .out-label { margin: 6px 0 3px; font: 600 11px/1 var(--font-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--done); }
+.ls-hook { margin: 12px 0; padding: 9px 12px; border-left: 6px solid var(--section); background: var(--node); border-radius: 4px; font-weight: 600; font-size: 15px; }
+.ls-table { overflow-x: auto; margin: 10px 0; }
+.ls-table table { border-collapse: collapse; font-size: 14px; }
+.ls-table th, .ls-table td { border: 1.5px solid var(--ink); padding: 5px 9px; text-align: left; }
+.ls-table th { background: var(--node); }
+@media (max-width: 720px) { .ls-body { padding: 14px 15px 24px; } .ls-body h2 { font-size: 24px; } .ls-body h3 { font-size: 20px; } }
+
 /* Code practice: task on the left, editor and results on the right (one column on phones).
    Python runs in a Web Worker (practice/worker.js), so a stuck loop can be stopped. */
 .d-fc { flex-wrap: wrap; }
@@ -428,7 +452,7 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
   <ul class="subs" id="d-subs"></ul>
   <h3>Interview check</h3>
   <p class="check" id="d-check"></p>
-  <div class="d-fc" id="d-fc" hidden><p id="d-fc-text"></p><span class="d-fc-btns"><button type="button" class="close" id="d-fc-btn">Cards</button><button type="button" class="close" id="d-mcq-btn">MCQ</button><button type="button" class="close" id="d-pr-btn">Code</button></span></div>
+  <div class="d-fc" id="d-fc" hidden><p id="d-fc-text"></p><span class="d-fc-btns"><button type="button" class="close" id="d-fc-btn">Cards</button><button type="button" class="close" id="d-mcq-btn">MCQ</button><button type="button" class="close" id="d-pr-btn">Code</button><button type="button" class="close" id="d-ls-btn">Lesson</button></span></div>
   <div id="d-lc-wrap" hidden>
     <h3>LeetCode problems <small id="d-lccount"></small></h3>
     <p class="lc-how">Solve each one on LeetCode, then paste your code in the Claude chat for a review. Tick it once you've solved it on your own.</p>
@@ -464,6 +488,15 @@ header.top { padding-top: calc(34px + env(safe-area-inset-top)); }
   <div class="fc-actions mcq-actions" id="mcq-actions" hidden>
     <button type="button" class="got" id="mcq-next" disabled>Next question</button>
   </div>
+</div>
+
+<div class="fc ls" id="ls" role="dialog" aria-modal="true" aria-labelledby="ls-title" hidden>
+  <div class="fc-bar">
+    <h2 class="pr-title" id="ls-title">Lesson</h2>
+    <span class="fc-count" id="ls-meta"></span>
+    <button type="button" class="close" id="ls-close">Close</button>
+  </div>
+  <article class="ls-body" id="ls-body" tabindex="0" aria-live="polite"></article>
 </div>
 
 <div class="fc pr" id="pr" role="dialog" aria-modal="true" aria-labelledby="pr-title" hidden>
@@ -968,7 +1001,7 @@ scrim.addEventListener("click", closeDrawer);
 document.getElementById("d-prev").addEventListener("click", () => openTopic(current - 1));
 document.getElementById("d-next").addEventListener("click", () => openTopic(current + 1));
 document.addEventListener("keydown", e => {
-  if (!drawer.classList.contains("open") || !fc.hidden || !pr.hidden) return;
+  if (!drawer.classList.contains("open") || !fc.hidden || !pr.hidden || !ls.hidden) return;
   if (e.key === "Escape") closeDrawer();
   if (e.key === "Tab") {
     const f = [...drawer.querySelectorAll("button:not(:disabled), input, a[href]")].filter(x => x.offsetParent !== null);
@@ -1014,6 +1047,7 @@ const fcActions = document.getElementById("fc-actions"), mcqActions = document.g
 const KIND = { output: "Predict the output", error: "Find the error", concept: "Concept check" };
 const DECK = { cards: null, mcq: null, frozen: [] };
 const PRACTICE = { topics: null, list: [], byTask: new Map() };
+const LESSONS = { topics: {} };
 const tasksFor = id => (PRACTICE.topics && PRACTICE.topics[String(id)]) || [];
 let fcMode = "cards", fcQueue = [], fcKnown = 0, fcFlipped = false, fcLastFocus = null;
 let mq = { list: [], i: 0, right: 0, wrong: [], picked: null, order: [] };
@@ -1024,8 +1058,10 @@ const plural = (n, one, many) => n + " " + (n === 1 ? one : many);
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function renderDrawerCards(id) {
   const nc = itemsFor("cards", id).length, nm = itemsFor("mcq", id).length, np = tasksFor(id).length;
-  document.getElementById("d-fc").hidden = !(nc || nm || np);
+  const nl = LESSONS.topics[String(id)] ? 1 : 0;
+  document.getElementById("d-fc").hidden = !(nc || nm || np || nl);
   const parts = [];
+  if (nl) parts.push("Lesson notes");
   if (nc) parts.push(plural(nc, "flashcard", "flashcards"));
   if (nm) parts.push(plural(nm, "MCQ", "MCQs"));
   if (np) parts.push(plural(np, "coding task", "coding tasks"));
@@ -1033,6 +1069,7 @@ function renderDrawerCards(id) {
   document.getElementById("d-fc-btn").hidden = !nc;
   document.getElementById("d-mcq-btn").hidden = !nm;
   document.getElementById("d-pr-btn").hidden = !np;
+  document.getElementById("d-ls-btn").hidden = !nl;
 }
 fetch("flashcards.json", { cache: "no-cache" })
   .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
@@ -1205,6 +1242,128 @@ document.addEventListener("keydown", e => {
   if (e.key === " " || e.key === "Enter") { e.preventDefault(); fcFlipCard(); }
   else if (e.key === "ArrowLeft") { e.preventDefault(); fcNext(false); }
   else if (e.key === "ArrowRight") { e.preventDefault(); fcNext(true); }
+});
+
+/* Lesson notes: lessons/index.json lists them; each is lessons/<topic id>.md (format in CLAUDE.md).
+   Every lesson is fetched once in the background, so the service worker keeps it for offline reading. */
+const ls = document.getElementById("ls"), lsBody = document.getElementById("ls-body");
+let lsLastFocus = null, lsOpenId = null;
+fetch("lessons/index.json", { cache: "no-cache" })
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => {
+    const all = (d && d.topics) || {};
+    Object.keys(all).forEach(k => { if (byId.has(Number(k))) LESSONS.topics[k] = all[k]; });
+    if (current) renderDrawerCards(current);
+    setTimeout(() => Object.keys(LESSONS.topics).forEach(k => fetch("lessons/" + k + ".md", { cache: "no-cache" }).catch(() => {})), 2500);
+  })
+  .catch(() => {});
+
+/* Inline Markdown: `code` and **bold** (code spans are skipped whole, so `2 ** 3` stays code). */
+function mdInline(parent, text) {
+  let target = parent, buf = "";
+  const flush = () => { if (buf) { target.appendChild(document.createTextNode(buf)); buf = ""; } };
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === "`") {
+      const j = text.indexOf("`", i + 1);
+      if (j > i) { flush(); target.appendChild(h("code", null, text.slice(i + 1, j))); i = j; continue; }
+    }
+    if (c === "*" && text[i + 1] === "*") {
+      flush();
+      if (target === parent) { const b = h("strong"); parent.appendChild(b); target = b; } else target = parent;
+      i++; continue;
+    }
+    buf += c;
+  }
+  flush();
+  return parent;
+}
+/* Block Markdown: # headings, paragraphs, - and 1. lists (nested by indent), > hook boxes,
+   | tables |, and ``` blocks (```output is shown as the output of the code above it). */
+function mdRender(md) {
+  const frag = document.createDocumentFragment();
+  const lines = md.replace(/\r/g, "").split("\n");
+  const isList = l => /^\s*([-*]|\d+\.)\s+/.test(l);
+  const startsBlock = l => /^(```|#{1,4}\s|>|\|)/.test(l) || isList(l);
+  function list(i, indent) {
+    const el = h(/^\s*\d+\./.test(lines[i]) ? "ol" : "ul");
+    while (i < lines.length) {
+      const m = lines[i].match(/^(\s*)([-*]|\d+\.)\s+(.*)$/);
+      if (!m || m[1].length < indent) break;
+      if (m[1].length > indent) { const [sub, ni] = list(i, m[1].length); (el.lastChild || el).appendChild(sub); i = ni; continue; }
+      el.appendChild(mdInline(h("li"), m[3])); i++;
+    }
+    return [el, i];
+  }
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    let m;
+    if (!line.trim()) { i++; continue; }
+    if ((m = line.match(/^```(\w*)\s*$/))) {
+      const body = []; i++;
+      while (i < lines.length && !/^```\s*$/.test(lines[i])) { body.push(lines[i]); i++; }
+      i++;
+      if (m[1] === "output") { frag.appendChild(h("p", "out-label", "Output")); frag.appendChild(h("pre", "out", body.join("\n"))); }
+      else frag.appendChild(h("pre", null, body.join("\n")));
+      continue;
+    }
+    if ((m = line.match(/^(#{1,4})\s+(.*)$/))) { frag.appendChild(mdInline(h("h" + (m[1].length + 1)), m[2])); i++; continue; }
+    if (line.startsWith(">")) {
+      const buf = [];
+      while (i < lines.length && lines[i].startsWith(">")) { buf.push(lines[i].replace(/^>\s?/, "")); i++; }
+      frag.appendChild(mdInline(h("div", "ls-hook"), buf.join(" ")));
+      continue;
+    }
+    if (line.startsWith("|")) {
+      const rows = [];
+      while (i < lines.length && lines[i].trim().startsWith("|")) { rows.push(lines[i].trim()); i++; }
+      const cells = r => r.replace(/^\||\|$/g, "").split("|").map(x => x.trim());
+      const wrap = h("div", "ls-table"), table = h("table"), thead = h("thead"), tbody = h("tbody"), hr = h("tr");
+      cells(rows[0]).forEach(c => hr.appendChild(mdInline(h("th"), c)));
+      thead.appendChild(hr); table.appendChild(thead);
+      rows.slice(1).filter(r => !/^\|?\s*:?-{2,}/.test(r)).forEach(r => {
+        const tr = h("tr"); cells(r).forEach(c => tr.appendChild(mdInline(h("td"), c))); tbody.appendChild(tr);
+      });
+      table.appendChild(tbody); wrap.appendChild(table); frag.appendChild(wrap);
+      continue;
+    }
+    if (isList(line)) { const [el, ni] = list(i, line.match(/^\s*/)[0].length); frag.appendChild(el); i = ni; continue; }
+    const buf = [];
+    while (i < lines.length && lines[i].trim() && !startsBlock(lines[i])) { buf.push(lines[i].trim()); i++; }
+    if (!buf.length) { buf.push(line.trim()); i++; }
+    frag.appendChild(mdInline(h("p"), buf.join(" ")));
+  }
+  return frag;
+}
+function openLesson(id) {
+  const meta = LESSONS.topics[String(id)]; if (!meta) return;
+  if (ls.hidden) lsLastFocus = document.activeElement;
+  lsOpenId = id;
+  document.getElementById("ls-title").textContent = "Topic " + id + " lesson";
+  document.getElementById("ls-meta").textContent = byId.get(id).title + " · updated " + meta.updated;
+  lsBody.textContent = "Loading…";
+  ls.hidden = false; document.body.style.overflow = "hidden";
+  document.getElementById("ls-close").focus({ preventScroll: true });
+  fetch("lessons/" + id + ".md", { cache: "no-cache" })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+    .then(md => { if (lsOpenId !== id) return; lsBody.textContent = ""; lsBody.appendChild(mdRender(md)); lsBody.scrollTop = 0; })
+    .catch(() => { if (lsOpenId === id) lsBody.textContent = "Couldn't load this lesson. Connect to the internet once, then it stays available offline."; });
+}
+function closeLesson() {
+  ls.hidden = true; lsOpenId = null; document.body.style.overflow = "";
+  if (lsLastFocus && lsLastFocus.focus) lsLastFocus.focus({ preventScroll: true });
+}
+document.getElementById("ls-close").addEventListener("click", closeLesson);
+document.getElementById("d-ls-btn").addEventListener("click", () => openLesson(current));
+document.addEventListener("keydown", e => {
+  if (ls.hidden) return;
+  if (e.key === "Escape") { e.preventDefault(); closeLesson(); return; }
+  if (e.key === "Tab") {
+    const f = [document.getElementById("ls-close"), lsBody];
+    const i = f.indexOf(document.activeElement);
+    e.preventDefault(); f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus();
+  }
 });
 
 /* Code practice: tasks live in practice/tasks.json, keyed by topic id (format in CLAUDE.md).

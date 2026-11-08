@@ -1,5 +1,5 @@
 // Offline support for the AI Engineer Interview Roadmap.
-const VERSION = "air-v3";
+const VERSION = "air-v4";
 const PYODIDE_CACHE = "air-pyodide-314.0.7";   // big, never changes: kept across app updates
 const SHELL = [
   "./",
@@ -7,6 +7,7 @@ const SHELL = [
   "manifest.webmanifest",
   "flashcards.json",
   "practice/tasks.json",
+  "lessons/index.json",
   "practice/harness.py",
   "practice/worker.js",
   "icons/icon-192.png",
@@ -76,8 +77,9 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // Cards, tasks and the practice runner change often.
+  // Cards, lessons, tasks and the practice runner change often.
   if (path.endsWith("/flashcards.json")) { event.respondWith(networkFirst(req, "flashcards.json")); return; }
+  if (path.includes("/lessons/")) { event.respondWith(networkFirst(req, "lessons/" + path.split("/lessons/")[1])); return; }
   if (path.includes("/practice/")) { event.respondWith(networkFirst(req, "practice/" + path.split("/practice/")[1])); return; }
 
   // Other own files: saved copy first.

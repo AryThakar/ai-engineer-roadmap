@@ -38,10 +38,15 @@ These come from his direct feedback during the chat. Follow them.
   - Understanding first, then the interview word in brackets. Heavy jargon and long definition lists don't stick for him.
   - Short memory hooks ("Python checks every time; C checks once"), small proofs he can try himself, and a 30-second interview answer at the end.
   - Link to his own projects where it fits (zen, Zen-harness).
+  - **Fast pass doesn't mean skipping** (his feedback on Topic 4, 8 Nov):
+    - Cover every subtopic fully, with a runnable example and its real output for each. He noticed the `while` loop had no example.
+    - Go deep on anything with rules or traps (ternary, changing a list while looping), with step-by-step traces when the behaviour is surprising.
+    - Fast means no filler, not less content. The lessons are his future reference material.
 - **He checks himself by writing his own summary.** Mark it point by point (correct, wrong, small fix), then give a fixed version for him to memorise.
 - Don't quiz him until he asks ("quiz 1"). Don't test him on something before he has revised it.
 - Run every code example (Python 3.15) before you show its output.
 - After each topic, add its flashcards and MCQs to `flashcards.json` and run the checker (section 6).
+- Also save the full lesson as `lessons/<topic id>.md` (section 6), including any follow-up answers he asked for, and run `tools/check-lessons.py`. He asked for this on 8 Nov so he can re-read lessons later.
   - **Flashcards are only for questions an interviewer asks you to explain out loud.** Keep one only if it appears in real question lists (InterviewBit, GeeksforGeeks, PYnative), or if it's a common question for AI roles.
   - **No trivia flashcards** (he rejected these on 6 Nov): PEP numbers, version history, Python 2 vs 3, lists of other implementations.
   - **MCQs** are for what online tests ask: predict the output, find the error, pick the valid option. Syntax rules and trap questions go here.
@@ -177,8 +182,17 @@ Done, in order:
     - Traps covered: changing `i`, removing items while looping, nested loops multiply.
     - He then got 7 flashcards and 36 MCQs.
 
+22. **Topic 4 redone in depth, and lesson notes added (8 Nov).**
+    - He said the first Topic 4 lesson skipped too much: no `while` example, a thin ternary section, and unclear traps. They were retaught fully.
+    - His follow-up questions:
+      - Why did `remove` delete only one 2? `remove` deletes the first match only, one per call, and the loop skipped the second 2, so `remove` ran just once.
+      - Why fix it if it "works"? It only works by luck: `[2, 4, 6, 8]` with evens removed gives `[4, 8]`.
+    - Topic 4 now has 8 flashcards and 53 MCQs.
+    - The app now has a **Lesson** reader (section 6). The complete Topic 4 lesson is in `lessons/4.md`, with 36 code examples checked.
+    - Topics 1–3 were taught before notes existed, so they have no lesson file yet. Offer to write them from the same stories.
+
 Next:
-- **Stage 1 fast pass, continuing with Topic 5** (data structures): a short lesson, then flashcards and MCQs. Then Topics 6, 7, 8, 9 in the same way. He revises every day.
+- **Stage 1 fast pass, continuing with Topic 5** (data structures): a complete lesson (every subtopic with runnable examples), then flashcards, MCQs and the lesson file. Then Topics 6, 7, 8, 9 in the same way. He revises every day.
 - **Then Stage 2:**
   - Start by building the basics pack and data tasks (with his OK).
   - DSA from Topic 16's warm-ups.
@@ -276,9 +290,9 @@ Next:
     - Free problems only: confirm a problem isn't Premium before adding it.
     - Lists exist for topics 16 (warm-ups), 17 and 18. Add the next DSA topic's list when he reaches it (19, 20, 21, all in Stage 2).
 - Don't renumber topics or reorder subtopics. Progress keys depend on topic ids and subtopic order, so add new subtopics at the end.
-- `sw.js` (offline support, `VERSION` is `air-v3`): the page, `flashcards.json` and the `practice/` files load network-first, so changes to them show up on their own. Other files (manifest, icons) are served from the cache first, so raise `VERSION` in `sw.js` when you change them. The Pyodide files are cached on first use in their own cache (`PYODIDE_CACHE`), which survives app updates.
+- `sw.js` (offline support, `VERSION` is `air-v4`): the page, `flashcards.json`, the `lessons/` files and the `practice/` files load network-first, so changes to them show up on their own. Other files (manifest, icons) are served from the cache first, so raise `VERSION` in `sw.js` when you change them. The Pyodide files are cached on first use in their own cache (`PYODIDE_CACHE`), which survives app updates.
 - Deploying: GitHub Pages serves the `gh-pages` branch. Keep `main` and `gh-pages` the same: commit on `main`, then run `git push origin main main:gh-pages`.
-- Section 7 below is generated from `index.html`, `flashcards.json` and `practice/tasks.json`. After changing any of them, run `node tools/update-claude-md.js` from the repo root to bring it up to date.
+- Section 7 below is generated from `index.html`, `flashcards.json`, `lessons/index.json` and `practice/tasks.json`. After changing any of them, run `node tools/update-claude-md.js` from the repo root to bring it up to date.
 
 ### Flashcards and MCQs
 
@@ -309,6 +323,22 @@ Next:
 - Add new items to the end of a topic's list, then run `python tools/check-flashcards.py` with Python 3.15.
   - It checks every item's shape and runs every `code` to confirm `out` matches exactly. Syntax errors are shown the way a terminal shows them.
   - It also confirms each MCQ's marked answer matches what the code really does.
+
+### Lesson notes
+
+- A topic with a lesson shows "Lesson notes" and a **Lesson** button in its panel. The button opens a full-screen reader; Esc or Close closes it.
+- `lessons/index.json`: `{"version": 1, "topics": {"<topic id>": {"title": ..., "updated": "YYYY-MM-DD"}}}`. Each listed topic has `lessons/<topic id>.md`.
+- The app fetches every lesson once in the background, so they can be read offline after one visit online.
+- The Markdown is a small subset, rendered by `mdRender` in `index.html`:
+  - `#` title, `##` parts, `###` sections, `####` sub-sections
+  - paragraphs, `-` and `1.` lists (nested by indenting), `| tables |`
+  - `> Hook: ...` lines become yellow hook boxes
+  - `` `code` `` and `**bold**`
+  - fenced blocks: `` ```python `` for code, and a `` ```output `` block straight after it for that code's output
+- Write lessons like the chat lessons: the story, every subtopic with an example, the traps, the 30-second answers, and a "Memory hooks" list at the end.
+- `python tools/check-lessons.py` (Python 3.15):
+  - It runs every python block that has an output block under it and checks that the output matches exactly. Errors end with `ErrorName: message`, as in `flashcards.json`.
+  - Python blocks without an output block are shown as they are and not run (use them for fragments like a lone `return`).
 
 ### Code practice
 
@@ -348,7 +378,7 @@ Next:
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 32, MCQs: 142 (topics 1, 2, 3, 4). Coding tasks: 0. LeetCode problems: 29 (topics 16, 17, 18).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 33, MCQs: 159 (topics 1, 2, 3, 4). Coding tasks: 0. Lesson notes: 1 (topic 4). LeetCode problems: 29 (topics 16, 17, 18).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -420,7 +450,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
 - **3. Strings** [MCQ, stage 1, Core lane, 8 flashcards, 39 MCQs]
   - Check: Predict string results (slicing, `find` vs `index`, f-strings), and explain why strings are immutable and why `join` beats `+=`.
   - Subtopics: (0) Indexing and negative indexing; (1) Slicing with a step; `s[::-1]`; (2) Strings are immutable; (3) Methods: `split`, `join`, `strip`, `replace`, `count`; (4) `find` (returns -1) vs `index` (raises an error); (5) `startswith`, `endswith`, `upper`, `lower`, `isdigit`, `isalpha`; (6) f-strings and format specs: `{x:.2f}`, `{x:>10}`; (7) Escape sequences and raw strings `r'...'`; (8) Multiline strings; (9) Unicode, `encode` / `decode`, `bytes`; (10) Build strings with `''.join(parts)`, not `+=` in a loop
-- **4. Control flow and loops** [MCQ, stage 1, Core lane, 7 flashcards, 36 MCQs]
+- **4. Control flow and loops** [MCQ, stage 1, Core lane, lesson notes, 8 flashcards, 53 MCQs]
   - Check: Predict what loops print, use `range`, `enumerate` and `zip`, and say when a loop's `else` runs.
   - Subtopics: (0) `if` / `elif` / `else`; (1) Conditional expression: `a if cond else b`; (2) `match` / `case` (3.10+); (3) `for` over any iterable; (4) `while` loops; (5) `range(start, stop, step)`; (6) `break`, `continue`, `pass`; (7) `else` on `for` and `while`; (8) `enumerate` and `zip`; (9) Nested loops and their cost
 - **5. Data structures** [Concept, stage 1, Core lane]

@@ -18,6 +18,10 @@ Tap **Flashcards & MCQs** to revise everything taught so far, or **Cards** / **M
 - **Flashcards**: the questions interviewers ask out loud. Tap to flip, then **Got it** or **Again**.
 - **MCQ**: predict the output, find the error, concept checks. Options are shuffled each time; you get a score and can retry the ones you missed.
 
+## Lesson notes
+
+Topics with a full lesson show a **Lesson** button in their panel. It opens the complete lesson (story, examples with their real output, traps, interview answers and memory hooks) to re-read any time, also offline.
+
 ## LeetCode problems
 
 Topics 16, 17 and 18 have a **LeetCode problems** box: free problems in pattern order, Easy first, with direct links. Solve them on LeetCode and tick each one you solved on your own. The ticks are saved in your progress backup.
@@ -34,8 +38,9 @@ For Python skills LeetCode doesn't test (decorators, generators, files, classes)
 
 - `index.html`: the whole app (HTML, CSS and JavaScript in one file)
 - `flashcards.json`: the flashcards and MCQs, by topic id
+- `lessons/`: the lesson notes (`index.json` plus one Markdown file per topic)
 - `practice/`: the coding tasks (`tasks.json`), the code that judges answers (`harness.py`) and the worker that runs Python (`worker.js`)
 - `pyodide/`: Python for the browser ([Pyodide](https://github.com/pyodide/pyodide), MPL-2.0), see `pyodide/README.md`
 - `manifest.webmanifest`, `sw.js`, `icons/`: what makes it installable and available offline
 - `CLAUDE.md`: handoff notes so a new Claude chat can continue the prep
-- `tools/`: `check-flashcards.py` (runs every code example and checks its output and marked answer), `check-practice.py` (checks every task against a correct and a slow answer), `practice_solutions.py` (those answers; spoilers) and `update-claude-md.js`
+- `tools/`: `check-flashcards.py` (runs every code example and checks its output and marked answer), `check-practice.py` (checks every task against a correct and a slow answer), `check-lessons.py` (runs every lesson example and checks its output), `practice_solutions.py` (those answers; spoilers) and `update-claude-md.js`

@@ -193,8 +193,8 @@
    },
    {
     "q": "What is the ternary (conditional) operator in Python?",
-    "a": "A one-line if/else that gives back a value: `value_if_true if condition else value_if_false`. For example, `kind = \"even\" if n % 2 == 0 else \"odd\"`. Use it for simple choices; for anything longer, a normal if/else is easier to read.",
-    "hook": "value if test else other.",
+    "a": "A one-line if/else that gives back a value: `A if condition else B`. An if statement does things; a ternary gives a value, so it can go anywhere a value goes: an assignment, a return, an f-string, a comprehension. Only the chosen side runs, the `else` is required, and only values (not statements like `pass`) can go inside. Keep it to simple two-way choices.",
+    "hook": "An if statement does; a ternary gives.",
     "code": "n = 7\nprint(\"even\" if n % 2 == 0 else \"odd\")",
     "out": "odd"
    },
@@ -203,6 +203,14 @@
     "a": "Yes, since Python 3.10: `match`/`case`. Python compares the value with each case from the top and runs only the first one that matches. There's no fall-through like C's switch. `|` means 'or', and `case _:` is the default. It can also match shapes, like a list of two items. Before 3.10, people used if/elif or a dict.",
     "code": "def reply(cmd):\n    match cmd:\n        case \"start\":\n            return \"starting\"\n        case \"stop\" | \"quit\":\n            return \"bye\"\n        case _:\n            return \"unknown\"\nprint(reply(\"quit\"), reply(\"dance\"))",
     "out": "bye unknown"
+   },
+   {
+    "q": "What happens if you change a list while looping over it? How do you do it safely?",
+    "a": "The loop keeps a hidden position counter. When you remove an item, everything after it slides left, but the counter still moves on, so the next item is skipped. The code can look right on one input and be wrong on another. Safe ways: build a new list with a comprehension (best), loop over a copy (`nums[:]`), or go backwards by index. With a dict, Python raises a RuntimeError instead.",
+    "hook": "Never cut the branch you're sitting on.",
+    "code": "nums = [2, 4, 6, 8]\nfor n in nums:\n    if n % 2 == 0:\n        nums.remove(n)\nprint(nums)\nprint([n for n in [2, 4, 6, 8] if n % 2 != 0])",
+    "out": "[4, 8]\n[]",
+    "trap": true
    }
   ]
  },
@@ -2220,6 +2228,243 @@
     "answer": 1,
     "why": "Removing items while looping shifts the list, so the loop skips the next item and one 2 survives. Build a new list instead: `[n for n in nums if n != 2]`.",
     "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "num = 1234\ntotal = 0\nwhile num > 0:\n    total += num % 10\n    num //= 10\nprint(total)",
+    "out": "10",
+    "options": [
+     "`10`",
+     "`1234`",
+     "`4`",
+     "`1`"
+    ],
+    "answer": 0,
+    "why": "`num % 10` takes the last digit and `num //= 10` drops it: 4 + 3 + 2 + 1 = 10. The classic digit-sum loop."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "n = 3\nwhile n > 0:\n    print(n)\n    n -= 1\nprint(\"Go!\")",
+    "out": "3\n2\n1\nGo!",
+    "options": [
+     "`3`, `2`, `1`, `Go!`",
+     "`3`, `2`, `1`, `0`, `Go!`",
+     "`2`, `1`, `0`, `Go!`",
+     "It never stops"
+    ],
+    "answer": 0,
+    "why": "The condition is checked before each round: at n = 0 it is false, so 0 is never printed."
+   },
+   {
+    "kind": "concept",
+    "q": "Python has no do-while loop. How do you write a loop that always runs at least once?",
+    "options": [
+     "`do: ... while cond`",
+     "`while True:` with a `break` when you're done",
+     "`repeat ... until cond`",
+     "`for` with `else`"
+    ],
+    "answer": 1,
+    "why": "`while True:` always enters, and a `break` inside decides when to stop. That gives 'run at least once'."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "n = 1\nwhile n < 100:\n    n *= 2\nelse:\n    print(\"stopped at\", n)",
+    "out": "stopped at 128",
+    "options": [
+     "`stopped at 64`",
+     "`stopped at 128`",
+     "`stopped at 100`",
+     "Nothing"
+    ],
+    "answer": 1,
+    "why": "n doubles until it is no longer below 100: 64 → 128. No break happened, so the else runs."
+   },
+   {
+    "kind": "concept",
+    "q": "`n = 5` then `while n != 0: n -= 2`. What happens?",
+    "options": [
+     "It stops when n is 0",
+     "It runs forever",
+     "It stops at 1",
+     "SyntaxError"
+    ],
+    "answer": 1,
+    "why": "n goes 5, 3, 1, -1, … and skips over 0, so `n != 0` is never false. Use `while n > 0` for loops that count down."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print([\"even\" if n % 2 == 0 else \"odd\" for n in range(4)])",
+    "out": "['even', 'odd', 'even', 'odd']",
+    "options": [
+     "`['even', 'odd', 'even', 'odd']`",
+     "`['even', 'even']`",
+     "`[0, 2]`",
+     "`SyntaxError`"
+    ],
+    "answer": 0,
+    "why": "An if/else before the `for` transforms every item, so you get 4 results back."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print([n for n in range(6) if n % 2 == 0])",
+    "out": "[0, 2, 4]",
+    "options": [
+     "`[0, 2, 4]`",
+     "`[True, False, True, False, True, False]`",
+     "`[1, 3, 5]`",
+     "`[0, 2, 4, 6]`"
+    ],
+    "answer": 0,
+    "why": "An `if` after the `for` filters: items that fail the test are left out."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print([n if n > 2 for n in range(5)])",
+    "out": "SyntaxError: expected 'else' after 'if' expression",
+    "options": [
+     "`[3, 4]`",
+     "`SyntaxError`",
+     "`[None, None, None, 3, 4]`",
+     "`ValueError`"
+    ],
+    "answer": 1,
+    "why": "An `if` before the `for` is a ternary, so it needs an `else`. To filter, put the `if` after the `for`: `[n for n in range(5) if n > 2]`."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(True and 0 or 5)",
+    "out": "5",
+    "options": [
+     "`0`",
+     "`5`",
+     "`True`",
+     "`False`"
+    ],
+    "answer": 1,
+    "why": "The old `cond and A or B` trick breaks when A is falsy: `True and 0` is 0, then `0 or 5` is 5. A real ternary `0 if True else 5` gives 0.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "x = 0\nprint(10 / x if x != 0 else 0)",
+    "out": "0",
+    "options": [
+     "`ZeroDivisionError`",
+     "`0`",
+     "`10`",
+     "`inf`"
+    ],
+    "answer": 1,
+    "why": "Only the chosen side of a ternary runs. x != 0 is False, so `10 / x` is never calculated."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "x = 1 if True else pass",
+    "out": "SyntaxError: expected expression after 'else', but statement is given",
+    "options": [
+     "`1`",
+     "`None`",
+     "`SyntaxError`",
+     "`TypeError`"
+    ],
+    "answer": 2,
+    "why": "A ternary must produce a value on both sides. `pass` is a statement, not a value."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "nums = [1, 2, 3]\nfor n in nums:\n    n = n * 10\nprint(nums)",
+    "out": "[1, 2, 3]",
+    "options": [
+     "`[10, 20, 30]`",
+     "`[1, 2, 3]`",
+     "`30`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "n is a label for each item. `n = n * 10` moves the label to a new number; the list never changes. Use `nums[i] = ...` with the index, or build a new list.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "nums = [1, 2, 2, 3]\nnums.remove(2)\nprint(nums)",
+    "out": "[1, 2, 3]",
+    "options": [
+     "`[1, 3]`",
+     "`[1, 2, 3]`",
+     "`[1, 2, 2]`",
+     "`[2, 2]`"
+    ],
+    "answer": 1,
+    "why": "`remove` deletes only the first matching value, one per call. To delete every 2: `[n for n in nums if n != 2]`."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "nums = [1, 3]\nnums.remove(2)",
+    "out": "ValueError: list.remove(x): x not in list",
+    "options": [
+     "Nothing happens",
+     "`ValueError`",
+     "`KeyError`",
+     "`IndexError`"
+    ],
+    "answer": 1,
+    "why": "remove raises ValueError when the value isn't in the list. Check with `in` first, or use a comprehension."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "d = {\"a\": 1, \"b\": 2}\nfor k in d:\n    del d[k]",
+    "out": "RuntimeError: dictionary changed size during iteration",
+    "options": [
+     "The dict becomes empty",
+     "`RuntimeError`",
+     "`KeyError`",
+     "`TypeError`"
+    ],
+    "answer": 1,
+    "why": "Python refuses to let a dict change size while you loop over it. Loop over `list(d)` instead, or build a new dict."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "nums = [2, 4, 6, 8]\nfor n in nums:\n    if n % 2 == 0:\n        nums.remove(n)\nprint(nums)",
+    "out": "[4, 8]",
+    "options": [
+     "`[]`",
+     "`[4, 8]`",
+     "`[2, 6]`",
+     "`[2, 4, 6, 8]`"
+    ],
+    "answer": 1,
+    "why": "Each removal shifts the list left and the loop skips the next item, so 4 and 8 are never even looked at.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "nums = [1, 2, 2, 3]\nfor n in nums[:]:\n    if n == 2:\n        nums.remove(n)\nprint(nums)",
+    "out": "[1, 3]",
+    "options": [
+     "`[1, 3]`",
+     "`[1, 2, 3]`",
+     "`[1, 2, 2, 3]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "`nums[:]` is a copy, so the loop walks the copy safely while you change the original. Both 2s are removed."
    }
   ]
  },

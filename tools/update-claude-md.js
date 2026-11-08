@@ -24,6 +24,9 @@ const mcqCount = id => (MCQS[String(id)] || []).length;
 let TASKS = {};
 try { TASKS = JSON.parse(fs.readFileSync(path.join(root, "practice", "tasks.json"), "utf8")).topics || {}; } catch (e) {}
 const taskCount = id => (TASKS[String(id)] || []).length;
+let LESSONS = {};
+try { LESSONS = JSON.parse(fs.readFileSync(path.join(root, "lessons", "index.json"), "utf8")).topics || {}; } catch (e) {}
+const lessonTopics = Object.keys(LESSONS).sort((a, b) => a - b);
 const totalTasks = Object.values(TASKS).reduce((s, c) => s + c.length, 0);
 const taskTopics = Object.keys(TASKS).filter(k => TASKS[k].length).sort((a, b) => a - b);
 const totalCards = Object.values(CARDS).reduce((s, c) => s + c.length, 0);
@@ -42,6 +45,7 @@ out.push(`Totals: ${topics.length} topics in ${SECTIONS.length} sections, ${STAG
   `Levels: ${count("code")} Coding, ${count("concept")} Concept, ${count("mcq")} MCQ. ` +
   `Flashcards: ${totalCards}, MCQs: ${totalMcqs}${cardTopics.length ? (cardTopics.length === 1 ? " (topic " : " (topics ") + cardTopics.join(", ") + ")" : ""}. ` +
   `Coding tasks: ${totalTasks}${taskTopics.length ? (taskTopics.length === 1 ? " (topic " : " (topics ") + taskTopics.join(", ") + ")" : ""}. ` +
+  `Lesson notes: ${lessonTopics.length}${lessonTopics.length ? (lessonTopics.length === 1 ? " (topic " : " (topics ") + lessonTopics.join(", ") + ")" : ""}. ` +
   `LeetCode problems: ${Object.values(LC).reduce((n, l) => n + l.length, 0)}${Object.keys(LC).length ? " (topics " + Object.keys(LC).sort((a, b) => a - b).join(", ") + ")" : ""}.`);
 out.push("");
 out.push("### Levels");
@@ -70,7 +74,7 @@ for (const [sec, sname] of SECTIONS) {
   out.push(`#### ${sec}. ${sname}`);
   for (const t of topics.filter(x => x.sec === sec)) {
     const where = t.stage === "Daily" ? "every day" : t.stage === "Optional" ? "optional" : `stage ${t.stage}, ${t.lane} lane`;
-    const cards = (cardCount(t.id) ? `, ${cardCount(t.id)} flashcards` : "") + (mcqCount(t.id) ? `, ${mcqCount(t.id)} MCQs` : "") + (taskCount(t.id) ? `, ${taskCount(t.id)} coding tasks` : "");
+    const cards = (LESSONS[String(t.id)] ? ", lesson notes" : "") + (cardCount(t.id) ? `, ${cardCount(t.id)} flashcards` : "") + (mcqCount(t.id) ? `, ${mcqCount(t.id)} MCQs` : "") + (taskCount(t.id) ? `, ${taskCount(t.id)} coding tasks` : "");
     out.push(`- **${t.id}. ${t.title}** [${LEVELS[t.level].label}, ${where}${cards}]`);
     out.push(`  - Check: ${t.check}`);
     out.push(`  - Subtopics: ${t.subs.map((s, i) => `(${i}) ${s}`).join("; ")}`);
