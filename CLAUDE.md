@@ -197,8 +197,15 @@ Done, in order:
     - Python 3.15 wording to remember: `list.index` says "list.index(x): x not in list", and unhashable keys say "cannot use 'list' as a dict key (unhashable type: 'list')".
     - He got 13 flashcards and 63 MCQs. The lesson is in `lessons/5.md`, with 34 code examples checked.
 
+24. **Taught Topic 6 (Functions)** on 9 Nov. He asked first how many Python topics were left (10 of 15: 6–9 in Stage 1, 10–15 in Stage 2, plus 58) and whether 6–9 are as big as 5. Answer given: 6 is about the same size but the hardest of Stage 1 (deep, ideas build on each other); 7, 8 and 9 get smaller and easier.
+    - The story: recipe cards (def, call, return), the serving window (print vs return), the scope rooms (LEGB), the lunchbox (closures), gift wrapping (decorators), the notebook of answers (`lru_cache`). Sent in the chat in 3 parts.
+    - Covered every subtopic plus pass by object reference, `UnboundLocalError`, hiding built-ins, late-binding closures, decorator order and decorators running at def time. The retry decorator (Topic 6's check) is in Part 12, with a fake busy server.
+    - Measured on 3.15: `fib(35)` about 0.7 s without `lru_cache`, about 0.00002 s with it; `fib(20)` makes 21,891 calls uncached vs 21 cached.
+    - Python 3.15 wording: an unknown keyword argument adds "Did you mean 'name'?".
+    - He got 18 flashcards and 72 MCQs. The lesson is in `lessons/6.md`, with 64 code examples checked.
+
 Next:
-- **Stage 1 fast pass, continuing with Topic 6** (functions): a complete lesson (every subtopic with runnable examples), then flashcards, MCQs and the lesson file. Then Topics 7, 8, 9 in the same way. He revises every day.
+- **Stage 1 fast pass, continuing with Topic 7** (iterators and generators): a complete lesson (every subtopic with runnable examples), then flashcards, MCQs and the lesson file. Then Topics 8 and 9 in the same way. He revises every day.
 - **Then Stage 2:**
   - Start by building the basics pack and data tasks (with his OK).
   - DSA from Topic 16's warm-ups.
@@ -384,7 +391,7 @@ Next:
 
 ## 7. Roadmap reference (generated from the app's data, do not edit by hand)
 
-Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 46, MCQs: 222 (topics 1, 2, 3, 4, 5). Coding tasks: 0. Lesson notes: 2 (topics 4, 5). LeetCode problems: 29 (topics 16, 17, 18).
+Totals: 71 topics in 13 sections, 6 stages, 84 resources. Levels: 27 Coding, 30 Concept, 14 MCQ. Flashcards: 64, MCQs: 294 (topics 1, 2, 3, 4, 5, 6). Coding tasks: 0. Lesson notes: 3 (topics 4, 5, 6). LeetCode problems: 29 (topics 16, 17, 18).
 
 ### Levels
 - **Coding**: You write it live in an editor, with no AI help.
@@ -462,7 +469,7 @@ Format: **id. title** [level, where]. Check = what he must be able to do. Subtop
 - **5. Data structures** [Concept, stage 1, Core lane, lesson notes, 13 flashcards, 63 MCQs]
   - Check: Pick the right structure for a job, state the Big-O of its operations (`x in list` vs `x in set`), and spot traps like `[[0]*3]*3`.
   - Subtopics: (0) list: `append` vs `extend`, `insert`, `pop`, `remove`; (1) `sort()` vs `sorted()`; sorting with `key=`; (2) tuple: `(1,)`, unpacking, `first, *rest = items`; (3) set: `&`, `|`, `-`, `^`; `add`, `discard` vs `remove`; (4) dict: `get`, `setdefault`, `items`, `update`, merge with `|`; (5) dict keeps insertion order; keys must be hashable; (6) List, dict and set comprehensions; (7) `collections`: `Counter`, `defaultdict`, `deque`, `namedtuple`; (8) `heapq` and `bisect`; (9) Big-O of each operation (`x in list` vs `x in set`); (10) Trap: `[[0]*3]*3` shares one inner list
-- **6. Functions** [Coding, stage 1, Core lane]
+- **6. Functions** [Coding, stage 1, Core lane, lesson notes, 18 flashcards, 72 MCQs]
   - Check: Write a retry decorator, and explain closures and the mutable default trap.
   - Subtopics: (0) `def`, `return`, returning several values; (1) Positional, keyword and default arguments; (2) Mutable default argument trap; (3) `*args` and `**kwargs`; unpacking at the call site; (4) Keyword-only (`*`) and positional-only (`/`) parameters; (5) Scope rules (LEGB), `global`, `nonlocal`; (6) `lambda`; (7) Functions as objects; higher-order functions; (8) `map`, `filter`, `functools.reduce`; (9) Recursion and the recursion limit; (10) Closures; (11) Decorators, `functools.wraps`, decorators with arguments; (12) `functools.partial` and `lru_cache`
 - **7. Iterators and generators** [Coding, stage 1, Core lane]

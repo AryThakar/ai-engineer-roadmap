@@ -1,6 +1,6 @@
 {
  "version": 2,
- "updated": "2026-11-08",
+ "updated": "2026-11-09",
  "topics": {
   "1": [
    {
@@ -295,6 +295,129 @@
     "hook": "A heap only guarantees the top.",
     "code": "import heapq\nnums = [5, 1, 8, 3]\nheapq.heapify(nums)\nprint(nums[0], nums)\nprint(heapq.nlargest(2, [5, 1, 8, 3]))",
     "out": "1 [1, 3, 8, 5]\n[8, 5]"
+   }
+  ],
+  "6": [
+   {
+    "q": "What's the difference between a parameter and an argument?",
+    "a": "A parameter is the name in the function's definition, the blank on the recipe card. An argument is the value you pass when you call it, what fills the blank. In `def greet(name)`, `name` is the parameter; in `greet(\"Ary\")`, `\"Ary\"` is the argument.",
+    "hook": "Parameter = the blank; argument = what fills it."
+   },
+   {
+    "q": "What does a function return if it has no `return`? How do you return several values?",
+    "a": "It returns `None`, and so does a bare `return`. To return several values, write `return a, b`: that returns one tuple, which you can unpack with `x, y = f()`. Remember that `print` only shows a value; `return` hands it back to the caller.",
+    "hook": "print = saying it out loud; return = handing it back.",
+    "code": "def min_max(nums):\n    return min(nums), max(nums)\n\ndef show(n):\n    print(n)\n\nlow, high = min_max([4, 1, 9])\nprint(low, high, show(7))",
+    "out": "7\n1 9 None"
+   },
+   {
+    "q": "What are `*args` and `**kwargs`?",
+    "a": "`*args` collects any extra positional arguments into a tuple, and `**kwargs` collects any extra keyword arguments into a dict. The names are only a habit; the `*` and `**` do the work. In a call, they do the opposite and unpack: `f(*my_list)`, `f(**my_dict)`. Decorators use `*args, **kwargs` to pass any call straight through.",
+    "hook": "In def, * and ** pack; in a call, they unpack.",
+    "code": "def show(a, *args, **kwargs):\n    print(a, args, kwargs)\n\nshow(1, 2, 3, x=4)\nshow(*[5, 6], **{\"y\": 7})",
+    "out": "1 (2, 3) {'x': 4}\n5 (6,) {'y': 7}"
+   },
+   {
+    "q": "Why is a mutable default argument like `box=[]` dangerous?",
+    "a": "Default values are created once, when the `def` statement runs, not on every call. So every call that uses the default shares the same list, and it keeps growing between calls. The fix is to default to `None` and create a new list inside the function.",
+    "hook": "Defaults are made once, when def runs. For lists and dicts, default to None.",
+    "code": "def add_item(item, box=[]):\n    box.append(item)\n    return box\n\nadd_item(\"a\")\nprint(add_item(\"b\"))",
+    "out": "['a', 'b']",
+    "trap": true
+   },
+   {
+    "q": "Is Python pass by value or pass by reference?",
+    "a": "Neither exactly: it's pass by object reference (also called pass by assignment). The parameter becomes a new name for the caller's same object. If the function changes a mutable object, like appending to a list, the caller sees it. If it reassigns the parameter with `=`, only the local name moves and the caller's object is untouched. Immutable objects like ints and strings can't be changed, so they act like pass by value.",
+    "hook": "A function gets the same box, not a copy.",
+    "code": "def change(box):\n    box.append(4)\n    box = [0]\n\nnums = [1, 2, 3]\nchange(nums)\nprint(nums)",
+    "out": "[1, 2, 3, 4]"
+   },
+   {
+    "q": "Explain the LEGB rule. What do `global` and `nonlocal` do?",
+    "a": "LEGB is the order Python looks up a name: Local (the current function), Enclosing (any outer function), Global (the module's top level), then Built-in (`len`, `print`…). The first match wins. Assigning a name inside a function makes it local, so to change an outer name you need `global` (for a module-level name) or `nonlocal` (for a name in the enclosing function). I avoid `global`, because any function can change it and bugs get hard to trace.",
+    "hook": "LEGB = Local, Enclosing, Global, Built-in, inside out."
+   },
+   {
+    "q": "Why does `count += 1` inside a function raise `UnboundLocalError`?",
+    "a": "Because the function assigns to `count`, Python decides before running it that `count` is local for the whole function. `count += 1` then tries to read the local `count`, which has no value yet. Reading a global is fine; assigning needs `global count` (or `nonlocal` in a nested function), or better, pass the value in and return the new one.",
+    "code": "count = 0\n\ndef increase():\n    count += 1\n\nincrease()",
+    "out": "UnboundLocalError: cannot access local variable 'count' where it is not associated with a value",
+    "trap": true
+   },
+   {
+    "q": "What is a lambda function, and what are its limits?",
+    "a": "A small anonymous function written in one line: `lambda args: expression`. It returns the expression automatically. It can hold only one expression, with no statements like `return`, `=` or loops. It's mostly used for short `key=` functions in `sorted`, `max` and `min`. Anything longer, or anything you'd name, should be a `def`.",
+    "hook": "lambda = one expression, no name, no statements.",
+    "code": "students = [(\"Ary\", 82), (\"Riya\", 91)]\nprint(max(students, key=lambda s: s[1]))",
+    "out": "('Riya', 91)"
+   },
+   {
+    "q": "What do `map`, `filter` and `reduce` do? Would you use them?",
+    "a": "`map(func, items)` applies a function to every item; `filter(func, items)` keeps the items where the function returns True; `reduce(func, items)` (from `functools`) combines all items into one value. `map` and `filter` are lazy: they return iterators you can read once. In Python I usually prefer comprehensions and built-ins like `sum`, but `map` is neat with a ready-made function like `int`.",
+    "hook": "map transforms, filter keeps, reduce combines.",
+    "code": "from functools import reduce\nnums = [1, 2, 3, 4]\nprint(list(map(lambda n: n * 2, nums)), list(filter(lambda n: n % 2, nums)), reduce(lambda a, b: a + b, nums))",
+    "out": "[2, 4, 6, 8] [1, 3] 10"
+   },
+   {
+    "q": "What is recursion? What are its limits in Python?",
+    "a": "A function that calls itself on a smaller version of the problem. It needs a base case that stops it and a recursive case that moves toward the base case. Each waiting call sits on the call stack. Python's default limit is 1000 calls deep (`RecursionError` beyond that), and it has no tail-call optimisation, so very deep problems are better written as loops. Plain recursion can also repeat work, like Fibonacci, which caching fixes.",
+    "hook": "Every recursion needs a base case. Python stops at about 1000 calls deep.",
+    "code": "def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial(5))",
+    "out": "120"
+   },
+   {
+    "q": "What is a closure?",
+    "a": "An inner function that remembers names from its enclosing function, even after the outer function has returned. It needs three things: a nested function, which uses a name from the outer function, and the outer function returns it. Closures give a function private state without globals or a class, and decorators are built on them.",
+    "hook": "A closure carries a lunchbox of outer values.",
+    "code": "def make_multiplier(n):\n    def multiply(x):\n        return x * n\n    return multiply\n\ntimes3 = make_multiplier(3)\nprint(times3(5))",
+    "out": "15"
+   },
+   {
+    "q": "Why does `[f() for f in [lambda: i for i in range(3)]]` give `[2, 2, 2]`?",
+    "a": "Closures remember the variable, not its value at that moment (late binding). All three lambdas look up `i` when they're called, and by then the loop has finished with `i = 2`. Fix it by copying the value into a default argument, `lambda i=i: i`, because defaults are saved when the lambda is made.",
+    "code": "funcs = [lambda: i for i in range(3)]\nfixed = [lambda i=i: i for i in range(3)]\nprint([f() for f in funcs], [f() for f in fixed])",
+    "out": "[2, 2, 2] [0, 1, 2]",
+    "trap": true
+   },
+   {
+    "q": "What is a decorator, and how does it work?",
+    "a": "A function that takes a function and returns a new, wrapped version of it, adding behaviour before or after it, such as logging, timing, retries, caching or login checks, without changing the original code. `@deco` above `def f` means `f = deco(f)`. Inside, a wrapper function takes `*args, **kwargs`, calls the original, and returns its result.",
+    "hook": "@deco on top of def f means f = deco(f).",
+    "code": "def shout(func):\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs).upper()\n    return wrapper\n\n@shout\ndef greet(name):\n    return f\"hi {name}\"\n\nprint(greet(\"ary\"))",
+    "out": "HI ARY"
+   },
+   {
+    "q": "Why use `functools.wraps` in a decorator?",
+    "a": "Without it, the decorated function takes the wrapper's identity: its `__name__` becomes \"wrapper\" and its docstring is lost. That confuses logs, error messages, `help()` and tools like FastAPI and pytest. `@functools.wraps(func)` on the wrapper copies the original name, docstring and other details across.",
+    "code": "import functools\n\ndef deco(func):\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs)\n    return wrapper\n\n@deco\ndef add(a, b):\n    return a + b\n\nprint(add.__name__)",
+    "out": "add"
+   },
+   {
+    "q": "How do you write a decorator that takes arguments, like `@retry(times=3)`?",
+    "a": "Add one more layer, so there are three: the outer function takes the settings and returns a decorator; the decorator takes the function and returns a wrapper; the wrapper runs on every call. `@retry(times=3)` first calls `retry(times=3)`, then applies the decorator it returns. A retry wrapper loops, calls the function inside `try`, and on an error tries again (real code also waits longer each time).",
+    "hook": "Three layers: settings → function → each call.",
+    "code": "def repeat(n):\n    def decorator(func):\n        def wrapper(*args, **kwargs):\n            return func(*args, **kwargs) * n\n        return wrapper\n    return decorator\n\n@repeat(3)\ndef hi():\n    return \"ha\"\n\nprint(hi())",
+    "out": "hahaha"
+   },
+   {
+    "q": "What is memoisation? How does `lru_cache` help?",
+    "a": "Memoisation means storing results by their inputs, so the same call is never computed twice. `@functools.lru_cache` does it in one line: the arguments become a dict key. The arguments must be hashable, and the function should be pure (same input, same output, no side effects). It turns recursive Fibonacci from exponential to linear time. `maxsize` limits the cache; when full, the least recently used result is dropped.",
+    "hook": "lru_cache = a notebook of answers already worked out.",
+    "code": "from functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fib(n):\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\n\nprint(fib(100))",
+    "out": "354224848179261915075"
+   },
+   {
+    "q": "What are first-class functions and higher-order functions?",
+    "a": "First-class means functions are objects like any other value: you can assign them to names, store them in lists or dicts, pass them as arguments and return them from other functions. A higher-order function takes a function as an argument or returns one, like `sorted(..., key=len)`, `map`, or any decorator.",
+    "code": "def add(a, b):\n    return a + b\n\nops = {\"+\": add, \"*\": lambda a, b: a * b}\nprint(ops[\"+\"](2, 3), ops[\"*\"](2, 3))",
+    "out": "5 6"
+   },
+   {
+    "q": "What do a lone `*` and a `/` mean in a function definition?",
+    "a": "Parameters after a lone `*` (or after `*args`) are keyword-only: they must be passed by name, which keeps calls readable, like `sorted(items, reverse=True)`. Parameters before `/` are positional-only: they can't be passed by name, so the author can rename them later; many built-ins like `len` work this way. Parameters in between can be passed either way.",
+    "hook": "Left of / = position only; right of * = name only.",
+    "code": "def f(a, /, b, *, c):\n    return a + b + c\n\nprint(f(1, 2, c=3), f(1, b=2, c=3))",
+    "out": "6 6"
    }
   ]
  },
@@ -3444,6 +3567,1028 @@
     "why": "`* 2` copies the label, not the inner list, so both positions are the same list.",
     "trap": true
    }
+  ],
+  "6": [
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def show(n):\n    print(n * 2)\n\nresult = show(5)\nprint(result)",
+    "out": "10\nNone",
+    "options": [
+     "`10` then `None`",
+     "`10` then `10`",
+     "`None` then `10`",
+     "Only `10`"
+    ],
+    "answer": 0,
+    "why": "show prints 10 while it runs, but has no return, so result is None.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f():\n    return 1\n    return 2\n\nprint(f())",
+    "out": "1",
+    "options": [
+     "`1`",
+     "`2`",
+     "`(1, 2)`",
+     "`None`"
+    ],
+    "answer": 0,
+    "why": "return ends the function at once, so the second return never runs."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f():\n    for i in range(5):\n        return i\n\nprint(f())",
+    "out": "0",
+    "options": [
+     "`0`",
+     "`4`",
+     "`[0, 1, 2, 3, 4]`",
+     "`None`"
+    ],
+    "answer": 0,
+    "why": "The return inside the loop ends the function on the first pass.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def sign(x):\n    if x > 0:\n        return \"positive\"\n\nprint(sign(-3))",
+    "out": "None",
+    "options": [
+     "`positive`",
+     "`None`",
+     "`-3`",
+     "An error"
+    ],
+    "answer": 1,
+    "why": "No return runs for -3, so the function reaches its end and gives None.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(a, b=2, c=3):\n    return a + b + c\n\nprint(f(1, c=10))",
+    "out": "13",
+    "options": [
+     "`13`",
+     "`6`",
+     "`15`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "a=1, b keeps its default 2, c=10: 1 + 2 + 10."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(a, b):\n    return a - b\n\nprint(f(b=10, a=3))",
+    "out": "-7",
+    "options": [
+     "`-7`",
+     "`7`",
+     "`13`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "Keyword arguments match by name, so a=3 and b=10, whatever the order."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def f(a, b):\n    return a + b\n\nf(1)",
+    "out": "TypeError: f() missing 1 required positional argument: 'b'",
+    "options": [
+     "`TypeError`",
+     "`ValueError`",
+     "Returns `1`",
+     "Returns `None`"
+    ],
+    "answer": 0,
+    "why": "b has no default, so it's required."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def f(a, b):\n    return a + b\n\nf(a=1, 2)",
+    "out": "SyntaxError: positional argument follows keyword argument",
+    "options": [
+     "`SyntaxError`",
+     "`TypeError`",
+     "Returns `3`",
+     "`ValueError`"
+    ],
+    "answer": 0,
+    "why": "In a call, positional arguments must come before keyword ones. Python rejects this before running anything."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def f(a=1, b):\n    return a + b",
+    "out": "SyntaxError: parameter without a default follows parameter with a default",
+    "options": [
+     "`SyntaxError`",
+     "`TypeError`",
+     "Nothing, it's fine",
+     "`NameError`"
+    ],
+    "answer": 0,
+    "why": "In a def, parameters with defaults must come after the ones without."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def f(a, b):\n    return a + b\n\nf(1, a=2)",
+    "out": "TypeError: f() got multiple values for argument 'a'",
+    "options": [
+     "`TypeError`",
+     "Returns `3`",
+     "`SyntaxError`",
+     "`KeyError`"
+    ],
+    "answer": 0,
+    "why": "1 already filled a by position, then a=2 tries to fill it again, and b is never given.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def add_four(lst):\n    lst.append(4)\n\nnums = [1, 2, 3]\nadd_four(nums)\nprint(nums)",
+    "out": "[1, 2, 3, 4]",
+    "options": [
+     "`[1, 2, 3, 4]`",
+     "`[1, 2, 3]`",
+     "`None`",
+     "`[4]`"
+    ],
+    "answer": 0,
+    "why": "The parameter is a new name for the same list, so append changes the caller's list."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def reset(lst):\n    lst = [0]\n\nnums = [1, 2]\nreset(nums)\nprint(nums)",
+    "out": "[1, 2]",
+    "options": [
+     "`[1, 2]`",
+     "`[0]`",
+     "`None`",
+     "`[0, 1, 2]`"
+    ],
+    "answer": 0,
+    "why": "`lst = [0]` only moves the local name to a new list. The caller's list is untouched.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def grow(lst):\n    lst += [9]\n\nnums = [1]\ngrow(nums)\nprint(nums)",
+    "out": "[1, 9]",
+    "options": [
+     "`[1, 9]`",
+     "`[1]`",
+     "`[9]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "For lists, += changes the list in place (like extend), so the caller sees it. `lst = lst + [9]` would make a new list instead.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(x, items=[]):\n    items.append(x)\n    return items\n\nf(1)\nprint(f(2))",
+    "out": "[1, 2]",
+    "options": [
+     "`[1, 2]`",
+     "`[2]`",
+     "`[1]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "The default list is made once, when def runs, so both calls share it.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(x, items=[]):\n    items.append(x)\n    return items\n\nprint(f(1), f(2))",
+    "out": "[1, 2] [1, 2]",
+    "options": [
+     "`[1, 2] [1, 2]`",
+     "`[1] [1, 2]`",
+     "`[1] [2]`",
+     "`[1, 2] [2]`"
+    ],
+    "answer": 0,
+    "why": "print works out both calls first. Both return the same shared list, which holds [1, 2] by the time it's printed.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(x, items=None):\n    if items is None:\n        items = []\n    items.append(x)\n    return items\n\nf(1)\nprint(f(2))",
+    "out": "[2]",
+    "options": [
+     "`[2]`",
+     "`[1, 2]`",
+     "`None`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "The None pattern makes a new list on every call, so nothing is shared."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def count(word, seen={}):\n    seen[word] = seen.get(word, 0) + 1\n    return seen\n\ncount(\"a\")\nprint(count(\"a\"))",
+    "out": "{'a': 2}",
+    "options": [
+     "`{'a': 2}`",
+     "`{'a': 1}`",
+     "`{}`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "A dict default is shared too, so the count carries over between calls.",
+    "trap": true
+   },
+   {
+    "kind": "concept",
+    "q": "When is a default value like `box=[]` created?",
+    "options": [
+     "Every time the function is called",
+     "Once, when the `def` statement runs",
+     "Only when the argument is missing",
+     "When the function returns"
+    ],
+    "answer": 1,
+    "why": "Defaults are made once, at definition time, and stored on the function (`f.__defaults__`)."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(*args):\n    print(type(args))\n\nf(1, 2)",
+    "out": "<class 'tuple'>",
+    "options": [
+     "`<class 'tuple'>`",
+     "`<class 'list'>`",
+     "`<class 'dict'>`",
+     "`<class 'int'>`"
+    ],
+    "answer": 0,
+    "why": "`*args` always packs the extra positional arguments into a tuple."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(**kwargs):\n    print(kwargs)\n\nf(a=1, b=2)",
+    "out": "{'a': 1, 'b': 2}",
+    "options": [
+     "`{'a': 1, 'b': 2}`",
+     "`(1, 2)`",
+     "`['a', 'b']`",
+     "`a=1 b=2`"
+    ],
+    "answer": 0,
+    "why": "`**kwargs` packs the extra keyword arguments into a dict."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(a, *args):\n    print(a, args)\n\nf(1, 2, 3)",
+    "out": "1 (2, 3)",
+    "options": [
+     "`1 (2, 3)`",
+     "`1 [2, 3]`",
+     "`(1, 2, 3) ()`",
+     "`1 2 3`"
+    ],
+    "answer": 0,
+    "why": "a takes the first argument; *args collects the rest as a tuple."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(*args):\n    print(args)\n\nf([1, 2])",
+    "out": "([1, 2],)",
+    "options": [
+     "`([1, 2],)`",
+     "`(1, 2)`",
+     "`[1, 2]`",
+     "`([1], [2])`"
+    ],
+    "answer": 0,
+    "why": "The list is one argument, so args is a tuple holding one list.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(*args):\n    print(args)\n\nf(*[1, 2])",
+    "out": "(1, 2)",
+    "options": [
+     "`(1, 2)`",
+     "`([1, 2],)`",
+     "`[1, 2]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "`*` in the call unpacks the list into two separate arguments."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(a, b, c):\n    return a + b + c\n\nprint(f(**{\"a\": 1, \"b\": 2, \"c\": 3}))",
+    "out": "6",
+    "options": [
+     "`6`",
+     "`abc`",
+     "`{'a': 1, 'b': 2, 'c': 3}`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "`**` unpacks the dict into keyword arguments a=1, b=2, c=3."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def f(a, b):\n    return a + b\n\nf(**{\"a\": 1, \"c\": 2})",
+    "out": "TypeError: f() got an unexpected keyword argument 'c'",
+    "options": [
+     "`TypeError`",
+     "`KeyError`",
+     "Returns `3`",
+     "`NameError`"
+    ],
+    "answer": 0,
+    "why": "The dict key c doesn't match any parameter name."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def f(a, *args, b):\n    return b\n\nf(1, 2, 3)",
+    "out": "TypeError: f() missing 1 required keyword-only argument: 'b'",
+    "options": [
+     "`TypeError`",
+     "Returns `3`",
+     "`SyntaxError`",
+     "Returns `None`"
+    ],
+    "answer": 0,
+    "why": "Anything after *args can only be given by name. 2 and 3 both go into args, so b is missing.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def connect(host, *, timeout):\n    return host\n\nconnect(\"api\", 5)",
+    "out": "TypeError: connect() takes 1 positional argument but 2 were given",
+    "options": [
+     "`TypeError`",
+     "Returns `api`",
+     "`ValueError`",
+     "`SyntaxError`"
+    ],
+    "answer": 0,
+    "why": "After a lone `*`, timeout is keyword-only: it must be called as timeout=5."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def power(base, exp, /):\n    return base ** exp\n\npower(base=2, exp=3)",
+    "out": "TypeError: power() got some positional-only arguments passed as keyword arguments: 'base, exp'",
+    "options": [
+     "`TypeError`",
+     "Returns `8`",
+     "`SyntaxError`",
+     "`NameError`"
+    ],
+    "answer": 0,
+    "why": "Parameters before `/` are positional-only, so they can't be passed by name."
+   },
+   {
+    "kind": "concept",
+    "q": "With `def f(a, /, b, *, c)`, which call is valid?",
+    "options": [
+     "`f(1, 2, 3)`",
+     "`f(a=1, b=2, c=3)`",
+     "`f(1, b=2, c=3)`",
+     "`f(1, 2)`"
+    ],
+    "answer": 2,
+    "why": "a must be positional, c must be by name, and b can be either. f(1, 2, 3) passes c by position; f(a=1, …) names a; f(1, 2) misses c."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "x = \"global\"\n\ndef f():\n    x = \"local\"\n\nf()\nprint(x)",
+    "out": "global",
+    "options": [
+     "`global`",
+     "`local`",
+     "`None`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "The x inside f is a separate local name. The global x is untouched."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "count = 0\n\ndef inc():\n    count += 1\n\ninc()",
+    "out": "UnboundLocalError: cannot access local variable 'count' where it is not associated with a value",
+    "options": [
+     "`UnboundLocalError`",
+     "count becomes `1`",
+     "`NameError`",
+     "`TypeError`"
+    ],
+    "answer": 0,
+    "why": "Assigning makes count local for the whole function, and the local has no value yet when += reads it.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "x = 10\n\ndef f():\n    print(x)\n    x = 5\n\nf()",
+    "out": "UnboundLocalError: cannot access local variable 'x' where it is not associated with a value",
+    "options": [
+     "`UnboundLocalError`",
+     "Prints `10`",
+     "Prints `5`",
+     "`SyntaxError`"
+    ],
+    "answer": 0,
+    "why": "The x = 5 line makes x local for the whole function, even on the print line above it.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "count = 0\n\ndef inc():\n    global count\n    count += 1\n\ninc()\ninc()\nprint(count)",
+    "out": "2",
+    "options": [
+     "`2`",
+     "`0`",
+     "`1`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "`global count` makes the function change the module-level count."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def outer():\n    n = 0\n    def inner():\n        nonlocal n\n        n += 1\n    inner()\n    inner()\n    return n\n\nprint(outer())",
+    "out": "2",
+    "options": [
+     "`2`",
+     "`0`",
+     "`1`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "`nonlocal n` lets inner change outer's n."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "sum = 10\nprint(sum([1, 2]))",
+    "out": "TypeError: 'int' object is not callable",
+    "options": [
+     "`TypeError`",
+     "Prints `3`",
+     "Prints `13`",
+     "`NameError`"
+    ],
+    "answer": 0,
+    "why": "Your global sum (an int) is found before the built-in sum, and you can't call an int. Never reuse built-in names.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "x = 1\n\ndef f():\n    return x\n\nx = 2\nprint(f())",
+    "out": "2",
+    "options": [
+     "`2`",
+     "`1`",
+     "`None`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "f looks up x when it's called, not when it's defined. By then x is 2.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def f():\n    y = 5\n\nf()\nprint(y)",
+    "out": "NameError: name 'y' is not defined",
+    "options": [
+     "`NameError`",
+     "Prints `5`",
+     "Prints `None`",
+     "`UnboundLocalError`"
+    ],
+    "answer": 0,
+    "why": "y is local to f and disappears when the call ends."
+   },
+   {
+    "kind": "concept",
+    "q": "In which order does Python look up a name?",
+    "options": [
+     "Local, Enclosing, Global, Built-in",
+     "Global, Local, Built-in, Enclosing",
+     "Built-in, Global, Enclosing, Local",
+     "Local, Global, Enclosing, Built-in"
+    ],
+    "answer": 0,
+    "why": "LEGB: inside out, and the first match wins."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "ops = {\"add\": lambda a, b: a + b, \"mul\": lambda a, b: a * b}\nprint(ops[\"mul\"](3, 4))",
+    "out": "12",
+    "options": [
+     "`12`",
+     "`7`",
+     "`mul`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "The dict holds functions. ops['mul'] finds one, and (3, 4) calls it."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def twice(func, x):\n    return func(func(x))\n\nprint(twice(lambda n: n + 3, 1))",
+    "out": "7",
+    "options": [
+     "`7`",
+     "`4`",
+     "`6`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "1 + 3 = 4, then 4 + 3 = 7. twice is a higher-order function."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "f = lambda x, y=2: x * y\nprint(f(3))",
+    "out": "6",
+    "options": [
+     "`6`",
+     "`5`",
+     "`3`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "Lambdas can have defaults too: 3 * 2."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(sorted([\"bb\", \"a\", \"ccc\"], key=lambda s: -len(s)))",
+    "out": "['ccc', 'bb', 'a']",
+    "options": [
+     "`['ccc', 'bb', 'a']`",
+     "`['a', 'bb', 'ccc']`",
+     "`[-3, -2, -1]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "The negative length sorts longest first; sorted returns the strings, not the keys."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "pairs = [(\"a\", 3), (\"b\", 9), (\"c\", 5)]\nprint(max(pairs, key=lambda p: p[1]))",
+    "out": "('b', 9)",
+    "options": [
+     "`('b', 9)`",
+     "`9`",
+     "`('c', 5)`",
+     "`b`"
+    ],
+    "answer": 0,
+    "why": "max compares by the key but returns the whole item."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "f = lambda x: return x",
+    "out": "SyntaxError: invalid syntax",
+    "options": [
+     "`SyntaxError`",
+     "`TypeError`",
+     "Nothing, it's fine",
+     "`NameError`"
+    ],
+    "answer": 0,
+    "why": "A lambda holds one expression and returns it automatically; `return` is a statement."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "m = map(abs, [-1, -2])\nprint(list(m), list(m))",
+    "out": "[1, 2] []",
+    "options": [
+     "`[1, 2] []`",
+     "`[1, 2] [1, 2]`",
+     "`[-1, -2] [1, 2]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "A map object can be read only once. The second list() finds it used up.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(list(filter(lambda n: n > 2, [1, 5, 2, 8])))",
+    "out": "[5, 8]",
+    "options": [
+     "`[5, 8]`",
+     "`[False, True, False, True]`",
+     "`[1, 2]`",
+     "`[5, 2, 8]`"
+    ],
+    "answer": 0,
+    "why": "filter keeps the items where the function returns True."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(list(filter(None, [0, \"\", 3, \"a\"])))",
+    "out": "[3, 'a']",
+    "options": [
+     "`[3, 'a']`",
+     "`[0, '']`",
+     "`[0, '', 3, 'a']`",
+     "`[]`"
+    ],
+    "answer": 0,
+    "why": "filter(None, …) keeps only truthy items."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "from functools import reduce\nprint(reduce(lambda a, b: a * b, [1, 2, 3, 4]))",
+    "out": "24",
+    "options": [
+     "`24`",
+     "`10`",
+     "`[1, 2, 6, 24]`",
+     "`4`"
+    ],
+    "answer": 0,
+    "why": "reduce combines step by step: 1*2=2, 2*3=6, 6*4=24."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "from functools import reduce\nreduce(lambda a, b: a + b, [])",
+    "out": "TypeError: reduce() of empty iterable with no initial value",
+    "options": [
+     "`TypeError`",
+     "Returns `0`",
+     "Returns `None`",
+     "`IndexError`"
+    ],
+    "answer": 0,
+    "why": "With an empty list and no starting value, reduce has nothing to return. reduce(f, [], 0) gives 0."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "print(reduce(lambda a, b: a + b, [1, 2]))",
+    "out": "NameError: name 'reduce' is not defined",
+    "options": [
+     "`NameError`",
+     "Prints `3`",
+     "`TypeError`",
+     "`ImportError`"
+    ],
+    "answer": 0,
+    "why": "reduce isn't a built-in in Python 3. It must be imported from functools.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "print(list(map(lambda a, b: a + b, [1, 2, 3], [10, 20])))",
+    "out": "[11, 22]",
+    "options": [
+     "`[11, 22]`",
+     "`[11, 22, 3]`",
+     "An error",
+     "`[11, 22, 33]`"
+    ],
+    "answer": 0,
+    "why": "With two lists, map stops at the shorter one, like zip."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(n):\n    return 0 if n == 0 else n + f(n - 1)\n\nprint(f(4))",
+    "out": "10",
+    "options": [
+     "`10`",
+     "`4`",
+     "`24`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "4 + 3 + 2 + 1 + 0 = 10."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def f(n):\n    if n == 0:\n        return \"\"\n    return f(n - 1) + str(n)\n\nprint(f(3))",
+    "out": "123",
+    "options": [
+     "`123`",
+     "`321`",
+     "`3`",
+     "`6`"
+    ],
+    "answer": 0,
+    "why": "The recursive call comes first, so the smaller numbers are added before n: f(2) + '3' = '12' + '3'.",
+    "trap": true
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def countdown(n):\n    return countdown(n - 1)\n\ncountdown(3)",
+    "out": "RecursionError: maximum recursion depth exceeded",
+    "options": [
+     "`RecursionError`",
+     "Returns `0`",
+     "`ValueError`",
+     "It runs forever"
+    ],
+    "answer": 0,
+    "why": "There's no base case, so it never stops until Python's depth limit (1000) is hit."
+   },
+   {
+    "kind": "concept",
+    "q": "What is Python's default recursion limit?",
+    "options": [
+     "About 100",
+     "1000",
+     "10,000",
+     "No limit"
+    ],
+    "answer": 1,
+    "why": "sys.getrecursionlimit() returns 1000 by default. Deeper calls raise RecursionError."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def make_adder(n):\n    return lambda x: x + n\n\nadd5 = make_adder(5)\nprint(add5(10))",
+    "out": "15",
+    "options": [
+     "`15`",
+     "`5`",
+     "`10`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "The lambda is a closure that remembers n = 5 after make_adder returns."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "funcs = [lambda: i for i in range(3)]\nprint([f() for f in funcs])",
+    "out": "[2, 2, 2]",
+    "options": [
+     "`[2, 2, 2]`",
+     "`[0, 1, 2]`",
+     "`[0, 0, 0]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "Late binding: each lambda looks up i when called, and by then i is 2.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "funcs = [lambda i=i: i for i in range(3)]\nprint([f() for f in funcs])",
+    "out": "[0, 1, 2]",
+    "options": [
+     "`[0, 1, 2]`",
+     "`[2, 2, 2]`",
+     "`[0, 0, 0]`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "The default argument saves each value when the lambda is made."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def make_counter():\n    count = 0\n    def inc():\n        nonlocal count\n        count += 1\n        return count\n    return inc\n\nc1 = make_counter()\nc2 = make_counter()\nprint(c1(), c1(), c2())",
+    "out": "1 2 1",
+    "options": [
+     "`1 2 1`",
+     "`1 2 3`",
+     "`1 1 1`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "Each make_counter() call makes a new closure with its own count."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def outer():\n    x = 1\n    def inner():\n        return x\n    x = 2\n    return inner\n\nprint(outer()())",
+    "out": "2",
+    "options": [
+     "`2`",
+     "`1`",
+     "`None`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "A closure remembers the variable, not the value. x was 2 by the time inner ran.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def shout(func):\n    def wrapper():\n        return func() + \"!\"\n    return wrapper\n\n@shout\ndef hi():\n    return \"hi\"\n\nprint(hi())",
+    "out": "hi!",
+    "options": [
+     "`hi!`",
+     "`hi`",
+     "`!hi`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "`@shout` means hi = shout(hi), so calling hi runs the wrapper."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def log(func):\n    def wrapper(*args):\n        func(*args)\n    return wrapper\n\n@log\ndef add(a, b):\n    return a + b\n\nprint(add(2, 3))",
+    "out": "None",
+    "options": [
+     "`None`",
+     "`5`",
+     "`(2, 3)`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "The wrapper calls add but doesn't return its result, so the caller gets None.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def a(f):\n    return lambda: \"a(\" + f() + \")\"\n\ndef b(f):\n    return lambda: \"b(\" + f() + \")\"\n\n@a\n@b\ndef g():\n    return \"g\"\n\nprint(g())",
+    "out": "a(b(g))",
+    "options": [
+     "`a(b(g))`",
+     "`b(a(g))`",
+     "`a(g)`",
+     "`g`"
+    ],
+    "answer": 0,
+    "why": "The decorator closest to def wraps first: g = a(b(g))."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def deco(func):\n    def wrapper():\n        return func()\n    return wrapper\n\n@deco\ndef report():\n    return 1\n\nprint(report.__name__)",
+    "out": "wrapper",
+    "options": [
+     "`wrapper`",
+     "`report`",
+     "`deco`",
+     "`func`"
+    ],
+    "answer": 0,
+    "why": "Without functools.wraps, the decorated function takes the wrapper's name.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def deco(func):\n    print(\"decorating\")\n    return func\n\n@deco\ndef g():\n    return \"g\"\n\nprint(g())",
+    "out": "decorating\ng",
+    "options": [
+     "`decorating` then `g`",
+     "Only `g`",
+     "`g` then `decorating`",
+     "Only `decorating`"
+    ],
+    "answer": 0,
+    "why": "A decorator runs when the def runs, before any call. Then g() runs normally.",
+    "trap": true
+   },
+   {
+    "kind": "concept",
+    "q": "What is `@deco` above `def f(): ...` the same as?",
+    "options": [
+     "`f = deco(f)`",
+     "`f = deco()`",
+     "`deco = f(deco)`",
+     "`f = f(deco)`"
+    ],
+    "answer": 0,
+    "why": "The decorator receives the function and its return value replaces the name f."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "def repeat(n):\n    def deco(func):\n        def wrapper():\n            return func() * n\n        return wrapper\n    return deco\n\n@repeat(3)\ndef hi():\n    return \"hi\"\n\nprint(hi())",
+    "out": "hihihi",
+    "options": [
+     "`hihihi`",
+     "`hi`",
+     "`3hi`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "repeat(3) returns deco, which wraps hi. The wrapper repeats the result 3 times."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "def repeat(n):\n    def deco(func):\n        def wrapper():\n            return func() * n\n        return wrapper\n    return deco\n\n@repeat\ndef hi():\n    return \"hi\"\n\nhi()",
+    "out": "TypeError: repeat.<locals>.deco() missing 1 required positional argument: 'func'",
+    "options": [
+     "`TypeError`",
+     "Returns `hi`",
+     "Returns `hihihi`",
+     "`NameError`"
+    ],
+    "answer": 0,
+    "why": "Without (3), hi = repeat(hi), so hi is now deco. Calling hi() calls deco with no function.",
+    "trap": true
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "from functools import partial\n\ndef mul(a, b):\n    return a * b\n\ndouble = partial(mul, 2)\nprint(double(7))",
+    "out": "14",
+    "options": [
+     "`14`",
+     "`9`",
+     "`2`",
+     "An error"
+    ],
+    "answer": 0,
+    "why": "partial fixes a = 2, so double(7) is mul(2, 7)."
+   },
+   {
+    "kind": "output",
+    "q": "What is printed?",
+    "code": "from functools import lru_cache\n\ncalls = 0\n\n@lru_cache\ndef square(n):\n    global calls\n    calls += 1\n    return n * n\n\nsquare(4)\nsquare(4)\nsquare(5)\nprint(calls)",
+    "out": "2",
+    "options": [
+     "`2`",
+     "`3`",
+     "`1`",
+     "`0`"
+    ],
+    "answer": 0,
+    "why": "The second square(4) is read from the cache, so the body runs only for 4 and 5."
+   },
+   {
+    "kind": "error",
+    "q": "What happens?",
+    "code": "from functools import lru_cache\n\n@lru_cache\ndef total(nums):\n    return sum(nums)\n\ntotal([1, 2, 3])",
+    "out": "TypeError: unhashable type: 'list'",
+    "options": [
+     "`TypeError`",
+     "Returns `6`",
+     "`ValueError`",
+     "`KeyError`"
+    ],
+    "answer": 0,
+    "why": "The cache uses the arguments as a dict key, so they must be hashable. Pass a tuple instead."
+   },
+   {
+    "kind": "concept",
+    "q": "Which function should NOT be cached with `lru_cache`?",
+    "options": [
+     "One that returns the current time",
+     "One that computes a factorial",
+     "One that checks if a number is prime",
+     "One that converts Celsius to Fahrenheit"
+    ],
+    "answer": 0,
+    "why": "Caching is only safe for pure functions: same input, same output. The time changes, so a cached answer would be wrong."
+   }
   ]
  },
  "notes": {
@@ -3452,7 +4597,8 @@
   "3": "Topic 3, 6 Nov 2026: flashcards = slicing and negative indexes, reversing, immutability, split/join, formatting, join vs +=, find vs index, str vs bytes (InterviewBit, GeeksforGeeks and PYnative Q26-38); MCQs = slicing traps, methods, f-string formats, escapes, raw strings, bytes.",
   "frozen": "Topics 1-3 are final (reviewed 7 Nov 2026): change them only to fix a real mistake. Revise with them; new questions go to later topics.",
   "4": "Topic 4, 8 Nov 2026 (fast pass): flashcards = break/continue/pass, loop else, for vs while, range, enumerate/zip, ternary, match/case; MCQs = branch order, range edges, loop else, nested break, zip, loop-variable and list-remove traps.",
-  "5": "Topic 5, 8 Nov 2026 (full lesson in lessons/5.md): flashcards = list vs tuple, list/set/dict choice, append vs extend, sort vs sorted, how dicts work, set speed, pop/remove/del, comprehensions, Counter/defaultdict, deque, removing duplicates, the [[0]*3]*3 trap, heapq; MCQs = predict the output and find the error for every structure, plus Big-O picks."
+  "5": "Topic 5, 8 Nov 2026 (full lesson in lessons/5.md): flashcards = list vs tuple, list/set/dict choice, append vs extend, sort vs sorted, how dicts work, set speed, pop/remove/del, comprehensions, Counter/defaultdict, deque, removing duplicates, the [[0]*3]*3 trap, heapq; MCQs = predict the output and find the error for every structure, plus Big-O picks.",
+  "6": "Topic 6, 9 Nov 2026 (full lesson in lessons/6.md): flashcards = parameter vs argument, return and None, *args/**kwargs, mutable default, pass by object reference, LEGB/global/nonlocal, UnboundLocalError, lambda, map/filter/reduce, recursion, closures, late binding, decorators, functools.wraps, decorators with arguments, lru_cache, first-class functions, / and *; MCQs = predict the output and find the error for every part."
  },
  "frozen": [
   "1",
